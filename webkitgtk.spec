@@ -36,7 +36,7 @@
 
 Name:		webkitgtk
 Version:	1.1.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -184,6 +184,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat May 09 2009 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> - 1.1.4-2
+- Rebuild against new icu
+
 * Tue Apr 07 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.4-1
 - Update to new upstream release (1.1.4)
 - Enable building with geolocation support.

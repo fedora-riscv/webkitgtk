@@ -27,6 +27,7 @@
 ## --with wml: Build support for WML
 ##	(Default: No)
 
+%bcond_with 	3dtransforms
 %bcond_with 	coverage
 %bcond_with 	debug
 %bcond_with 	jit
@@ -35,7 +36,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.4
+Version:	1.1.6
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -51,8 +52,10 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	bison
+BuildRequires:	enchant-devel
 BuildRequires:	flex
 BuildRequires:	geoclue-devel
+BuildRequires:	gettext
 BuildRequires:	gperf
 BuildRequires:	gnome-keyring-devel
 BuildRequires:	gstreamer-devel
@@ -113,6 +116,7 @@ LICENSE, README, and AUTHORS files.
 %configure							\
 			--enable-gnomekeyring			\
 			--enable-geolocation			\
+%{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
 %{?with_debug:		--enable-debug			}	\
 %{?with_jit:		--enable-jit			}	\
@@ -122,17 +126,13 @@ LICENSE, README, and AUTHORS files.
 	
 make %{?_smp_mflags}
 
-# workaround for bug 488112
-# Compile libJavaScriptCore.a with -fno-strict-aliasing
-touch JavaScriptCore/AllInOneFile.cpp
-make %{?_smp_mflags} CXXFLAGS="%{optflags} -fno-strict-aliasing"
-
 
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
+%find_lang webkit
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
 %add_to_doc_files JavaScriptCore/icu/LICENSE
@@ -145,8 +145,8 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %add_to_doc_files JavaScriptCore/pcre/COPYING
 %add_to_doc_files JavaScriptCore/COPYING.LIB
 
-#add_to_doc_files JavaScriptCore/icu/README
-#add_to_doc_files WebCore/icu/README
+%add_to_doc_files JavaScriptCore/icu/README
+%add_to_doc_files WebKit/gtk/po/README
 
 %add_to_doc_files JavaScriptCore/AUTHORS
 %add_to_doc_files JavaScriptCore/pcre/AUTHORS   
@@ -163,9 +163,9 @@ rm -rf %{buildroot}
 %postun	-p /sbin/ldconfig
 
 
-%files
+%files -f webkit.lang
 %defattr(-,root,root,-)
-%doc
+%doc WebKit/gtk/NEWS
 %exclude %{_libdir}/*.la
 %{_bindir}/jsc
 %{_libdir}/libwebkit-1.0.so.*
@@ -184,6 +184,15 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat May 09 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.6-1
+- Update to new upstream release (1.1.6).
+- Drop workaround for bug 488112 (fixed upstream).
+- Fixes bug 484335 (Copy link locations to the primary selection; patched
+  upstream).
+- Include upstream changelog (NEWS) as part of the installed documentation.
+- Fix capitalization in previous %%changelog entry.
+- Add build-time conditional support for 3-D transforms (default off).
+
 * Tue Apr 07 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.4-1
 - Update to new upstream release (1.1.4)
 - Enable building with geolocation support.

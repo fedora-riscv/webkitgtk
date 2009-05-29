@@ -127,8 +127,8 @@ make %{?_smp_mflags}
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
-libtool --mode=install install -m 755 Programs/GtkLauncher \
-	%{buildroot}%{_libexecdir}/%{name}  
+install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
+install -m 755 Programs/.libs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %find_lang webkit
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
@@ -185,7 +185,7 @@ rm -rf %{buildroot}
 - Update to new upstream release (1.1.7)
 - Remove jit build conditional. (JIT is now enabled by default on platforms
   which support it: currently 32- and 64-bit x86.)
-- Force libtool-based installation of the GtkLauncher demo program so that it
+- Fix installation of the GtkLauncher demo program so that it
   is a binary and not a script. (Fixes bug #443048.)
 
 * Sat May 09 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.6-1

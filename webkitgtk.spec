@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.7
+Version:	1.1.8
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -127,8 +127,9 @@ make %{?_smp_mflags}
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
+
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
-install -m 755 Programs/.libs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
+install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %find_lang webkit
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
@@ -181,6 +182,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri May 29 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.8-1
+- Update to new upstream release (1.1.8)
+
 * Thu May 28 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.7-1
 - Update to new upstream release (1.1.7)
 - Remove jit build conditional. (JIT is now enabled by default on platforms

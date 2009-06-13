@@ -1,0 +1,90 @@
+diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Platform.h webkit-1.1.8/JavaScriptCore/wtf/Platform.h
+--- webkit-1.1.8-orig/JavaScriptCore/wtf/Platform.h	2009-05-27 11:32:36.000000000 -0500
++++ webkit-1.1.8/JavaScriptCore/wtf/Platform.h	2009-06-13 11:44:36.000000000 -0500
+@@ -230,10 +230,17 @@
+ #endif
+ 
+ /* PLATFORM(SPARC64) */
+-#if defined(__sparc64__)
+-#define WTF_PLATFORM_SPARC64 1
++#if defined(__sparc64__)\
++    || defined(__sparc__) && defined(_arch64__)
++ #define WTF_PLATFORM_SPARC64 1
++ #define WTF_PLATFORM_BIG_ENDIAN 1
++#else
++/* PLATFORM(SPARC) */
++#if defined(__sparc__)
++#define WTF_PLATFORM_SPARC 1
+ #define WTF_PLATFORM_BIG_ENDIAN 1
+ #endif
++#endif
+ 
+ /* PLATFORM(WIN_CE) && PLATFORM(QT)
+    We can not determine the endianess at compile time. For
+diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h webkit-1.1.8/JavaScriptCore/wtf/Threading.h
+--- webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h	2009-05-14 10:25:19.000000000 -0500
++++ webkit-1.1.8/JavaScriptCore/wtf/Threading.h	2009-06-13 11:42:52.000000000 -0500
+@@ -207,14 +207,14 @@
+ #elif COMPILER(GCC)
+ #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
+ 
+-inline void atomicIncrement(int volatile* addend) { __gnu_cxx::__atomic_add(addend, 1); }
+-inline int atomicDecrement(int volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
++inline void atomicIncrement(_Atomic_word volatile* addend) { __gnu_cxx::__atomic_add(addend, 1); }
++inline _Atomic_word atomicDecrement(_Atomic_word volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
+ 
+ #endif
+ 
+ class ThreadSafeSharedBase : Noncopyable {
+ public:
+-    ThreadSafeSharedBase(int initialRefCount = 1)
++    ThreadSafeSharedBase(_Atomic_word initialRefCount = 1)
+         : m_refCount(initialRefCount)
+     {
+     }
+@@ -234,23 +234,23 @@
+         return refCount() == 1;
+     }
+ 
+-    int refCount() const
++    _Atomic_word refCount() const
+     {
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+         MutexLocker locker(m_mutex);
+ #endif
+-        return static_cast<int const volatile &>(m_refCount);
++        return static_cast<_Atomic_word const volatile &>(m_refCount);
+     }
+ 
+ protected:
+-    // Returns whether the pointer should be freed or not.
++x s    // Returns whether the pointer should be freed or not.
+     bool derefBase()
+     {
+ #if USE(LOCKFREE_THREADSAFESHARED)
+         if (atomicDecrement(&m_refCount) <= 0)
+             return true;
+ #else
+-        int refCount;
++        _Atomic_word refCount;
+         {
+             MutexLocker locker(m_mutex);
+             --m_refCount;
+@@ -266,7 +266,7 @@
+     template<class T>
+     friend class CrossThreadRefCounted;
+ 
+-    int m_refCount;
++    _Atomic_word m_refCount;
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+     mutable Mutex m_mutex;
+ #endif
+@@ -274,7 +274,7 @@
+ 
+ template<class T> class ThreadSafeShared : public ThreadSafeSharedBase {
+ public:
+-    ThreadSafeShared(int initialRefCount = 1)
++    ThreadSafeShared(_Atomic_word initialRefCount = 1)
+         : ThreadSafeSharedBase(initialRefCount)
+     {
+     }

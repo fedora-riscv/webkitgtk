@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.8
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -46,6 +46,7 @@ License:	LGPLv2+ and BSD
 URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
+Patch0:         webkit-1.1.8-atomic-word.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -108,7 +109,7 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-
+%patch0 -p1
 
 %build
 %configure							\
@@ -127,7 +128,6 @@ make %{?_smp_mflags}
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
-
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %find_lang webkit
@@ -182,6 +182,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Jun 13 2009 Dennis Gilmore <dennis@ausil.us> - 1.1.8-2
+- _atomic_word is not always an int
+
 * Fri May 29 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.8-1
 - Update to new upstream release (1.1.8)
 

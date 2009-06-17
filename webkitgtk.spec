@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.8
-Release:	2%{?dist}
+Version:	1.1.10
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -78,7 +78,7 @@ BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel
 %endif
 
-%description 
+%description
 WebKitGTK+ is the port of the portable web rendering engine WebKit to the
 GTK+ platform.
 
@@ -182,6 +182,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jun 16 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.10-1
+- Update to 1.1.10
+
 * Sat Jun 13 2009 Dennis Gilmore <dennis@ausil.us> - 1.1.8-2
 - _atomic_word is not always an int
 

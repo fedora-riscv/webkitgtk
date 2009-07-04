@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.10
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -51,6 +51,7 @@ Patch0:         webkit-1.1.8-atomic-word.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	bison
+BuildRequires:	chrpath
 BuildRequires:	enchant-devel
 BuildRequires:	flex
 BuildRequires:	geoclue-devel
@@ -63,7 +64,6 @@ BuildRequires:	gtk2-devel
 BuildRequires:	libsoup-devel >= 2.25.91
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	libtool
 BuildRequires:	libxslt-devel
 BuildRequires:	libXt-devel
 BuildRequires:	pcre-devel
@@ -127,7 +127,10 @@ make %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
+
 make install DESTDIR=%{buildroot}
+
+chrpath --delete Programs/GtkLauncher
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %find_lang webkit
@@ -182,6 +185,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Jul 04 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.10-2
+- Invoke chrpath to remove the hardcoded RPATH in GtkLauncher.
+- Remove unnecessary libtool build dependency.
+
 * Tue Jun 16 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.10-1
 - Update to 1.1.10
 

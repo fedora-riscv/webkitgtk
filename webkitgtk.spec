@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.10
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -168,12 +168,12 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc WebKit/gtk/NEWS
 %exclude %{_libdir}/*.la
-%{_bindir}/jsc
 %{_libdir}/libwebkit-1.0.so.*
 %{_libexecdir}/%{name}/
 
 %files	devel
 %defattr(-,root,root,-)
+%{_bindir}/jsc
 %{_datadir}/webkit-1.0
 %{_includedir}/webkit-1.0
 %{_libdir}/libwebkit-1.0.so
@@ -185,6 +185,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jul 08 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.10-3
+- Move jsc to the -devel subpackage (#510355).
+
 * Sat Jul 04 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.10-2
 - Invoke chrpath to remove the hardcoded RPATH in GtkLauncher.
 - Remove unnecessary libtool build dependency.

@@ -1,26 +1,23 @@
-diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Platform.h webkit-1.1.8/JavaScriptCore/wtf/Platform.h
---- webkit-1.1.8-orig/JavaScriptCore/wtf/Platform.h	2009-05-27 11:32:36.000000000 -0500
-+++ webkit-1.1.8/JavaScriptCore/wtf/Platform.h	2009-06-13 11:44:36.000000000 -0500
-@@ -230,10 +230,17 @@
+--- webkit-1.1.11/JavaScriptCore/wtf/Platform.h.orig	2009-07-14 13:01:51.000000000 -0500
++++ webkit-1.1.11/JavaScriptCore/wtf/Platform.h	2009-07-14 13:04:59.000000000 -0500
+@@ -272,9 +272,16 @@
  #endif
  
  /* PLATFORM(SPARC64) */
 -#if defined(__sparc64__)
--#define WTF_PLATFORM_SPARC64 1
 +#if defined(__sparc64__)\
 +    || defined(__sparc__) && defined(_arch64__)
-+ #define WTF_PLATFORM_SPARC64 1
-+ #define WTF_PLATFORM_BIG_ENDIAN 1
+ #define WTF_PLATFORM_SPARC64 1
+ #define WTF_PLATFORM_BIG_ENDIAN 1
 +#else
 +/* PLATFORM(SPARC) */
 +#if defined(__sparc__)
 +#define WTF_PLATFORM_SPARC 1
- #define WTF_PLATFORM_BIG_ENDIAN 1
- #endif
++#define WTF_PLATFORM_BIG_ENDIAN 1
 +#endif
+ #endif
  
- /* PLATFORM(WIN_CE) && PLATFORM(QT)
-    We can not determine the endianess at compile time. For
+ /* PLATFORM(WINCE) && PLATFORM(QT)
 diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h webkit-1.1.8/JavaScriptCore/wtf/Threading.h
 --- webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h	2009-05-14 10:25:19.000000000 -0500
 +++ webkit-1.1.8/JavaScriptCore/wtf/Threading.h	2009-06-13 12:59:06.000000000 -0500

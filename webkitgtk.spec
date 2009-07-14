@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.10
-Release:	3%{?dist}
+Version:	1.1.11
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -185,6 +185,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jul 13 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.11-1
+- Update to 1.1.11
+
 * Wed Jul 08 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.10-3
 - Move jsc to the -devel subpackage (#510355).
 

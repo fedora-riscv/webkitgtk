@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.11
-Release:	2%{?dist}
+Version:	1.1.12
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -185,6 +185,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jul 28 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.12-1
+- Update to 1.1.12
+
 * Mon Jul 27 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.11-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 

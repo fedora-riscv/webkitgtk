@@ -46,7 +46,7 @@ License:	LGPLv2+ and BSD
 URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
-Patch0:         webkit-1.1.11-atomic-word.patch
+Patch0:         webkit-1.1.12-atomic-word.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 

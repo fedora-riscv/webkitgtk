@@ -18,10 +18,9 @@
  #endif
  
  /* PLATFORM(WINCE) && PLATFORM(QT)
-diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h webkit-1.1.8/JavaScriptCore/wtf/Threading.h
---- webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h	2009-05-14 10:25:19.000000000 -0500
-+++ webkit-1.1.8/JavaScriptCore/wtf/Threading.h	2009-06-13 12:59:06.000000000 -0500
-@@ -207,14 +207,14 @@
+--- webkit-1.1.12/JavaScriptCore/wtf/Threading.h.orig	2009-07-20 05:05:08.000000000 -0500
++++ webkit-1.1.12/JavaScriptCore/wtf/Threading.h	2009-07-28 21:53:46.000000000 -0500
+@@ -229,14 +229,14 @@
  #elif COMPILER(GCC)
  #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
  
@@ -32,14 +31,14 @@ diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h webkit-1.1.8/JavaScri
  
  #endif
  
- class ThreadSafeSharedBase : Noncopyable {
+ class ThreadSafeSharedBase : public Noncopyable {
  public:
 -    ThreadSafeSharedBase(int initialRefCount = 1)
 +    ThreadSafeSharedBase(_Atomic_word initialRefCount = 1)
          : m_refCount(initialRefCount)
      {
      }
-@@ -234,12 +234,12 @@
+@@ -256,12 +256,12 @@
          return refCount() == 1;
      }
  
@@ -54,7 +53,7 @@ diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h webkit-1.1.8/JavaScri
      }
  
  protected:
-@@ -266,7 +266,7 @@
+@@ -288,7 +288,7 @@
      template<class T>
      friend class CrossThreadRefCounted;
  
@@ -63,7 +62,7 @@ diff -uNr webkit-1.1.8-orig/JavaScriptCore/wtf/Threading.h webkit-1.1.8/JavaScri
  #if !USE(LOCKFREE_THREADSAFESHARED)
      mutable Mutex m_mutex;
  #endif
-@@ -274,7 +274,7 @@
+@@ -296,7 +296,7 @@
  
  template<class T> class ThreadSafeShared : public ThreadSafeSharedBase {
  public:

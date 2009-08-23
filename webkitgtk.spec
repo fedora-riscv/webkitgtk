@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.12
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -46,7 +46,9 @@ License:	LGPLv2+ and BSD
 URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
-Patch0:         webkit-1.1.12-atomic-word.patch
+
+Patch0: 	webkit-1.1.12-atomic-word.patch
+Patch1: 	webkit-1.1.12-no-execmem.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -61,7 +63,7 @@ BuildRequires:	gnome-keyring-devel
 BuildRequires:	gstreamer-devel
 BuildRequires:	gstreamer-plugins-base-devel
 BuildRequires:	gtk2-devel
-BuildRequires:	libsoup-devel >= 2.25.91
+BuildRequires:	libsoup-devel >= 2.27.4
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libxslt-devel
@@ -110,6 +112,7 @@ LICENSE, README, and AUTHORS files.
 %prep
 %setup -qn "webkit-%{version}"
 %patch0 -p1
+%patch1 -b .no-execmem
 
 %build
 %configure							\
@@ -154,6 +157,8 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 
 %add_to_doc_files JavaScriptCore/THANKS
 
+%add_to_doc_files WebKit/gtk/NEWS
+
 
 %clean
 rm -rf %{buildroot}
@@ -166,7 +171,6 @@ rm -rf %{buildroot}
 
 %files -f webkit.lang
 %defattr(-,root,root,-)
-%doc WebKit/gtk/NEWS
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkit-1.0.so.*
 %{_libexecdir}/%{name}/
@@ -185,6 +189,16 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Aug 22 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.12-2
+- Add patch to forcibly disable RWX memory in the x86/x86-64 assembler.
+  + no-execmem.patch
+- Use %%add_to_doc_files to add the gtk/NEWS file instead of %%doc, which
+  clobbered the doc files before they could be properly installed to the -doc
+  subpackage.
+- Resolves: #516057 (gets whacked by selinux execmem check) and #516057
+  (webkitgtk-doc package effectively empty).
+- Update minimum required libsoup version.
+
 * Tue Jul 28 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.12-1
 - Update to 1.1.12
 

@@ -195,7 +195,7 @@ rm -rf %{buildroot}
 - Use %%add_to_doc_files to add the gtk/NEWS file instead of %%doc, which
   clobbered the doc files before they could be properly installed to the -doc
   subpackage.
-- Resolves: #516057 (gets whacked by selinux execmem check) and #516057
+- Resolves: #516057 (gets whacked by selinux execmem check) and #518693
   (webkitgtk-doc package effectively empty).
 - Update minimum required libsoup version.
 

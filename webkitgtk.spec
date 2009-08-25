@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.12
-Release:	2%{?dist}
+Version:	1.1.13
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -48,7 +48,7 @@ URL:		http://www.webkitgtk.org/
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
 Patch0: 	webkit-1.1.12-atomic-word.patch
-Patch1: 	webkit-1.1.12-no-execmem.patch
+Patch1: 	webkit-1.1.13-no-execmem.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -112,7 +112,7 @@ LICENSE, README, and AUTHORS files.
 %prep
 %setup -qn "webkit-%{version}"
 %patch0 -p1
-%patch1 -b .no-execmem
+%patch1 -p1 -b .no-execmem
 
 %build
 %configure							\
@@ -189,6 +189,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Aug 25 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.13-1
+- Update to 1.1.13
+
 * Sat Aug 22 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.12-2
 - Add patch to forcibly disable RWX memory in the x86/x86-64 assembler.
   + no-execmem.patch

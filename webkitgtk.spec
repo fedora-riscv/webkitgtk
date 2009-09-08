@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.13
+Version:	1.1.14
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -47,7 +47,7 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
-Patch0: 	webkit-1.1.12-atomic-word.patch
+Patch0: 	webkit-1.1.14-atomic-word.patch
 Patch1: 	webkit-1.1.13-no-execmem.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -59,11 +59,10 @@ BuildRequires:	flex
 BuildRequires:	geoclue-devel
 BuildRequires:	gettext
 BuildRequires:	gperf
-BuildRequires:	gnome-keyring-devel
 BuildRequires:	gstreamer-devel
 BuildRequires:	gstreamer-plugins-base-devel
 BuildRequires:	gtk2-devel
-BuildRequires:	libsoup-devel >= 2.27.4
+BuildRequires:	libsoup-devel >= 2.27.91
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libxslt-devel
@@ -111,11 +110,11 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-%patch0 -p1
+%patch0 -p1 -b .atomic-word
 %patch1 -p1 -b .no-execmem
 
 %build
-%configure							\
+CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
 			--enable-gnomekeyring			\
 			--enable-geolocation			\
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
@@ -124,7 +123,7 @@ LICENSE, README, and AUTHORS files.
 %{?with_pango:		--with-font-backend=pango	}	\
 %{?with_svg:		--enable-svg-filters		}	\
 %{?with_wml:		--enable-wml			}
-	
+
 make %{?_smp_mflags}
 
 
@@ -153,7 +152,7 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %add_to_doc_files WebKit/gtk/po/README
 
 %add_to_doc_files JavaScriptCore/AUTHORS
-%add_to_doc_files JavaScriptCore/pcre/AUTHORS   
+%add_to_doc_files JavaScriptCore/pcre/AUTHORS
 
 %add_to_doc_files JavaScriptCore/THANKS
 
@@ -189,6 +188,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Sep  7 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.14-1
+- Update to 1.1.14
+
 * Tue Aug 25 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.13-1
 - Update to 1.1.13
 

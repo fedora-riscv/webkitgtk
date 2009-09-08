@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.14
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -188,6 +188,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 08 2009 Karsten Hopp <karsten@redhat.com> 1.1.14-2
+- bump release and rebuild as the package was linked with an old libicu
+  during the mass rebuild on s390x
+
 * Mon Sep  7 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.14-1
 - Update to 1.1.14
 

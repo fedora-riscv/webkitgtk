@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.14
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -49,6 +49,7 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
 Patch0: 	webkit-1.1.14-atomic-word.patch
 Patch1: 	webkit-1.1.13-no-execmem.patch
+Patch2: 	webkit-1.1.14-nspluginwrapper.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -112,6 +113,7 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 %patch0 -p1 -b .atomic-word
 %patch1 -p1 -b .no-execmem
+%patch2 -p1 -b .nspluginwrapper
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -188,6 +190,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Sep 14 2009 Bastien Nocera <bnocera@redhat.com> 1.1.14-3
+- Add support for nspluginwrapper plugins
+
 * Tue Sep 08 2009 Karsten Hopp <karsten@redhat.com> 1.1.14-2
 - bump release and rebuild as the package was linked with an old libicu
   during the mass rebuild on s390x

@@ -47,7 +47,7 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
-Patch0: 	webkit-1.1.14-atomic-word.patch
+#Patch0: 	webkit-1.1.14-atomic-word.patch
 Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
 
@@ -111,7 +111,7 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-%patch0 -p1 -b .atomic-word
+# %patch0 -p1 -b .atomic-word
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
 

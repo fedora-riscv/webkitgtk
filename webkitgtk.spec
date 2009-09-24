@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.14
-Release:	3%{?dist}
+Version:	1.1.15.1
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -190,6 +190,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Sep 23 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.1-1
+- Update to 1.1.15.1
+
 * Mon Sep 14 2009 Bastien Nocera <bnocera@redhat.com> 1.1.14-3
 - Add support for nspluginwrapper plugins
 

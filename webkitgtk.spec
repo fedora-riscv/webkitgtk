@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.15.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -48,7 +48,14 @@ URL:		http://www.webkitgtk.org/
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
 #Patch0: 	webkit-1.1.14-atomic-word.patch
-Patch1: 	webkit-1.1.13-no-execmem.patch
+
+## See: https://bugzilla.redhat.com/show_bug.cgi?id=516057
+## FIXME: We forcibly disable the JIT compiler for the time being.
+## This is a temporary workaround which causes a slight performance hit on
+## 32- and 64-bit x86; but until we can fix the JIT to correctly handle WX
+## memory, at least we'll have a WebKit stack that doesn't crash due to this
+## bug. :)
+#Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -112,12 +119,12 @@ LICENSE, README, and AUTHORS files.
 %prep
 %setup -qn "webkit-%{version}"
 # %patch0 -p1 -b .atomic-word
-%patch1 -p1 -b .no-execmem
+# %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
-			--enable-gnomekeyring			\
+			--disable-jit				\
 			--enable-geolocation			\
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
@@ -190,7 +197,13 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Wed Sep 23 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.1-1
+* Thu Sep 24 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.15.1-3
+- Forcibly disable JIT until we can properly resolve the execmem-caused
+  segfaulting. (Temporary workaround until bug #516057 can be properly fixed.)
+- Remove the gnome-keyring build option (no longer used by the build scripts).
+- Correct release value of previous %%changelog entry.
+
+* Wed Sep 23 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.1-2
 - Update to 1.1.15.1
 
 * Mon Sep 14 2009 Bastien Nocera <bnocera@redhat.com> 1.1.14-3

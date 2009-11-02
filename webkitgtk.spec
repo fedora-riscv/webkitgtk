@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.15.1
-Release:	3%{?dist}
+Version:	1.1.15.3
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -197,6 +197,14 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Oct 31 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.3-1
+- Update to 1.1.15.3, more crash fixes and important media player fixes
+- See https://lists.webkit.org/pipermail/webkit-gtk/2009-October/000047.html
+
+* Thu Oct 15 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.2-1
+- Update to 1.1.15.2, which has multiple crash and other fixes
+- See https://lists.webkit.org/pipermail/webkit-gtk/2009-October/000040.html
+
 * Thu Sep 24 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.15.1-3
 - Forcibly disable JIT until we can properly resolve the execmem-caused
   segfaulting. (Temporary workaround until bug #516057 can be properly fixed.)

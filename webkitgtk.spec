@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.15.3
+Version:	1.1.17
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -197,6 +197,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Dec 01 2009 Bastien Nocera <bnocera@redhat.com> 1.1.17-1
+- Update to 1.1.17
+
 * Sat Oct 31 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.3-1
 - Update to 1.1.15.3, more crash fixes and important media player fixes
 - See https://lists.webkit.org/pipermail/webkit-gtk/2009-October/000047.html

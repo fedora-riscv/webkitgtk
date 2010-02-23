@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.21
+Version:	1.1.22
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -57,8 +57,6 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 #Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
-
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -200,6 +198,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Feb 22 2010 Matthias Clasen <mclasen@redhat.com> 1.1.22-1
+- Update to 1.1.22
+
 * Wed Feb 10 2010 Bastien Nocera <bnocera@redhat.com> 1.1.21-1
 - Update to 1.1.21
 

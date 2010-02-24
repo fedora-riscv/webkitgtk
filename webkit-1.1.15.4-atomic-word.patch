@@ -1,0 +1,109 @@
+--- webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h.orig	2010-02-23 23:09:31.000000000 +0000
++++ webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h	2010-02-23 23:17:32.000000000 +0000
+@@ -215,30 +215,30 @@
+ #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
+ 
+ #if COMPILER(MINGW) || COMPILER(MSVC7) || PLATFORM(WINCE)
+-inline int atomicIncrement(int* addend) { return InterlockedIncrement(reinterpret_cast<long*>(addend)); }
+-inline int atomicDecrement(int* addend) { return InterlockedDecrement(reinterpret_cast<long*>(addend)); }
++inline _Atomic_word atomicIncrement(_Atomic_word* addend) { return InterlockedIncrement(reinterpret_cast<long*>(addend)); }
++inline _Atomic_word atomicDecrement(_Atomic_word* addend) { return InterlockedDecrement(reinterpret_cast<long*>(addend)); }
+ #else
+-inline int atomicIncrement(int volatile* addend) { return InterlockedIncrement(reinterpret_cast<long volatile*>(addend)); }
+-inline int atomicDecrement(int volatile* addend) { return InterlockedDecrement(reinterpret_cast<long volatile*>(addend)); }
++inline _Atomic_word atomicIncrement(_Atomic_word volatile* addend) { return InterlockedIncrement(reinterpret_cast<long volatile*>(addend)); }
++inline _Atomic_word atomicDecrement(_Atomic_word volatile* addend) { return InterlockedDecrement(reinterpret_cast<long volatile*>(addend)); }
+ #endif
+ 
+ #elif PLATFORM(DARWIN)
+ #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
+ 
+-inline int atomicIncrement(int volatile* addend) { return OSAtomicIncrement32Barrier(const_cast<int*>(addend)); }
+-inline int atomicDecrement(int volatile* addend) { return OSAtomicDecrement32Barrier(const_cast<int*>(addend)); }
++inline _Atomic_word atomicIncrement(_Atomic_word volatile* addend) { return OSAtomicIncrement32Barrier(const_cast<int*>(addend)); }
++inline _Atomic_word atomicDecrement(_Atomic_word volatile* addend) { return OSAtomicDecrement32Barrier(const_cast<int*>(addend)); }
+ 
+-#elif COMPILER(GCC) && !PLATFORM(SPARC64) // sizeof(_Atomic_word) != sizeof(int) on sparc64 gcc
++#elif COMPILER(GCC)
+ #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
+ 
+-inline int atomicIncrement(int volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, 1) + 1; }
+-inline int atomicDecrement(int volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
++inline _Atomic_word atomicIncrement(_Atomic_word volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, 1) + 1; }
++inline _Atomic_word atomicDecrement(_Atomic_word volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
+ 
+ #endif
+ 
+ class ThreadSafeSharedBase : public Noncopyable {
+ public:
+-    ThreadSafeSharedBase(int initialRefCount = 1)
++    ThreadSafeSharedBase(_Atomic_word initialRefCount = 1)
+         : m_refCount(initialRefCount)
+     {
+     }
+@@ -258,12 +258,12 @@
+         return refCount() == 1;
+     }
+ 
+-    int refCount() const
++    _Atomic_word refCount() const
+     {
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+         MutexLocker locker(m_mutex);
+ #endif
+-        return static_cast<int const volatile &>(m_refCount);
++        return static_cast<_Atomic_word const volatile &>(m_refCount);
+     }
+ 
+ protected:
+@@ -274,7 +274,7 @@
+         if (atomicDecrement(&m_refCount) <= 0)
+             return true;
+ #else
+-        int refCount;
++        _Atomic_word refCount;
+         {
+             MutexLocker locker(m_mutex);
+             --m_refCount;
+@@ -290,7 +290,7 @@
+     template<class T>
+     friend class CrossThreadRefCounted;
+ 
+-    int m_refCount;
++    _Atomic_word m_refCount;
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+     mutable Mutex m_mutex;
+ #endif
+@@ -298,7 +298,7 @@
+ 
+ template<class T> class ThreadSafeShared : public ThreadSafeSharedBase {
+ public:
+-    ThreadSafeShared(int initialRefCount = 1)
++    ThreadSafeShared(_Atomic_word initialRefCount = 1)
+         : ThreadSafeSharedBase(initialRefCount)
+     {
+     }
+--- webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h.orig	2010-02-23 23:58:59.000000000 +0000
++++ webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h	2010-02-24 00:21:44.000000000 +0000
+@@ -301,8 +301,12 @@
+ #if defined(__sparc__) && defined(__arch64__) || defined (__sparcv9)
+ #define WTF_PLATFORM_SPARC64 1
+ #define WTF_PLATFORM_BIG_ENDIAN 1
++#elif defined(__sparc__) /*PLATFORM(SPARC) */
++#define WTF_PLATFORM_SPARC 1
++#define WTF_PLATFORM_BIG_ENDIAN 1
+ #endif
+ 
++
+ /* PLATFORM(WINCE) && PLATFORM(QT)
+    We can not determine the endianess at compile time. For
+    Qt for Windows CE the endianess is specified in the
+@@ -632,7 +636,7 @@
+ #if !defined(WTF_USE_JSVALUE64) && !defined(WTF_USE_JSVALUE32) && !defined(WTF_USE_JSVALUE32_64)
+ #if PLATFORM(X86_64) && (PLATFORM(DARWIN) || PLATFORM(LINUX))
+ #define WTF_USE_JSVALUE64 1
+-#elif PLATFORM(ARM) || PLATFORM(PPC64)
++#elif PLATFORM(ARM) || PLATFORM(PPC64) || PLATFORM(SPARC64)
+ #define WTF_USE_JSVALUE32 1
+ #elif PLATFORM(WIN_OS) && COMPILER(MINGW)
+ /* Using JSVALUE32_64 causes padding/alignement issues for JITStubArg

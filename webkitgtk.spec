@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.15.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -47,7 +47,8 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
-#Patch0: 	webkit-1.1.14-atomic-word.patch
+# submitted upstream https://bugs.webkit.org/show_bug.cgi?id=35326
+Patch0: 	webkit-1.1.15.4-atomic-word.patch
 
 ## See: https://bugzilla.redhat.com/show_bug.cgi?id=516057
 ## FIXME: We forcibly disable the JIT compiler for the time being.
@@ -118,7 +119,7 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-# %patch0 -p1 -b .atomic-word
+%patch0 -p1 -b .atomic-word
 # %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
 
@@ -197,6 +198,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Feb 23 2010 Dennis Gilmore <dennis@ausil.us> - 1.1.15.4-2
+- update sparc64 attomic word patch
+
 * Fri Dec 11 2009 Adam Miller <maxamillion@fedoraproject.org> - 1.1.15.4-1
 - Update to 1.1.15.4
  

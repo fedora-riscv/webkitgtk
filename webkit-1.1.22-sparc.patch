@@ -1,0 +1,15 @@
+diff -up webkit-1.1.22/JavaScriptCore/wtf/Platform.h.sparc webkit-1.1.22/JavaScriptCore/wtf/Platform.h
+--- webkit-1.1.22/JavaScriptCore/wtf/Platform.h.sparc	2010-03-23 08:14:24.378618143 -0400
++++ webkit-1.1.22/JavaScriptCore/wtf/Platform.h	2010-03-23 08:14:29.871502920 -0400
+@@ -828,7 +828,10 @@
+ #endif
+ 
+ #if !defined(WTF_USE_JSVALUE64) && !defined(WTF_USE_JSVALUE32) && !defined(WTF_USE_JSVALUE32_64)
+-#if (CPU(X86_64) && (OS(UNIX) || OS(WINDOWS))) || CPU(IA64) || CPU(ALPHA)
++#if (CPU(X86_64) && (OS(UNIX) || OS(WINDOWS))) \
++    || CPU(IA64)  \
++    || CPU(ALPHA) \
++    || CPU(SPARC64)
+ #define WTF_USE_JSVALUE64 1
+ #elif CPU(ARM) || CPU(PPC64)
+ #define WTF_USE_JSVALUE32 1

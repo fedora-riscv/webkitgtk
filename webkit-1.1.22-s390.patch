@@ -1,0 +1,30 @@
+diff -up webkit-1.1.22/JavaScriptCore/wtf/Platform.h.s390 webkit-1.1.22/JavaScriptCore/wtf/Platform.h
+--- webkit-1.1.22/JavaScriptCore/wtf/Platform.h.s390	2010-03-31 15:07:04.000000000 +0200
++++ webkit-1.1.22/JavaScriptCore/wtf/Platform.h	2010-03-31 15:09:00.000000000 +0200
+@@ -145,6 +145,18 @@
+ #define WTF_CPU_SPARC
+ #endif
+ 
++/* CPU(S390X) - S390 64-bit */
++#if defined(__s390x__)
++#define WTF_CPU_S390X 1
++#define WTF_CPU_BIG_ENDIAN 1
++#endif
++
++/* CPU(S390) - S390 32-bit */
++#if defined(__s390__)
++#define WTF_CPU_S390 1
++#define WTF_CPU_BIG_ENDIAN 1
++#endif
++
+ /* CPU(X86) - i386 / x86 32-bit */
+ #if   defined(__i386__) \
+     || defined(i386)     \
+@@ -831,6 +843,7 @@
+ #if (CPU(X86_64) && (OS(UNIX) || OS(WINDOWS))) \
+     || CPU(IA64)  \
+     || CPU(ALPHA) \
++    || CPU(S390X) \
+     || CPU(SPARC64)
+ #define WTF_USE_JSVALUE64 1
+ #elif CPU(ARM) || CPU(PPC64)

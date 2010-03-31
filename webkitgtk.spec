@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.22
-Release:	2%{?dist}
+Release:	2%{?dist}.1
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -58,6 +58,8 @@ Patch0:		webkit-1.1.22-sparc.patch
 ## bug. :)
 #Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
+
+Patch3:     webkit-1.1.22-s390.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -120,6 +122,7 @@ LICENSE, README, and AUTHORS files.
 %patch0 -p1 -b .sparc
 # %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
+%patch3 -p1 -b .s390
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -199,6 +202,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 31 2010 Karsten Hopp <karsten@redhat.com> 1.1.22-2.1
+- add fix for s390(x)
+
 * Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> 1.1.22-2
 - apply upstream fix for sparc
 

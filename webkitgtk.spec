@@ -60,6 +60,8 @@ Patch0: 	webkit-1.1.15.4-sparc.patch
 #Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
 
+Patch3: 	webkit-1.1.15.4-s390x.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	bison
@@ -123,6 +125,7 @@ LICENSE, README, and AUTHORS files.
 %patch0 -p1 -b .sparc
 # %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
+%patch3 -p1 -b .s390x
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -200,7 +203,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Wed Mar 31 2010 Karsten Hopp <karsten@redhat.com> 1.1.15.4-3.1
-- update atomic word patch with s390* stuff
+- add s390 patch
 
 * Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 1.1.15.4-3
 - fixup sparc handling

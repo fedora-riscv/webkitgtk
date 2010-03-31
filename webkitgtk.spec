@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.1.15.4
-Release:	3%{?dist}
+Release:	3%{?dist}.1
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -199,6 +199,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 31 2010 Karsten Hopp <karsten@redhat.com> 1.1.15.4-3.1
+- update atomic word patch with s390* stuff
+
 * Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 1.1.15.4-3
 - fixup sparc handling
 

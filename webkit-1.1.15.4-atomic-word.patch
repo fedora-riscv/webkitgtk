@@ -1,6 +1,45 @@
---- webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h.orig	2010-02-23 23:09:31.000000000 +0000
-+++ webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h	2010-02-23 23:17:32.000000000 +0000
-@@ -215,30 +215,30 @@
+diff -up webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h.atomic-word webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h
+--- webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h.atomic-word	2009-10-01 21:06:02.000000000 +0200
++++ webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h	2010-03-31 14:36:01.000000000 +0200
+@@ -297,12 +297,25 @@
+ #define WTF_PLATFORM_SH4 1
+ #endif
+ 
++/* PLATFORM(S390*) */
++#if defined(__s390x__)
++#define WTF_PLATFORM_S390X 1
++#define WTF_PLATFORM_BIG_ENDIAN 1
++#elif defined(__s390__) /*PLATFORM(S390) */
++#define WTF_PLATFORM_S390 1
++#define WTF_PLATFORM_BIG_ENDIAN 1
++#endif
++
+ /* PLATFORM(SPARC64) */
+ #if defined(__sparc__) && defined(__arch64__) || defined (__sparcv9)
+ #define WTF_PLATFORM_SPARC64 1
+ #define WTF_PLATFORM_BIG_ENDIAN 1
++#elif defined(__sparc__) /*PLATFORM(SPARC) */
++#define WTF_PLATFORM_SPARC 1
++#define WTF_PLATFORM_BIG_ENDIAN 1
+ #endif
+ 
++
+ /* PLATFORM(WINCE) && PLATFORM(QT)
+    We can not determine the endianess at compile time. For
+    Qt for Windows CE the endianess is specified in the
+@@ -632,7 +645,7 @@
+ #if !defined(WTF_USE_JSVALUE64) && !defined(WTF_USE_JSVALUE32) && !defined(WTF_USE_JSVALUE32_64)
+ #if PLATFORM(X86_64) && (PLATFORM(DARWIN) || PLATFORM(LINUX))
+ #define WTF_USE_JSVALUE64 1
+-#elif PLATFORM(ARM) || PLATFORM(PPC64)
++#elif PLATFORM(ARM) || PLATFORM(PPC64) || PLATFORM(SPARC64) || PLATFORM(S390X)
+ #define WTF_USE_JSVALUE32 1
+ #elif PLATFORM(WIN_OS) && COMPILER(MINGW)
+ /* Using JSVALUE32_64 causes padding/alignement issues for JITStubArg
+diff -up webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h.atomic-word webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h
+--- webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h.atomic-word	2009-09-22 17:29:14.000000000 +0200
++++ webkit-1.1.15.4/JavaScriptCore/wtf/Threading.h	2010-03-31 14:31:53.000000000 +0200
+@@ -215,30 +215,30 @@ private:
  #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
  
  #if COMPILER(MINGW) || COMPILER(MSVC7) || PLATFORM(WINCE)
@@ -41,7 +80,7 @@
          : m_refCount(initialRefCount)
      {
      }
-@@ -258,12 +258,12 @@
+@@ -258,12 +258,12 @@ public:
          return refCount() == 1;
      }
  
@@ -56,7 +95,7 @@
      }
  
  protected:
-@@ -274,7 +274,7 @@
+@@ -274,7 +274,7 @@ protected:
          if (atomicDecrement(&m_refCount) <= 0)
              return true;
  #else
@@ -65,7 +104,7 @@
          {
              MutexLocker locker(m_mutex);
              --m_refCount;
-@@ -290,7 +290,7 @@
+@@ -290,7 +290,7 @@ private:
      template<class T>
      friend class CrossThreadRefCounted;
  
@@ -74,7 +113,7 @@
  #if !USE(LOCKFREE_THREADSAFESHARED)
      mutable Mutex m_mutex;
  #endif
-@@ -298,7 +298,7 @@
+@@ -298,7 +298,7 @@ private:
  
  template<class T> class ThreadSafeShared : public ThreadSafeSharedBase {
  public:
@@ -83,27 +122,3 @@
          : ThreadSafeSharedBase(initialRefCount)
      {
      }
---- webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h.orig	2010-02-23 23:58:59.000000000 +0000
-+++ webkit-1.1.15.4/JavaScriptCore/wtf/Platform.h	2010-02-24 00:21:44.000000000 +0000
-@@ -301,8 +301,12 @@
- #if defined(__sparc__) && defined(__arch64__) || defined (__sparcv9)
- #define WTF_PLATFORM_SPARC64 1
- #define WTF_PLATFORM_BIG_ENDIAN 1
-+#elif defined(__sparc__) /*PLATFORM(SPARC) */
-+#define WTF_PLATFORM_SPARC 1
-+#define WTF_PLATFORM_BIG_ENDIAN 1
- #endif
- 
-+
- /* PLATFORM(WINCE) && PLATFORM(QT)
-    We can not determine the endianess at compile time. For
-    Qt for Windows CE the endianess is specified in the
-@@ -632,7 +636,7 @@
- #if !defined(WTF_USE_JSVALUE64) && !defined(WTF_USE_JSVALUE32) && !defined(WTF_USE_JSVALUE32_64)
- #if PLATFORM(X86_64) && (PLATFORM(DARWIN) || PLATFORM(LINUX))
- #define WTF_USE_JSVALUE64 1
--#elif PLATFORM(ARM) || PLATFORM(PPC64)
-+#elif PLATFORM(ARM) || PLATFORM(PPC64) || PLATFORM(SPARC64)
- #define WTF_USE_JSVALUE32 1
- #elif PLATFORM(WIN_OS) && COMPILER(MINGW)
- /* Using JSVALUE32_64 causes padding/alignement issues for JITStubArg

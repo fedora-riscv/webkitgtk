@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.1.22
-Release:	2%{?dist}.1
+Version:	1.2.0
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -47,9 +47,6 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 
-# https://bugs.webkit.org/show_bug.cgi?id=35429
-Patch0:		webkit-1.1.22-sparc.patch
-
 ## See: https://bugzilla.redhat.com/show_bug.cgi?id=516057
 ## FIXME: We forcibly disable the JIT compiler for the time being.
 ## This is a temporary workaround which causes a slight performance hit on
@@ -58,8 +55,8 @@ Patch0:		webkit-1.1.22-sparc.patch
 ## bug. :)
 #Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
-
-Patch3:     webkit-1.1.22-s390.patch
+# https://bugs.webkit.org/show_bug.cgi?id=36381
+Patch3: 	webkit-1.1.22-icu44.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -119,10 +116,9 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-%patch0 -p1 -b .sparc
 # %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-%patch3 -p1 -b .s390
+%patch3 -p2 -b .icu44
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -202,8 +198,11 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Wed Mar 31 2010 Karsten Hopp <karsten@redhat.com> 1.1.22-2.1
-- add fix for s390(x)
+* Sun Apr 11 2010 Matthias Clasen <mclasen@redhat.com> 1.2.0-1
+- Update to 1.2.0
+
+* Fri Apr 02 2010 Caolán McNamara <caolanm@redhat.com> 1.1.22-3
+- rebuild for icu 4.4
 
 * Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> 1.1.22-2
 - apply upstream fix for sparc

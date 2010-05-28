@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.2.0
+Version:	1.3.1
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -198,6 +198,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri May 28 2010 Matthias Clasen <mclasen@redhat.com> 1.3.1-1
+- Update to 1.3.1 (required for epiphany)
+
 * Sun Apr 11 2010 Matthias Clasen <mclasen@redhat.com> 1.2.0-1
 - Update to 1.2.0
 

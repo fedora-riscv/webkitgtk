@@ -128,7 +128,7 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
 %{?with_svg:		--enable-svg-filters		}	\
 %{?with_wml:		--enable-wml			}
 
-mkdir -p DerivedSources/
+mkdir -p DerivedSources/webkit
 
 # Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
 #make %{?_smp_mflags}

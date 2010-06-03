@@ -1,5 +1,5 @@
 # Makefile for source rpm: webkitgtk
-# $Id: Makefile,v 1.1 2009/04/10 22:11:33 kevin Exp $
+# $Id: Makefile,v 1.2 2009/11/25 22:43:12 notting Exp $
 NAME := webkitgtk
 SPECFILE = $(firstword $(wildcard *.spec))
 

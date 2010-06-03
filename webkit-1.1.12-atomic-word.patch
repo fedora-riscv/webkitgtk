@@ -1,0 +1,73 @@
+--- webkit-1.1.11/JavaScriptCore/wtf/Platform.h.orig	2009-07-14 13:01:51.000000000 -0500
++++ webkit-1.1.11/JavaScriptCore/wtf/Platform.h	2009-07-14 13:04:59.000000000 -0500
+@@ -272,9 +272,16 @@
+ #endif
+ 
+ /* PLATFORM(SPARC64) */
+-#if defined(__sparc64__)
++#if defined(__sparc64__)\
++    || defined(__sparc__) && defined(_arch64__)
+ #define WTF_PLATFORM_SPARC64 1
+ #define WTF_PLATFORM_BIG_ENDIAN 1
++#else
++/* PLATFORM(SPARC) */
++#if defined(__sparc__)
++#define WTF_PLATFORM_SPARC 1
++#define WTF_PLATFORM_BIG_ENDIAN 1
++#endif
+ #endif
+ 
+ /* PLATFORM(WINCE) && PLATFORM(QT)
+--- webkit-1.1.12/JavaScriptCore/wtf/Threading.h.orig	2009-07-20 05:05:08.000000000 -0500
++++ webkit-1.1.12/JavaScriptCore/wtf/Threading.h	2009-07-28 21:53:46.000000000 -0500
+@@ -229,14 +229,14 @@
+ #elif COMPILER(GCC)
+ #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
+ 
+-inline void atomicIncrement(int volatile* addend) { __gnu_cxx::__atomic_add(addend, 1); }
+-inline int atomicDecrement(int volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
++inline void atomicIncrement(_Atomic_word volatile* addend) { __gnu_cxx::__atomic_add(addend, 1); }
++inline _Atomic_word atomicDecrement(_Atomic_word volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
+ 
+ #endif
+ 
+ class ThreadSafeSharedBase : public Noncopyable {
+ public:
+-    ThreadSafeSharedBase(int initialRefCount = 1)
++    ThreadSafeSharedBase(_Atomic_word initialRefCount = 1)
+         : m_refCount(initialRefCount)
+     {
+     }
+@@ -256,12 +256,12 @@
+         return refCount() == 1;
+     }
+ 
+-    int refCount() const
++    _Atomic_word refCount() const
+     {
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+         MutexLocker locker(m_mutex);
+ #endif
+-        return static_cast<int const volatile &>(m_refCount);
++        return static_cast<_Atomic_word const volatile &>(m_refCount);
+     }
+ 
+ protected:
+@@ -288,7 +288,7 @@
+     template<class T>
+     friend class CrossThreadRefCounted;
+ 
+-    int m_refCount;
++    _Atomic_word m_refCount;
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+     mutable Mutex m_mutex;
+ #endif
+@@ -296,7 +296,7 @@
+ 
+ template<class T> class ThreadSafeShared : public ThreadSafeSharedBase {
+ public:
+-    ThreadSafeShared(int initialRefCount = 1)
++    ThreadSafeShared(_Atomic_word initialRefCount = 1)
+         : ThreadSafeSharedBase(initialRefCount)
+     {
+     }

@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -73,6 +73,7 @@ BuildRequires:	libxslt-devel
 BuildRequires:	libXt-devel
 BuildRequires:	pcre-devel
 BuildRequires:	sqlite-devel
+BuildRequires:	gobject-introspection-devel
 
 ## Conditional dependencies...
 %if %{with pango}
@@ -121,6 +122,7 @@ LICENSE, README, and AUTHORS files.
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
 			--disable-jit				\
 			--enable-geolocation			\
+                        --enable-introspection                  \
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
 %{?with_debug:		--enable-debug			}	\
@@ -179,6 +181,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
+%{_libdir}/girepository-1.0/WebKit-1.0.typelib
 %{_libexecdir}/%{name}/
 
 %files	devel
@@ -188,6 +191,7 @@ rm -rf %{buildroot}
 %{_includedir}/webkit-1.0
 %{_libdir}/libwebkitgtk-1.0.so
 %{_libdir}/pkgconfig/webkit-1.0.pc
+%{_datadir}/gir-1.0/WebKit-1.0.gir
 
 %files	doc
 %defattr(-,root,root,-)
@@ -195,6 +199,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jul  2 2010 Matthias Clasen <mclasen@redhat.com> 1.3.2-2
+- Enable introspection (needed for epiphany)
+
 * Thu Jul  1 2010 Matthias Clasen <mclasen@redhat.com> 1.3.2-1
 - Update to 1.3.2
 

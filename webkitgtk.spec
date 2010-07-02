@@ -178,16 +178,16 @@ rm -rf %{buildroot}
 %files -f webkit.lang
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
-%{_libdir}/libwebkit-1.0.so.*
+%{_libdir}/libwebkitgtk-1.0.so.*
 %{_libexecdir}/%{name}/
 
 %files	devel
 %defattr(-,root,root,-)
 %{_bindir}/jsc
-%{_datadir}/webkit-1.0
-%{_includedir}/webkit-1.0
-%{_libdir}/libwebkit-1.0.so
-%{_libdir}/pkgconfig/webkit-1.0.pc
+%{_datadir}/webkitgtk-1.0
+%{_includedir}/webkitgtk-1.0
+%{_libdir}/libwebkitgtk-1.0.so
+%{_libdir}/pkgconfig/webkitgtk-1.0.pc
 
 %files	doc
 %defattr(-,root,root,-)

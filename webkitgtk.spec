@@ -183,6 +183,7 @@ rm -rf %{buildroot}
 
 %files	devel
 %defattr(-,root,root,-)
+%{_bindir}/jsc-1
 %{_datadir}/webkit-1.0
 %{_includedir}/webkit-1.0
 %{_libdir}/libwebkitgtk-1.0.so

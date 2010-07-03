@@ -182,6 +182,7 @@ rm -rf %{buildroot}
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
+%{_libdir}/girepository-1.0/JSCore-1.0.typelib
 %{_libexecdir}/%{name}/
 
 %files	devel
@@ -192,6 +193,7 @@ rm -rf %{buildroot}
 %{_libdir}/libwebkitgtk-1.0.so
 %{_libdir}/pkgconfig/webkit-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
+%{_datadir}/gir-1.0/JSCore-1.0.gir
 
 %files	doc
 %defattr(-,root,root,-)

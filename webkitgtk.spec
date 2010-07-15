@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -201,6 +201,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jul 15 2010 Colin Walters <walters@verbum.org> - 1.3.2-3
+- Rebuild with new gobject-introspection
+
 * Fri Jul  2 2010 Matthias Clasen <mclasen@redhat.com> 1.3.2-2
 - Enable introspection (needed for epiphany)
 

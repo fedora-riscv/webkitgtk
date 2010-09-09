@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.2.0
+Version:	1.2.4
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -55,8 +55,6 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 #Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
-# https://bugs.webkit.org/show_bug.cgi?id=36381
-Patch3: 	webkit-1.1.22-icu44.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -118,7 +116,6 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 # %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-%patch3 -p2 -b .icu44
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -133,9 +130,7 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
 
 mkdir -p DerivedSources/
 
-# Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
-#make %{?_smp_mflags}
-make
+make %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
@@ -198,6 +193,20 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Sep 08 2010 Kevin Fenzi <kevin@tummy.com> - 1.2.4-1
+- Update to 1.2.4 which fixes: 
+- Fixes: CVE-2010-1780 CVE-2010-1782 CVE-2010-1784 CVE-2010-1785
+- Fixes: CVE-2010-1786 CVE-2010-1787 CVE-2010-1788 CVE-2010-1790
+- Fixes: CVE-2010-1792 CVE-2010-1793 CVE-2010-2648
+- Update to 1.2.3 which fixes: 
+- Fixes: CVE-2010-1386 CVE-2010-1392 CVE-2010-1405 CVE-2010-1407
+- Fixes: CVE-2010-1416 CVE-2010-1417 CVE-2010-1665 CVE-2010-1418
+- Fixes: CVE-2010-1421 CVE-2010-1422 CVE-2010-1501 CVE-2010-1767
+- Fixes: CVE-2010-1664 CVE-2010-1758 CVE-2010-1759 CVE-2010-1760
+- Fixes: CVE-2010-1761 CVE-2010-1762 CVE-2010-1770 CVE-2010-1771
+- Fixes: CVE-2010-1772 CVE-2010-1773 CVE-2010-1774 CVE-2010-2264
+- Fixes bugs: 606303 606304 615728 615729 631583
+
 * Sun Apr 11 2010 Matthias Clasen <mclasen@redhat.com> 1.2.0-1
 - Update to 1.2.0
 

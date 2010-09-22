@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -203,6 +203,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 21 2010 Matthias Clasen <mclasen@redhat.com> - 1.3.2-5
+- Rebuild against newer gobject-introspection
+
 * Tue Jul 20 2010 Dan Horák <dan[at]danny.cz> - 1.3.2-4
 - Fix build on s390(x)
 

@@ -184,7 +184,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
-%files -f webkit.lang
+%files -f webkit-2.0.lang
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*

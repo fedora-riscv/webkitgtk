@@ -175,9 +175,13 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 rm -rf %{buildroot}
 
 
-%post	-p /sbin/ldconfig
+%post
+/sbin/ldconfig
+glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
-%postun	-p /sbin/ldconfig
+%postun
+/sbin/ldconfig
+glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %files -f webkit.lang
@@ -187,6 +191,8 @@ rm -rf %{buildroot}
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
 %{_libdir}/girepository-1.0/JSCore-1.0.typelib
 %{_libexecdir}/%{name}/
+%{_datadir}/glib-2.0/schemas/org.webkitgtk-2.0.gschema.xml
+%{_datadir}/webkitgtk-2.0
 
 %files	devel
 %defattr(-,root,root,-)

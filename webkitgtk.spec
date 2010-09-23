@@ -147,7 +147,7 @@ make install DESTDIR=%{buildroot}
 chrpath --delete Programs/GtkLauncher
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
-%find_lang webkit
+%find_lang webkit-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
 %add_to_doc_files JavaScriptCore/icu/LICENSE

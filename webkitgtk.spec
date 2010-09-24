@@ -191,8 +191,8 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
 %{_libdir}/girepository-1.0/JSCore-1.0.typelib
 %{_libexecdir}/%{name}/
-%{_datadir}/glib-2.0/schemas/org.webkitgtk-2.0.gschema.xml
-%{_datadir}/webkitgtk-2.0
+%{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
+%{_datadir}/webkitgtk-1.0
 
 %files	devel
 %defattr(-,root,root,-)

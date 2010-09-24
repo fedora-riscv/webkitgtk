@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -53,9 +53,8 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## 32- and 64-bit x86; but until we can fix the JIT to correctly handle WX
 ## memory, at least we'll have a WebKit stack that doesn't crash due to this
 ## bug. :)
-#Patch1: 	webkit-1.1.13-no-execmem.patch
+Patch1: 	webkit-1.3.4-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
-#Patch3:		webkit-1.3.1-s390.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -116,13 +115,12 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-# %patch1 -p1 -b .no-execmem
+%patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-#%patch3 -p1 -b .s390
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
-			--disable-jit				\
+			--enable-jit				\
 			--enable-geolocation			\
                         --enable-introspection                  \
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
@@ -178,7 +176,7 @@ rm -rf %{buildroot}
 %post
 /sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas
-
+ 
 %postun
 /sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas
@@ -193,11 +191,11 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_libexecdir}/%{name}/
 %{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
 %{_datadir}/webkitgtk-1.0
+%{_datadir}/webkit-1.0
 
 %files	devel
 %defattr(-,root,root,-)
 %{_bindir}/jsc-1
-%{_datadir}/webkit-1.0
 %{_includedir}/webkit-1.0
 %{_libdir}/libwebkitgtk-1.0.so
 %{_libdir}/pkgconfig/webkit-1.0.pc
@@ -210,6 +208,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Thu Sep 23 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.4-2
+- Enable JIT/patch for execmem. 
+- Move inspector into the main package. 
+
 * Thu Sep 23 2010 Matthias Clasen <mclasen@redhat.com> - 1.3.4-1
 - Update to 1.3.4
 - Rebuild against newer gobject-introspection

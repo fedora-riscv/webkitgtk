@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -208,6 +208,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Wed Sep 29 2010 jkeating - 1.3.4-3
+- Rebuilt for gcc bug 634757
+
 * Thu Sep 23 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.4-2
 - Enable JIT/patch for execmem. 
 - Move inspector into the main package. 

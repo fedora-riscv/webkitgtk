@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.4
-Release:	3%{?dist}
+Release:	3%{?dist}.1
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -73,7 +73,8 @@ BuildRequires:	libxslt-devel
 BuildRequires:	libXt-devel
 BuildRequires:	pcre-devel
 BuildRequires:	sqlite-devel
-BuildRequires:	gobject-introspection-devel
+# Disable in f14 for now, needs > 0.9.5 gobject-introspection
+#BuildRequires:	gobject-introspection-devel
 
 ## Conditional dependencies...
 %if %{with pango}
@@ -122,7 +123,7 @@ LICENSE, README, and AUTHORS files.
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
 			--enable-jit				\
 			--enable-geolocation			\
-                        --enable-introspection                  \
+                        --disable-introspection                  \
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
 %{?with_debug:		--enable-debug			}	\
@@ -186,8 +187,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
-%{_libdir}/girepository-1.0/WebKit-1.0.typelib
-%{_libdir}/girepository-1.0/JSCore-1.0.typelib
+# Disable in f14 for now, needs > 0.9.5 gobject-introspection
+#{_libdir}/girepository-1.0/WebKit-1.0.typelib
+#{_libdir}/girepository-1.0/JSCore-1.0.typelib
 %{_libexecdir}/%{name}/
 %{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
 %{_datadir}/webkitgtk-1.0
@@ -199,8 +201,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_includedir}/webkit-1.0
 %{_libdir}/libwebkitgtk-1.0.so
 %{_libdir}/pkgconfig/webkit-1.0.pc
-%{_datadir}/gir-1.0/WebKit-1.0.gir
-%{_datadir}/gir-1.0/JSCore-1.0.gir
+# Disable in f14 for now, needs > 0.9.5 gobject-introspection
+#{_datadir}/gir-1.0/WebKit-1.0.gir
+#{_datadir}/gir-1.0/JSCore-1.0.gir
 
 %files	doc
 %defattr(-,root,root,-)
@@ -208,6 +211,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Fri Oct 01 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.4-3.1
+- Disable gobject-introspection for now, needs 0.9.5 or higher. 
+
 * Wed Sep 29 2010 jkeating - 1.3.4-3
 - Rebuilt for gcc bug 634757
 

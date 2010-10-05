@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.2.4
+Version:	1.2.5
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -193,6 +193,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Oct 04 2010 Kevin Fenzi <kevin@tummy.com> - 1.2.5-1
+- Update to 1.2.5. 
+- Fixes: CVE-2010-3113 CVE-2010-1814 CVE-2010-1812
+- Fixes: CVE-2010-1815 CVE-2010-3115 CVE-2010-1807 CVE-2010-3114
+- Fixes: CVE-2010-3116 CVE-2010-3257 CVE-2010-3259
+
 * Wed Sep 08 2010 Kevin Fenzi <kevin@tummy.com> - 1.2.4-1
 - Update to 1.2.4 which fixes: 
 - Fixes: CVE-2010-1780 CVE-2010-1782 CVE-2010-1784 CVE-2010-1785

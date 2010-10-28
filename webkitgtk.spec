@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.4
-Release:	3%{?dist}
+Version:	1.3.5
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -208,6 +208,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Thu Oct 28 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.5-1
+- Update to 1.3.5-1
+
 * Wed Sep 29 2010 jkeating - 1.3.4-3
 - Rebuilt for gcc bug 634757
 

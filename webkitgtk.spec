@@ -55,6 +55,7 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 Patch1: 	webkit-1.3.4-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
+Patch3: 	webkit-1.3.4-s390.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -117,6 +118,7 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
+%patch3 -p1 -b .s390
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -208,6 +210,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Mon Dec 13 2010 Dan Horák <dan[at]danny.cz> - 1.3.6-2
+- Add back updated s390(x) patch
+
 * Mon Nov 08 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.6-1
 - Update to 1.3.6
 

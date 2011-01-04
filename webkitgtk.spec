@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.9
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -55,7 +55,6 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 Patch1: 	webkit-1.3.4-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
-Patch3: 	webkit-1.3.4-s390.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -118,7 +117,6 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-%patch3 -p1 -b .s390
 
 %build
 %ifarch s390
@@ -215,8 +213,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
-* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-1
+* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-2
 - Upgrade to 1.3.9
+- Remove s390 patch, it was absorbed upstream
 
 * Mon Dec 13 2010 Dan Horák <dan[at]danny.cz> - 1.3.6-2
 - Add back updated s390(x) patch

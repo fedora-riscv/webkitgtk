@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.9
-Release:	2%{?dist}
+Release:	3%?{dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -150,7 +150,7 @@ make install DESTDIR=%{buildroot}
 chrpath --delete Programs/GtkLauncher
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
-%find_lang webkit-2.0
+##%find_lang webkit-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
 %add_to_doc_files JavaScriptCore/icu/LICENSE
@@ -187,7 +187,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
-%files -f webkit-2.0.lang
+##%files -f webkit-2.0.lang
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
@@ -213,9 +213,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
-* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-2
+* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-3
 - Upgrade to 1.3.9
 - Remove s390 patch, it was absorbed upstream
+- No translations available
 
 * Mon Dec 13 2010 Dan Horák <dan[at]danny.cz> - 1.3.6-2
 - Add back updated s390(x) patch

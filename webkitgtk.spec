@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.9
-Release:	3%?{dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -213,7 +213,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
-* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-3
+* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-4
 - Upgrade to 1.3.9
 - Remove s390 patch, it was absorbed upstream
 - No translations available

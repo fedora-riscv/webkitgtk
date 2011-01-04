@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.6
-Release:	2%{?dist}
+Version:	1.3.9
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -215,6 +215,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-1
+- Upgrade to 1.3.9
+
 * Mon Dec 13 2010 Dan Horák <dan[at]danny.cz> - 1.3.6-2
 - Add back updated s390(x) patch
 - Do not generate debug information to prevent linker memory exhaustion on s390

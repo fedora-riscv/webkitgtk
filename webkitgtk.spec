@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.9
-Release:	4%{?dist}
+Version:	1.3.10
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -53,8 +53,8 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## 32- and 64-bit x86; but until we can fix the JIT to correctly handle WX
 ## memory, at least we'll have a WebKit stack that doesn't crash due to this
 ## bug. :)
-Patch1: 	webkit-1.3.4-no-execmem.patch
-Patch2: 	webkit-1.1.14-nspluginwrapper.patch
+Patch1: 	webkit-1.3.10-no-execmem.patch
+Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -153,26 +153,20 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 ##find_lang webkit-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
-%add_to_doc_files JavaScriptCore/icu/LICENSE
 %add_to_doc_files WebKit/LICENSE
-%add_to_doc_files WebCore/icu/LICENSE
-%add_to_doc_files WebCore/LICENSE-APPLE
-%add_to_doc_files WebCore/LICENSE-LGPL-2
-%add_to_doc_files WebCore/LICENSE-LGPL-2.1
-
-%add_to_doc_files JavaScriptCore/pcre/COPYING
-%add_to_doc_files JavaScriptCore/COPYING.LIB
-
-%add_to_doc_files JavaScriptCore/icu/README
 %add_to_doc_files WebKit/gtk/po/README
-
-%add_to_doc_files JavaScriptCore/AUTHORS
-%add_to_doc_files JavaScriptCore/pcre/AUTHORS
-
-%add_to_doc_files JavaScriptCore/THANKS
-
 %add_to_doc_files WebKit/gtk/NEWS
-
+%add_to_doc_files Source/WebCore/icu/LICENSE
+%add_to_doc_files Source/WebCore/LICENSE-APPLE
+%add_to_doc_files Source/WebCore/LICENSE-LGPL-2
+%add_to_doc_files Source/WebCore/LICENSE-LGPL-2.1
+%add_to_doc_files Source/JavaScriptCore/COPYING.LIB
+%add_to_doc_files Source/JavaScriptCore/THANKS
+%add_to_doc_files Source/JavaScriptCore/AUTHORS
+%add_to_doc_files Source/JavaScriptCore/icu/README
+%add_to_doc_files Source/JavaScriptCore/icu/LICENSE
+%add_to_doc_files Source/JavaScriptCore/pcre/COPYING
+%add_to_doc_files Source/JavaScriptCore/pcre/AUTHORS
 
 %clean
 rm -rf %{buildroot}
@@ -214,6 +208,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Mon Jan 10 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.10-1
+- Update to 1.3.10
+
 * Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-4
 - Upgrade to 1.3.9
 - Remove s390 patch, it was absorbed upstream

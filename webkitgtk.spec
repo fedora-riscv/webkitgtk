@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.10
+Version:	1.3.11
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -153,9 +153,9 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 ##find_lang webkit-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
-%add_to_doc_files WebKit/LICENSE
-%add_to_doc_files WebKit/gtk/po/README
-%add_to_doc_files WebKit/gtk/NEWS
+%add_to_doc_files Source/WebKit/LICENSE
+%add_to_doc_files Source/WebKit/gtk/po/README
+%add_to_doc_files Source/WebKit/gtk/NEWS
 %add_to_doc_files Source/WebCore/icu/LICENSE
 %add_to_doc_files Source/WebCore/LICENSE-APPLE
 %add_to_doc_files Source/WebCore/LICENSE-LGPL-2
@@ -208,6 +208,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Wed Feb 02 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.11-1
+- Update to 1.3.11
+
 * Mon Jan 10 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.10-1
 - Update to 1.3.10
 

@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.2.6
-Release:	2%{?dist}
+Version:	1.2.7
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -55,7 +55,6 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 #Patch1: 	webkit-1.1.13-no-execmem.patch
 Patch2: 	webkit-1.1.14-nspluginwrapper.patch
-Patch3:         webkit-1.2.6-regression.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -117,7 +116,6 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 # %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-%patch3 -p1 
 
 %build
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -195,6 +193,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Feb 09 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> - 1.2.7
+- Update to 1.2.7
+
 * Mon Jan 25 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> - 1.2.6-2
 - Fix regression from the earlier security fix
 - Fixes rhbz #670142

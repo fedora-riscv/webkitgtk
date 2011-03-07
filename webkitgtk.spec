@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.3.12
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Mon Mar 07 2011 Caolán McNamara <caolanm@redhat.com> - 1.3.12-2
+- rebuild for icu 4.6
+
 * Wed Feb 23 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.12-1
 - Update to 1.3.12
 

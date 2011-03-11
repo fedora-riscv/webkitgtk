@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.11
-Release:	2%{?dist}
+Version:	1.3.12
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -53,7 +53,7 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## 32- and 64-bit x86; but until we can fix the JIT to correctly handle WX
 ## memory, at least we'll have a WebKit stack that doesn't crash due to this
 ## bug. :)
-Patch1: 	webkit-1.3.10-no-execmem.patch
+Patch1: 	webkit-1.3.12-no-execmem.patch
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 
 BuildRequires:	bison
@@ -165,8 +165,6 @@ install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 %add_to_doc_files Source/JavaScriptCore/AUTHORS
 %add_to_doc_files Source/JavaScriptCore/icu/README
 %add_to_doc_files Source/JavaScriptCore/icu/LICENSE
-%add_to_doc_files Source/JavaScriptCore/pcre/COPYING
-%add_to_doc_files Source/JavaScriptCore/pcre/AUTHORS
 
 %clean
 rm -rf %{buildroot}
@@ -208,6 +206,15 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Fri Mar 11 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.12-3
+- Update to 1.3.12 in fedora-15
+
+* Mon Mar 07 2011 Caolán McNamara <caolanm@redhat.com> - 1.3.12-2
+- rebuild for icu 4.6
+
+* Wed Feb 23 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.12-1
+- Update to 1.3.12
+
 * Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.11-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 

@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.12
-Release:	3%{?dist}
+Version:	1.3.13
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -150,7 +150,7 @@ make install DESTDIR=%{buildroot}
 chrpath --delete Programs/GtkLauncher
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
-##find_lang webkit-2.0
+%find_lang webkit-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
 %add_to_doc_files Source/WebKit/LICENSE
@@ -179,8 +179,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
-##files -f webkit-2.0.lang
-%files
+%files -f webkit-2.0.lang
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
@@ -206,8 +205,8 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
-* Fri Mar 11 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.12-3
-- Update to 1.3.12 in fedora-15
+* Thu Mar 24 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.13-1
+- Update to 1.3.13
 
 * Mon Mar 07 2011 Caolán McNamara <caolanm@redhat.com> - 1.3.12-2
 - rebuild for icu 4.6

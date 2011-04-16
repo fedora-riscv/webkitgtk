@@ -1,0 +1,12 @@
+diff -Nur webkit-1.3.13.orig/Source/WebCore/dom/make_names.pl webkit-1.3.13/Source/WebCore/dom/make_names.pl
+--- webkit-1.3.13.orig/Source/WebCore/dom/make_names.pl	2011-03-21 12:42:34.000000000 -0600
++++ webkit-1.3.13/Source/WebCore/dom/make_names.pl	2011-04-15 21:55:42.963217070 -0600
+@@ -65,7 +65,7 @@
+ } else {
+     $gccLocation = "/usr/bin/gcc";
+ }
+-my $preprocessor = $gccLocation . " -E -P -x c++";
++my $preprocessor = $gccLocation . " -E -x c++";
+ 
+ GetOptions(
+     'tags=s' => \$tagsFile, 

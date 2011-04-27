@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.13
-Release:	2%{?dist}
+Version:	1.4.0
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -142,8 +142,8 @@ mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 
 # Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
-#make %{?_smp_mflags}
-make
+make %{?_smp_mflags}
+#make
 
 %install
 rm -rf %{buildroot}
@@ -208,6 +208,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Tue Apr 26 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.0-1
+- Update to 1.4.0 stable release. 
+
 * Fri Apr 15 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.13-2
 - Fix build issue with gcc 4.6
 

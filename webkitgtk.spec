@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.3.13
+Version:	1.4.0
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -55,6 +55,7 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 Patch1: 	webkit-1.3.12-no-execmem.patch
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
+Patch3:		webkit-1.3.13-gcc46-preprocessor.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -80,6 +81,7 @@ BuildRequires:	gobject-introspection-devel
 BuildRequires:	pango-devel
 %else
 BuildRequires:	cairo-devel
+BuildRequires:  cairo-gobject-devel
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel
 %endif
@@ -117,6 +119,7 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
+%patch3 -p1 -b .gcc46-preprocessor
 
 %build
 %ifarch s390
@@ -139,8 +142,8 @@ mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 
 # Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
-#make %{?_smp_mflags}
-make
+make %{?_smp_mflags}
+#make
 
 %install
 rm -rf %{buildroot}
@@ -205,6 +208,12 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Tue Apr 26 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.0-1
+- Update to 1.4.0 stable release. 
+
+* Fri Apr 15 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.13-2
+- Fix build issue with gcc 4.6
+
 * Thu Mar 24 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.13-1
 - Update to 1.3.13
 

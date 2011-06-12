@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.4.0
+Version:	1.4.1
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -55,7 +55,6 @@ Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
 ## bug. :)
 Patch1: 	webkit-1.3.12-no-execmem.patch
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
-Patch3:		webkit-1.3.13-gcc46-preprocessor.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -119,7 +118,6 @@ LICENSE, README, and AUTHORS files.
 %setup -qn "webkit-%{version}"
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-%patch3 -p1 -b .gcc46-preprocessor
 
 %build
 %ifarch s390
@@ -208,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Sat Jun 11 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.1-1
+- Update to 1.4.1
+
 * Tue Apr 26 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.0-1
 - Update to 1.4.0 stable release. 
 

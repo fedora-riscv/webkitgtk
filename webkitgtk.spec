@@ -34,7 +34,7 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.4.1
+Version:	1.4.2
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Fri Jul 01 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.2-1
+- Update to 1.4.2
+
 * Sat Jun 11 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.1-1
 - Update to 1.4.1
 

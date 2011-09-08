@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.4.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Thu Sep 08 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.3-2
+- Rebuild for new libicu
+
 * Mon Aug 29 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.3-1
 - Update to 1.4.3
 

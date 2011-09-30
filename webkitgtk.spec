@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.4.3
-Release:	2%{?dist}
+Version:	1.6.1
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -129,6 +129,7 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
 			--enable-jit				\
 			--enable-geolocation			\
                         --enable-introspection                  \
+                        --with-gtk=2.0                          \
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
 %{?with_debug:		--enable-debug			}	\
@@ -179,24 +180,25 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 /sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
-
 %files -f webkit-2.0.lang
 %defattr(-,root,root,-)
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
+%{_libdir}/libjavascriptcoregtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
 %{_libdir}/girepository-1.0/JSCore-1.0.typelib
 %{_libexecdir}/%{name}/
 %{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
 %{_datadir}/webkitgtk-1.0
-%{_datadir}/webkit-1.0
 
 %files	devel
 %defattr(-,root,root,-)
 %{_bindir}/jsc-1
 %{_includedir}/webkit-1.0
 %{_libdir}/libwebkitgtk-1.0.so
+%{_libdir}/libjavascriptcoregtk-1.0.so
 %{_libdir}/pkgconfig/webkit-1.0.pc
+%{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
 %{_datadir}/gir-1.0/JSCore-1.0.gir
 
@@ -204,8 +206,13 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %defattr(-,root,root,-)
 %{_docdir}/%{name}-%{version}/
 
-
 %changelog
+* Tue Sep 27 2011 Kevin Fenzi <kevin@scrye.com> - 1.6.1-1
+- Update to 1.6.1
+
+* Mon Sep 26 2011 Kevin Fenzi <kevin@scrye.com> - 1.6.0-1
+- Update to new 1.6.0 stable. 
+
 * Thu Sep 08 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.3-2
 - Rebuild for new libicu
 

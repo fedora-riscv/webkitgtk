@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.6.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -210,6 +210,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_docdir}/%{name}-%{version}/
 
 %changelog
+* Mon Dec 05 2011 Adam Jackson <ajax@redhat.com> 1.6.1-3
+- Rebuild for new libpng
+
 * Wed Oct 12 2011 Dan Horák <dan[at]danny.cz> - 1.6.1-2
 - fix build on s390(x)
 

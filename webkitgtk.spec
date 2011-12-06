@@ -57,6 +57,8 @@ Patch1: 	webkit-1.3.12-no-execmem.patch
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 # https://bugs.webkit.org/show_bug.cgi?id=69940
 Patch3:         webkit-1.6.1-dtoa-s390.patch
+# GMutex changed type, eh.
+Patch4:		webkit-1.6.1-new-glib.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -121,6 +123,7 @@ LICENSE, README, and AUTHORS files.
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
 %patch3 -p1 -b .dtoa-s390
+%patch4 -p1 -b .glib
 
 %build
 %ifarch s390
@@ -212,6 +215,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %changelog
 * Mon Dec 05 2011 Adam Jackson <ajax@redhat.com> 1.6.1-3
 - Rebuild for new libpng
+- webkit-1.6.1-new-glib.patch: Fix for new glib headers
 
 * Wed Oct 12 2011 Dan Horák <dan[at]danny.cz> - 1.6.1-2
 - fix build on s390(x)

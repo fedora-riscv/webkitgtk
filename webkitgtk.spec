@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.6.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -213,6 +213,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_docdir}/%{name}-%{version}/
 
 %changelog
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Mon Dec 05 2011 Adam Jackson <ajax@redhat.com> 1.6.1-3
 - Rebuild for new libpng
 - webkit-1.6.1-new-glib.patch: Fix for new glib headers

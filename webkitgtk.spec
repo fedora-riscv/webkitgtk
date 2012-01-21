@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.6.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -59,6 +59,10 @@ Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 Patch3:         webkit-1.6.1-dtoa-s390.patch
 # GMutex changed type, eh.
 Patch4:		webkit-1.6.1-new-glib.patch
+# Fix string def
+Patch5:         webkit-1.6.1-stringfix.patch
+# add unistd.h include
+Patch6:         webkit-1.6.1-unistd.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -124,6 +128,8 @@ LICENSE, README, and AUTHORS files.
 %patch2 -p1 -b .nspluginwrapper
 %patch3 -p1 -b .dtoa-s390
 %patch4 -p1 -b .glib
+%patch5 -p1 -b .stringfix
+%patch6 -p1 -b .unistd
 
 %build
 %ifarch s390
@@ -147,8 +153,7 @@ mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 
 # Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
-make %{?_smp_mflags}
-#make
+make V=1 %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
@@ -213,6 +218,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_docdir}/%{name}-%{version}/
 
 %changelog
+* Fri Jan 20 2012 Kevin Fenzi <kevin@scrye.com> - 1.6.1-5
+- Fix string issue causing failure to build. Already upstreamed. 
+
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 

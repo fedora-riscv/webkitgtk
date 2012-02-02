@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.6.1
-Release:	5%{?dist}
+Version:	1.6.3
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -45,7 +45,7 @@ Group:		Development/Libraries
 License:	LGPLv2+ and BSD
 URL:		http://www.webkitgtk.org/
 
-Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.gz
+Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.xz
 
 ## See: https://bugzilla.redhat.com/show_bug.cgi?id=516057
 ## FIXME: We forcibly disable the JIT compiler for the time being.
@@ -57,8 +57,6 @@ Patch1: 	webkit-1.3.12-no-execmem.patch
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 # https://bugs.webkit.org/show_bug.cgi?id=69940
 Patch3:         webkit-1.6.1-dtoa-s390.patch
-# GMutex changed type, eh.
-Patch4:		webkit-1.6.1-new-glib.patch
 # Fix string def
 Patch5:         webkit-1.6.1-stringfix.patch
 # add unistd.h include
@@ -82,6 +80,7 @@ BuildRequires:	libXt-devel
 BuildRequires:	pcre-devel
 BuildRequires:	sqlite-devel
 BuildRequires:	gobject-introspection-devel
+BuildRequires:  mesa-libGL-devel
 
 ## Conditional dependencies...
 %if %{with pango}
@@ -127,7 +126,6 @@ LICENSE, README, and AUTHORS files.
 %patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
 %patch3 -p1 -b .dtoa-s390
-%patch4 -p1 -b .glib
 %patch5 -p1 -b .stringfix
 %patch6 -p1 -b .unistd
 
@@ -142,6 +140,7 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
 			--enable-geolocation			\
                         --enable-introspection                  \
                         --with-gtk=2.0                          \
+                        --enable-webgl                          \
 %{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
 %{?with_debug:		--enable-debug			}	\
@@ -151,6 +150,7 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
 
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
+mkdir -p DerivedSources/ANGLE
 
 # Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
 make V=1 %{?_smp_mflags}
@@ -218,6 +218,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_docdir}/%{name}-%{version}/
 
 %changelog
+* Wed Feb 01 2012 Kevin Fenzi <kevin@scrye.com> 1.6.3-1
+- Update to 1.6.3. 
+- enable webgl
+
 * Fri Jan 20 2012 Kevin Fenzi <kevin@scrye.com> - 1.6.1-5
 - Fix string issue causing failure to build. Already upstreamed. 
 

@@ -35,7 +35,7 @@
 
 Name:		webkitgtk
 Version:	1.6.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -130,9 +130,9 @@ LICENSE, README, and AUTHORS files.
 %patch6 -p1 -b .unistd
 
 %build
-%ifarch s390
-# drop -g flag to prevent memory exhaustion by linker
-%global optflags %(echo %{optflags} | sed 's/-g//')
+%ifarch s390 %{arm}
+# Use linker flags to reduce memory consumption on low-mem architectures
+%global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
 
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -218,6 +218,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_docdir}/%{name}-%{version}/
 
 %changelog
+* Tue Feb 28 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.6.3-2
+- Add ARM to and optimise compile flags for low mem arches
+
 * Wed Feb 01 2012 Kevin Fenzi <kevin@scrye.com> 1.6.3-1
 - Update to 1.6.3. 
 - enable webgl

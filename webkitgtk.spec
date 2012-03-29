@@ -34,8 +34,8 @@
 %bcond_with 	wml
 
 Name:		webkitgtk
-Version:	1.6.3
-Release:	2%{?dist}
+Version:	1.8.0
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -45,22 +45,10 @@ Group:		Development/Libraries
 License:	LGPLv2+ and BSD
 URL:		http://www.webkitgtk.org/
 
-Source0:	http://www.webkitgtk.org/webkit-%{version}.tar.xz
+Source0:	http://www.webkitgtk.org/releases/webkit-%{version}.tar.xz
 
-## See: https://bugzilla.redhat.com/show_bug.cgi?id=516057
-## FIXME: We forcibly disable the JIT compiler for the time being.
-## This is a temporary workaround which causes a slight performance hit on
-## 32- and 64-bit x86; but until we can fix the JIT to correctly handle WX
-## memory, at least we'll have a WebKit stack that doesn't crash due to this
-## bug. :)
-Patch1: 	webkit-1.3.12-no-execmem.patch
+# add support for nspluginwrapper. 
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
-# https://bugs.webkit.org/show_bug.cgi?id=69940
-Patch3:         webkit-1.6.1-dtoa-s390.patch
-# Fix string def
-Patch5:         webkit-1.6.1-stringfix.patch
-# add unistd.h include
-Patch6:         webkit-1.6.1-unistd.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -81,6 +69,7 @@ BuildRequires:	pcre-devel
 BuildRequires:	sqlite-devel
 BuildRequires:	gobject-introspection-devel
 BuildRequires:  mesa-libGL-devel
+BuildRequires:  gtk-doc
 
 ## Conditional dependencies...
 %if %{with pango}
@@ -123,11 +112,7 @@ LICENSE, README, and AUTHORS files.
 
 %prep
 %setup -qn "webkit-%{version}"
-%patch1 -p1 -b .no-execmem
 %patch2 -p1 -b .nspluginwrapper
-%patch3 -p1 -b .dtoa-s390
-%patch5 -p1 -b .stringfix
-%patch6 -p1 -b .unistd
 
 %build
 %ifarch s390 %{arm}
@@ -151,9 +136,12 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 mkdir -p DerivedSources/ANGLE
+mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
+mkdir -p DerivedSources/InjectedBundle
 
 # Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
-make V=1 %{?_smp_mflags}
+#make V=1 %{?_smp_mflags}
+make V=1
 
 %install
 rm -rf %{buildroot}
@@ -198,26 +186,30 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_libdir}/libjavascriptcoregtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
 %{_libdir}/girepository-1.0/JSCore-1.0.typelib
+#{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
 %{_libexecdir}/%{name}/
-%{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
 %{_datadir}/webkitgtk-1.0
 
 %files	devel
 %defattr(-,root,root,-)
 %{_bindir}/jsc-1
-%{_includedir}/webkit-1.0
+%{_includedir}/webkitgtk-1.0
 %{_libdir}/libwebkitgtk-1.0.so
 %{_libdir}/libjavascriptcoregtk-1.0.so
 %{_libdir}/pkgconfig/webkit-1.0.pc
 %{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
 %{_datadir}/gir-1.0/JSCore-1.0.gir
+%{_datadir}/gtk-doc/html/webkitgtk
 
 %files	doc
 %defattr(-,root,root,-)
 %{_docdir}/%{name}-%{version}/
 
 %changelog
+* Tue Mar 27 2012 Kevin Fenzi <kevin@scrye.com> - 1.8.0-1
+- Update to 1.8.0
+
 * Tue Feb 28 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.6.3-2
 - Add ARM to and optimise compile flags for low mem arches
 

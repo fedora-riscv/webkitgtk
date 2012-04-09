@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -90,12 +90,13 @@ files for developing applications that use %{name}.
 %package	doc
 Summary:	Documentation for %{name}
 Group:		Documentation
+BuildArch:	noarch
+Requires:	%{name} = %{version}-%{release}
 Provides:	WebKit-doc = %{version}-%{release}
 Obsoletes:	WebKit-doc < %{version}-%{release}
 
 %description	doc
-This package contains the documentation for %{name}, including various
-LICENSE, README, and AUTHORS files.
+This package contains developer documentation for %{name}.
 
 
 %prep
@@ -166,6 +167,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 
 %files -f webkit-2.0.lang
 %defattr(-,root,root,-)
+%doc %{_docdir}/%{name}-%{version}/
 %exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
 %{_libdir}/libjavascriptcoregtk-1.0.so.*
@@ -185,13 +187,18 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
 %{_datadir}/gir-1.0/JSCore-1.0.gir
-%{_datadir}/gtk-doc/html/webkitgtk
 
 %files	doc
 %defattr(-,root,root,-)
-%{_docdir}/%{name}-%{version}/
+%dir %{_datadir}/gtk-doc
+%dir %{_datadir}/gtk-doc/html
+%{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Apr 09 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.0-2
+- Install developer docs in -doc and mark it as noarch (#808917)
+- Move the license files to the main package
+
 * Tue Mar 27 2012 Kevin Fenzi <kevin@scrye.com> - 1.8.0-1
 - Update to 1.8.0
 

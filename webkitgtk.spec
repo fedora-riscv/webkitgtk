@@ -6,9 +6,6 @@
 	cp -p %1  %{buildroot}%{_docdir}/%{name}-%{version}/$(echo '%1' | sed -e 's!/!.!g')
 
 ## Optional build modifications...
-## --with 3dtransforms: Enables support for 3-D transforms.
-##	(Default: No)
-##
 ## --with coverage: Enables compile-time checking of code coverage.
 ##	(Default: No)
 ##
@@ -19,19 +16,10 @@
 ## --with pango: Use Pango instead of freetype2 as the font renderer.
 ##	CJK support is functional only with the freetype2 backend.
 ##	(Default: No - use freetype2)
-##
-## --with svg: Experimental SVG support (filters)
-##	(Default: No) 
-##
-## --with wml: Build support for WML
-##	(Default: No)
 
-%bcond_with 	3dtransforms
 %bcond_with 	coverage
 %bcond_with 	debug
 %bcond_with 	pango
-%bcond_with 	svg
-%bcond_with 	wml
 
 Name:		webkitgtk
 Version:	1.8.0
@@ -126,12 +114,9 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
                         --enable-introspection                  \
                         --with-gtk=2.0                          \
                         --enable-webgl                          \
-%{?with_3dtransforms:	--enable-3D-transforms		}	\
 %{?with_coverage:	--enable-coverage		}	\
 %{?with_debug:		--enable-debug			}	\
-%{?with_pango:		--with-font-backend=pango	}	\
-%{?with_svg:		--enable-svg-filters		}	\
-%{?with_wml:		--enable-wml			}
+%{?with_pango:		--with-font-backend=pango	}
 
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore

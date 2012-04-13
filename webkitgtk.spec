@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -108,9 +108,16 @@ This package contains developer documentation for %{name}.
 # Use linker flags to reduce memory consumption on low-mem architectures
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
+%ifarch s390
+# Decrease debuginfo verbosity to reduce memory consumption even more
+%global optflags %(echo %{optflags} | sed 's/-g/-g1/')
+%endif
+
 
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
-			--enable-jit				\
+%ifnarch s390 s390x ppc ppc64
+                        --enable-jit                            \
+%endif
 			--enable-geolocation			\
                         --enable-introspection                  \
                         --with-gtk=2.0                          \
@@ -195,6 +202,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Apr 13 2012 Dan Horák <dan[at]danny.cz> - 1.8.0-3
+- updated s390/ppc build options to match webkitgtk3
+
 * Mon Apr 09 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.0-2
 - Install developer docs in -doc and mark it as noarch (#808917)
 - Move the license files to the main package

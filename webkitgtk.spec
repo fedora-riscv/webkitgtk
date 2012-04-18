@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -37,6 +37,10 @@ Source0:	http://www.webkitgtk.org/releases/webkit-%{version}.tar.xz
 
 # add support for nspluginwrapper. 
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
+# Fix crash when no SSE2: https://bugs.webkit.org/show_bug.cgi?id=82496
+Patch3:         webkit-r113389.diff
+# Fix flickering when rendering some widgets:  https://bugs.webkit.org/show_bug.cgi?id=84149
+Patch4:         webkit-r114385.diff
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -102,6 +106,8 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkit-%{version}"
 %patch2 -p1 -b .nspluginwrapper
+%patch3 -p1 -b .fix-no-sse2
+%patch4 -p1 -b .fix-flicker
 
 %build
 %ifarch s390 %{arm}
@@ -202,6 +208,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Apr 18 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.0-4
+- Add upstream patch to fix crash when SSE2 isn't present
+- Add upstream patch to flickering when some widgets are drawn
+
 * Fri Apr 13 2012 Dan Horák <dan[at]danny.cz> - 1.8.0-3
 - updated s390/ppc build options to match webkitgtk3
 

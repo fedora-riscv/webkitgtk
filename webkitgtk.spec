@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.0
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -208,6 +208,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Apr 20 2012 Orion Poplwski <orion@cora.nwra.com> - 1.8.0-5
+- Rebuild for icu 49
+
 * Wed Apr 18 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.0-4
 - Add upstream patch to fix crash when SSE2 isn't present
 - Add upstream patch to flickering when some widgets are drawn

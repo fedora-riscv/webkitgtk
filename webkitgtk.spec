@@ -145,8 +145,8 @@ install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
 
 # Remove lib64 rpaths
-chrpath --delete %{buildroot}%{_bindir}/jsc-3
-chrpath --delete %{buildroot}%{_libdir}/libwebkitgtk-3.0.so
+chrpath --delete %{buildroot}%{_bindir}/jsc-1
+chrpath --delete %{buildroot}%{_libdir}/libwebkitgtk-1.0.so
 chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
 
 %find_lang webkit-2.0

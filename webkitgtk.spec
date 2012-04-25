@@ -141,9 +141,14 @@ rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot}
 
-chrpath --delete Programs/GtkLauncher
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
 install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
+
+# Remove lib64 rpaths
+chrpath --delete %{buildroot}%{_bindir}/jsc-3
+chrpath --delete %{buildroot}%{_libdir}/libwebkitgtk-3.0.so
+chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
+
 %find_lang webkit-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
@@ -205,6 +210,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 * Wed Apr 25 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.1-1
 - Update to 1.8.1
 - Dropped the backported patches
+- Remove lib64 rpaths with chrpath
 
 * Fri Apr 20 2012 Orion Poplwski <orion@cora.nwra.com> - 1.8.0-5
 - Rebuild for icu 49

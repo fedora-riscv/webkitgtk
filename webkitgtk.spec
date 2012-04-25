@@ -171,11 +171,16 @@ rm -rf %{buildroot}
 
 %post
 /sbin/ldconfig
-glib-compile-schemas %{_datadir}/glib-2.0/schemas
  
 %postun
 /sbin/ldconfig
-glib-compile-schemas %{_datadir}/glib-2.0/schemas
+if [ $1 -eq 0 ] ; then
+    glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
+fi
+
+%posttrans
+glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
+
 
 %files -f webkit-2.0.lang
 %defattr(-,root,root,-)
@@ -211,6 +216,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas
 - Update to 1.8.1
 - Dropped the backported patches
 - Remove lib64 rpaths with chrpath
+- Update gsettings rpm scriptlets
 
 * Fri Apr 20 2012 Orion Poplwski <orion@cora.nwra.com> - 1.8.0-5
 - Rebuild for icu 49

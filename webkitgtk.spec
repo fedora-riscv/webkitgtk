@@ -118,9 +118,10 @@ This package contains developer documentation for %{name}.
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
 %ifarch %{arm}
                         --disable-jit                           \
-%endif
+%else
 %ifnarch s390 s390x ppc ppc64
                         --enable-jit                            \
+%endif
 %endif
 			--enable-geolocation			\
                         --enable-introspection                  \

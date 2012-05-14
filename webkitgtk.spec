@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -113,8 +113,12 @@ This package contains developer documentation for %{name}.
 %global optflags %(echo %{optflags} | sed 's/-g/-g1/')
 %endif
 
+# explicitly disable JIT on ARM https://bugs.webkit.org/show_bug.cgi?id=85076
 
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
+%ifarch %{arm}
+                        --disable-jit                           \
+%endif
 %ifnarch s390 s390x ppc ppc64
                         --enable-jit                            \
 %endif
@@ -212,6 +216,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon May 14 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.1-2
+- Explicitly disable JIT on ARM as it's not currently stable with JS heavy pages
+
 * Wed Apr 25 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.1-1
 - Update to 1.8.1
 - Dropped the backported patches

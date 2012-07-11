@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -174,9 +174,8 @@ chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
 rm -rf %{buildroot}
 
 
-%post
-/sbin/ldconfig
- 
+%post -p /sbin/ldconfig
+
 %postun
 /sbin/ldconfig
 if [ $1 -eq 0 ] ; then
@@ -217,6 +216,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Jul 11 2012 Ville Skyttä <ville.skytta@iki.fi> - 1.8.1-3
+- Fix %%post scriptlet dependencies.
+
 * Mon May 14 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.1-2
 - Explicitly disable JIT on ARM as it's not currently stable with JS heavy pages
 

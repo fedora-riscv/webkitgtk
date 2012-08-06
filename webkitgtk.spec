@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.8.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -35,6 +35,8 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/releases/webkit-%{version}.tar.xz
 
+# Fix the build with bison 2.6
+Patch1:		0001-Build-fix-with-newer-bison-2.6.patch
 # add support for nspluginwrapper. 
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 
@@ -101,6 +103,7 @@ This package contains developer documentation for %{name}.
 
 %prep
 %setup -qn "webkit-%{version}"
+%patch1 -p1 -b .bison26
 %patch2 -p1 -b .nspluginwrapper
 
 %build
@@ -216,6 +219,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Aug 06 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.1-5
+- Backport a build fix with bison 2.6
+
 * Sun Jul 22 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 

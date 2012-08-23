@@ -22,7 +22,7 @@
 %bcond_with 	pango
 
 Name:		webkitgtk
-Version:	1.8.2
+Version:	1.8.3
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -219,6 +219,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Thu Aug 23 2012 Kevin Fenzi <kevin@scrye.com> 1.8.3-1
+- Update to 1.8.3
+
 * Mon Aug 06 2012 Kevin Fenzi <kevin@scrye.com> - 1.8.2-1
 - Update to 1.8.2
 

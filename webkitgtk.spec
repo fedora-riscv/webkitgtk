@@ -22,8 +22,8 @@
 %bcond_with 	pango
 
 Name:		webkitgtk
-Version:	1.8.1
-Release:	2%{?dist}
+Version:	1.8.3
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -35,6 +35,8 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/releases/webkit-%{version}.tar.xz
 
+# Fix the build with bison 2.6
+Patch1:		0001-Build-fix-with-newer-bison-2.6.patch
 # add support for nspluginwrapper. 
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 
@@ -101,6 +103,7 @@ This package contains developer documentation for %{name}.
 
 %prep
 %setup -qn "webkit-%{version}"
+%patch1 -p1 -b .bison26
 %patch2 -p1 -b .nspluginwrapper
 
 %build
@@ -174,9 +177,8 @@ chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
 rm -rf %{buildroot}
 
 
-%post
-/sbin/ldconfig
- 
+%post -p /sbin/ldconfig
+
 %postun
 /sbin/ldconfig
 if [ $1 -eq 0 ] ; then
@@ -217,6 +219,21 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Thu Aug 23 2012 Kevin Fenzi <kevin@scrye.com> 1.8.3-1
+- Update to 1.8.3
+
+* Mon Aug 06 2012 Kevin Fenzi <kevin@scrye.com> - 1.8.2-1
+- Update to 1.8.2
+
+* Mon Aug 06 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.1-5
+- Backport a build fix with bison 2.6
+
+* Sun Jul 22 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Wed Jul 11 2012 Ville Skyttä <ville.skytta@iki.fi> - 1.8.1-3
+- Fix %%post scriptlet dependencies.
+
 * Mon May 14 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.1-2
 - Explicitly disable JIT on ARM as it's not currently stable with JS heavy pages
 

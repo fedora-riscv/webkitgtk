@@ -22,7 +22,7 @@
 %bcond_with 	pango
 
 Name:		webkitgtk
-Version:	1.8.3
+Version:	1.10.0
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -33,10 +33,8 @@ Group:		Development/Libraries
 License:	LGPLv2+ and BSD
 URL:		http://www.webkitgtk.org/
 
-Source0:	http://www.webkitgtk.org/releases/webkit-%{version}.tar.xz
+Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
-# Fix the build with bison 2.6
-Patch1:		0001-Build-fix-with-newer-bison-2.6.patch
 # add support for nspluginwrapper. 
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 
@@ -60,6 +58,7 @@ BuildRequires:	sqlite-devel
 BuildRequires:	gobject-introspection-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  gtk-doc
+BuildRequires:  ruby
 
 ## Conditional dependencies...
 %if %{with pango}
@@ -102,8 +101,7 @@ This package contains developer documentation for %{name}.
 
 
 %prep
-%setup -qn "webkit-%{version}"
-%patch1 -p1 -b .bison26
+%setup -qn "webkitgtk-%{version}"
 %patch2 -p1 -b .nspluginwrapper
 
 %build
@@ -116,6 +114,10 @@ This package contains developer documentation for %{name}.
 %global optflags %(echo %{optflags} | sed 's/-g/-g1/')
 %endif
 
+# Build with -g1 on all platforms to avoid running into 4 GB ar format limit
+# https://bugs.webkit.org/show_bug.cgi?id=91154
+%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+
 # explicitly disable JIT on ARM https://bugs.webkit.org/show_bug.cgi?id=85076
 
 CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
@@ -126,6 +128,7 @@ CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGE
                         --enable-jit                            \
 %endif
 %endif
+                        --disable-webkit2                       \
 			--enable-geolocation			\
                         --enable-introspection                  \
                         --with-gtk=2.0                          \
@@ -140,9 +143,7 @@ mkdir -p DerivedSources/ANGLE
 mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
 mkdir -p DerivedSources/InjectedBundle
 
-# Disabled because of https://bugs.webkit.org/show_bug.cgi?id=34846
-#make V=1 %{?_smp_mflags}
-make V=1
+make V=1 %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
@@ -157,7 +158,7 @@ chrpath --delete %{buildroot}%{_bindir}/jsc-1
 chrpath --delete %{buildroot}%{_libdir}/libwebkitgtk-1.0.so
 chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
 
-%find_lang webkit-2.0
+%find_lang webkitgtk-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
 %add_to_doc_files Source/WebKit/LICENSE
@@ -189,7 +190,7 @@ fi
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
-%files -f webkit-2.0.lang
+%files -f webkitgtk-2.0.lang
 %defattr(-,root,root,-)
 %doc %{_docdir}/%{name}-%{version}/
 %exclude %{_libdir}/*.la
@@ -219,6 +220,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Sep 26 2012 Kevin Fenzi <kevin@scrye.com> 1.10.0-1
+- Update to 1.10.0
+
 * Thu Aug 23 2012 Kevin Fenzi <kevin@scrye.com> 1.8.3-1
 - Update to 1.8.3
 

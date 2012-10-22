@@ -22,7 +22,7 @@
 %bcond_with 	pango
 
 Name:		webkitgtk
-Version:	1.10.0
+Version:	1.10.1
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -220,6 +220,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sun Oct 21 2012 Kevin Fenzi <kevin@scrye.com> 1.10.1-1
+- Update to 1.10.1
+
 * Wed Sep 26 2012 Kevin Fenzi <kevin@scrye.com> 1.10.0-1
 - Update to 1.10.0
 

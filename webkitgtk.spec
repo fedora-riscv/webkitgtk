@@ -22,7 +22,7 @@
 %bcond_with 	pango
 
 Name:		webkitgtk
-Version:	1.10.1
+Version:	1.10.2
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -37,6 +37,9 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper. 
 Patch2: 	webkit-1.3.10-nspluginwrapper.patch
+# Explicitly link with -lrt
+# https://bugs.webkit.org/show_bug.cgi?id=103194
+Patch3:		webkitgtk-librt.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -103,6 +106,10 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch2 -p1 -b .nspluginwrapper
+%patch3 -p1 -b .librt
+
+# For patch3
+autoreconf --verbose --install -I Source/autotools
 
 %build
 %ifarch s390 %{arm}
@@ -220,6 +227,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Dec 10 2012 Kalev Lember <kalevlember@gmail.com> 1.10.2-1
+- Update to 1.10.2
+- Add a patch to explicitly link with librt
+
 * Sun Oct 21 2012 Kevin Fenzi <kevin@scrye.com> 1.10.1-1
 - Update to 1.10.1
 

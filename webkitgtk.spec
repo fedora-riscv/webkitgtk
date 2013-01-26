@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.10.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -227,6 +227,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sat Jan 26 2013 Kevin Fenzi <kevin@scrye.com> 1.10.2-3
+- Rebuild for new icu
+
 * Mon Jan 21 2013 Adam Tkac <atkac redhat com> - 1.10.2-2
 - rebuild due to "jpeg8-ABI" feature drop
 

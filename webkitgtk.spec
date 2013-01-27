@@ -40,6 +40,8 @@ Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 # Explicitly link with -lrt
 # https://bugs.webkit.org/show_bug.cgi?id=103194
 Patch3:		webkitgtk-librt.patch
+# https://bugs.webkit.org/show_bug.cgi?id=108032
+Patch4:		webkitgtk-1.11.4-icu-cppflags.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -107,8 +109,9 @@ This package contains developer documentation for %{name}.
 %setup -qn "webkitgtk-%{version}"
 %patch2 -p1 -b .nspluginwrapper
 %patch3 -p1 -b .librt
+%patch4 -p1 -b .icu_cppflags
 
-# For patch3
+# For patch3 and patch4
 autoreconf --verbose --install -I Source/autotools
 
 %build

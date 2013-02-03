@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.10.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -123,10 +123,6 @@ autoreconf --verbose --install -I Source/autotools
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g/-g1/')
 %endif
-
-# Build with -g1 on all platforms to avoid running into 4 GB ar format limit
-# https://bugs.webkit.org/show_bug.cgi?id=91154
-%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 
 # explicitly disable JIT on ARM https://bugs.webkit.org/show_bug.cgi?id=85076
 
@@ -230,6 +226,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sat Feb 02 2013 Kevin Fenzi <kevin@scrye.com> 1.10.2-5
+- Drop building with -g1 now. Fixes bug #861452 
+
 * Wed Jan 30 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 1.10.2-4
 - Rebuild against new icu again
 

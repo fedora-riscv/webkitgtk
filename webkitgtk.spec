@@ -40,6 +40,8 @@ Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 # Explicitly link with -lrt
 # https://bugs.webkit.org/show_bug.cgi?id=103194
 Patch3:		webkitgtk-librt.patch
+# https://bugs.webkit.org/show_bug.cgi?id=108819
+Patch4:		webkit-1.10.2-renderFix.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -107,6 +109,7 @@ This package contains developer documentation for %{name}.
 %setup -qn "webkitgtk-%{version}"
 %patch2 -p1 -b .nspluginwrapper
 %patch3 -p1 -b .librt
+%patch4 -p1 -b .renderFix
 
 # For patch3
 autoreconf --verbose --install -I Source/autotools

@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.10.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -230,6 +230,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Feb 13 2013 Tomas Popela <tpopela@redhat.com> 1.10.2-2
+- Add fix for bug #907432 - Rendering glitches on some sites
+
 * Mon Dec 10 2012 Kalev Lember <kalevlember@gmail.com> 1.10.2-1
 - Update to 1.10.2
 - Add a patch to explicitly link with librt

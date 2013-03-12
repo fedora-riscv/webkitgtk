@@ -23,7 +23,7 @@
 
 Name:		webkitgtk
 Version:	1.10.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Provides:	WebKit-gtk = %{version}-%{release}
@@ -42,6 +42,7 @@ Patch2: 	webkit-1.3.10-nspluginwrapper.patch
 Patch3:		webkitgtk-librt.patch
 # https://bugs.webkit.org/show_bug.cgi?id=108819
 Patch4:		webkit-1.10.2-renderFix.patch
+Patch5:		webkit-1.10.2-atkFix.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -110,6 +111,7 @@ This package contains developer documentation for %{name}.
 %patch2 -p1 -b .nspluginwrapper
 %patch3 -p1 -b .librt
 %patch4 -p1 -b .renderFix
+%patch5 -p1 -b .atkFix
 
 # For patch3
 autoreconf --verbose --install -I Source/autotools
@@ -230,6 +232,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Mar 12 2013 Tomas Popela <tpopela@redhat.com> 1.10.2-3
+- Add upstream patch for RH bug #908143 - AccessibilityTableRow::parentTable crash
+
 * Wed Feb 13 2013 Tomas Popela <tpopela@redhat.com> 1.10.2-2
 - Add fix for bug #907432 - Rendering glitches on some sites
 

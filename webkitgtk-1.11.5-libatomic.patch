@@ -1,0 +1,63 @@
+diff -up webkitgtk-1.11.90/GNUmakefile.in.libatomic webkitgtk-1.11.90/GNUmakefile.in
+--- webkitgtk-1.11.90/GNUmakefile.in.libatomic	2013-02-21 19:07:19.000000000 +0100
++++ webkitgtk-1.11.90/GNUmakefile.in	2013-02-25 11:31:34.824149062 +0100
+@@ -20933,6 +20933,7 @@ libWTF_la_CXXFLAGS = \
+ 	$(libWTF_la_CFLAGS)
+ 
+ libWTF_la_CFLAGS = \
++    -latomic \
+ 	-fstrict-aliasing \
+ 	-O3 \
+ 	$(global_cflags) \
+@@ -22305,7 +22306,7 @@ Programs_WebKitPluginProcess_SOURCES = \
+ 
+ #if ENABLE_SVG
+ #endif
+-Programs_WebKitPluginProcess_LDADD = -lpthread \
++Programs_WebKitPluginProcess_LDADD = -latomic -lpthread \
+ 	libjavascriptcoregtk-@WEBKITGTK_API_MAJOR_VERSION@.@WEBKITGTK_API_MINOR_VERSION@.la \
+ 	libWebCore.la libWebCoreSVG.la libWebCorePlatform.la \
+ 	libWebCoreGtk2.la $(CAIRO_LIBS) $(COVERAGE_LDFLAGS) \
+diff -up webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am.libatomic webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am
+--- webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am.libatomic	2013-02-25 11:28:58.812154709 +0100
++++ webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am	2013-02-25 11:29:14.906154126 +0100
+@@ -568,6 +568,7 @@ Programs_WebKitPluginProcess_SOURCES = \
+ 	$(webkit2_plugin_process_sources)
+ 
+ Programs_WebKitPluginProcess_LDADD = \
++    -latomic \
+ 	-lpthread \
+ 	libjavascriptcoregtk-@WEBKITGTK_API_MAJOR_VERSION@.@WEBKITGTK_API_MINOR_VERSION@.la \
+ 	libWebCore.la
+diff -up webkitgtk-1.11.90/Source/WTF/GNUmakefile.am.libatomic webkitgtk-1.11.90/Source/WTF/GNUmakefile.am
+--- webkitgtk-1.11.90/Source/WTF/GNUmakefile.am.libatomic	2012-07-19 12:02:14.000000000 +0200
++++ webkitgtk-1.11.90/Source/WTF/GNUmakefile.am	2013-02-25 09:21:31.552243859 +0100
+@@ -25,6 +25,7 @@ libWTF_la_CXXFLAGS = \
+ 	$(libWTF_la_CFLAGS)
+ 
+ libWTF_la_CFLAGS = \
++   -latomic \
+ 	-fstrict-aliasing \
+ 	-O3 \
+ 	$(global_cflags) \
+diff -up webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h.libatomic webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h
+--- webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h.libatomic	2013-01-29 11:00:42.000000000 +0100
++++ webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h	2013-02-25 09:21:31.553243859 +0100
+@@ -107,6 +107,17 @@ inline int atomicDecrement(int volatile*
+ inline int atomicIncrement(int volatile* addend) { return __atomic_inc(addend) + 1; }
+ inline int atomicDecrement(int volatile* addend) { return __atomic_dec(addend) - 1; }
+ 
++#elif COMPILER(GCC) && (__GNUC__ > 4 || (__GNUC__ == 4 \
++                    && (__GNUC_MINOR__ > 8 || (__GNUC_MINOR__ == 8 \
++                    && (__GNUC_PATCHLEVEL__ > 0 || (__GNUC_PATCHLEVEL__ == 0)))))) \
++                    && CPU(PPC)
++#define WTF_USE_LOCKFREE_THREADSAFEREFCOUNTED 1
++inline int atomicIncrement(int volatile* addend) { return __atomic_fetch_add(addend, 1, __ATOMIC_ACQ_REL); }
++inline int atomicDecrement(int volatile* addend) { return __atomic_fetch_sub(addend, 1, __ATOMIC_ACQ_REL); }
++
++inline int64_t atomicIncrement(int64_t volatile* addend) { return __atomic_fetch_add(addend, 1, __ATOMIC_ACQ_REL); }
++inline int64_t atomicDecrement(int64_t volatile* addend) { return __atomic_fetch_sub(addend, 1, __ATOMIC_ACQ_REL); }
++
+ #elif COMPILER(GCC) && !CPU(SPARC64) // sizeof(_Atomic_word) != sizeof(int) on sparc64 gcc
+ #define WTF_USE_LOCKFREE_THREADSAFEREFCOUNTED 1
+ 

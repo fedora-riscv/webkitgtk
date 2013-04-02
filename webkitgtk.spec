@@ -5,29 +5,10 @@
 	mkdir -p %{buildroot}%{_docdir}/%{name}-%{version} ||: ; \
 	cp -p %1  %{buildroot}%{_docdir}/%{name}-%{version}/$(echo '%1' | sed -e 's!/!.!g')
 
-## Optional build modifications...
-## --with coverage: Enables compile-time checking of code coverage.
-##	(Default: No)
-##
-## --with debug: Enable more verbose debugging. Makes runtime a bit slower.
-##	Also disables the optimized memory allocator.
-##	(Default: No)
-##
-## --with pango: Use Pango instead of freetype2 as the font renderer.
-##	CJK support is functional only with the freetype2 backend.
-##	(Default: No - use freetype2)
-
-%bcond_with 	coverage
-%bcond_with 	debug
-%bcond_with 	pango
-
 Name:		webkitgtk
-Version:	1.10.2
-Release:	6%{?dist}
+Version:	2.0.0
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
-
-Provides:	WebKit-gtk = %{version}-%{release}
-Obsoletes:	WebKit-gtk < %{version}-%{release}
 
 Group:		Development/Libraries
 License:	LGPLv2+ and BSD
@@ -36,15 +17,14 @@ URL:		http://www.webkitgtk.org/
 Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper. 
-Patch2: 	webkit-1.3.10-nspluginwrapper.patch
-# Explicitly link with -lrt
-# https://bugs.webkit.org/show_bug.cgi?id=103194
-Patch3:		webkitgtk-librt.patch
-# https://bugs.webkit.org/show_bug.cgi?id=108032
-Patch4:		webkitgtk-1.11.4-icu-cppflags.patch
-# https://bugs.webkit.org/show_bug.cgi?id=108819
-Patch5:		webkit-1.10.2-renderFix.patch
-Patch6:		webkit-1.10.2-atkFix.patch
+Patch0: 	webkit-1.3.10-nspluginwrapper.patch
+# workarounds for non-JIT arches
+# https://bugs.webkit.org/show_bug.cgi?id=104270
+Patch1:         webkit-1.11.2-yarr.patch
+# https://bugs.webkit.org/show_bug.cgi?id=103128
+Patch2:         webkit-1.11.2-Double2Ints.patch
+Patch3:         webkitgtk-1.11.5-libatomic.patch
+Patch4:         webkit-1.11.90-double2intsPPC32.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -55,8 +35,8 @@ BuildRequires:	gettext
 BuildRequires:	gperf
 BuildRequires:	gstreamer-devel
 BuildRequires:	gstreamer-plugins-base-devel
-BuildRequires:	gtk2-devel
-BuildRequires:	libsoup-devel >= 2.27.91
+BuildRequires:	gtk2-devel >= 2.24.10
+BuildRequires:	libsoup-devel >= 2.42.0
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libxslt-devel
@@ -67,15 +47,12 @@ BuildRequires:	gobject-introspection-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  gtk-doc
 BuildRequires:  ruby
-
-## Conditional dependencies...
-%if %{with pango}
-BuildRequires:	pango-devel
-%else
 BuildRequires:	cairo-devel
-BuildRequires:  cairo-gobject-devel
-BuildRequires:	fontconfig-devel
+BuildRequires:	fontconfig-devel >= 2.5
 BuildRequires:	freetype-devel
+
+%ifarch ppc
+BuildRequires:  libatomic
 %endif
 
 %description
@@ -88,77 +65,69 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	pkgconfig
 Requires:	gtk2-devel
-Provides:	WebKit-gtk-devel = %{version}-%{release}
-Obsoletes:	WebKit-gtk-devel < %{version}-%{release}
 
 %description	devel
 The %{name}-devel package contains libraries, build data, and header
 files for developing applications that use %{name}.
-
 
 %package	doc
 Summary:	Documentation for %{name}
 Group:		Documentation
 BuildArch:	noarch
 Requires:	%{name} = %{version}-%{release}
-Provides:	WebKit-doc = %{version}-%{release}
-Obsoletes:	WebKit-doc < %{version}-%{release}
 
 %description	doc
 This package contains developer documentation for %{name}.
 
-
 %prep
 %setup -qn "webkitgtk-%{version}"
-%patch2 -p1 -b .nspluginwrapper
-%patch3 -p1 -b .librt
-%patch4 -p1 -b .icu_cppflags
-%patch5 -p1 -b .renderFix
-%patch6 -p1 -b .atkFix
-
-# For patch3 and patch4
-autoreconf --verbose --install -I Source/autotools
+%patch0 -p1 -b .nspluginwrapper
+%patch1 -p1 -b .yarr
+%patch2 -p1 -b .double2ints
+%ifarch ppc
+%patch3 -p1 -b .libatomic
+%patch4 -p1 -b .double2intsPPC32
+%endif
 
 %build
-%ifarch s390 %{arm}
+%ifarch s390 %{arm} ppc
 # Use linker flags to reduce memory consumption on low-mem architectures
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
-%ifarch s390
+%ifarch s390 s390x
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g/-g1/')
 %endif
 
-# explicitly disable JIT on ARM https://bugs.webkit.org/show_bug.cgi?id=85076
+%ifarch ppc
+# Use linker flag -relax to get WebKit2 build under ppc(32) with JIT disabled
+%global optflags %{optflags} -Wl,-relax
+%endif
 
-CFLAGS="%optflags -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure							\
-%ifarch %{arm}
+# Build with -g1 on all platforms to avoid running into 4 GB ar format limit
+# https://bugs.webkit.org/show_bug.cgi?id=91154
+%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+
+CFLAGS="%{optflags} -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure                                                   \
+                        --with-gtk=2.0                          \
+                        --disable-webkit2                       \
+%ifarch s390 s390x ppc ppc64
                         --disable-jit                           \
 %else
-%ifnarch s390 s390x ppc ppc64
                         --enable-jit                            \
 %endif
-%endif
-                        --disable-webkit2                       \
-			--enable-geolocation			\
-                        --enable-introspection                  \
-                        --with-gtk=2.0                          \
-                        --enable-webgl                          \
-%{?with_coverage:	--enable-coverage		}	\
-%{?with_debug:		--enable-debug			}	\
-%{?with_pango:		--with-font-backend=pango	}
+                        --enable-introspection
 
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 mkdir -p DerivedSources/ANGLE
+mkdir -p DerivedSources/webkitdom/
 mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
 mkdir -p DerivedSources/InjectedBundle
 
-make V=1 %{?_smp_mflags}
+make %{_smp_mflags} V=1
 
 %install
-rm -rf %{buildroot}
-
 make install DESTDIR=%{buildroot}
 
 install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
@@ -169,11 +138,13 @@ chrpath --delete %{buildroot}%{_bindir}/jsc-1
 chrpath --delete %{buildroot}%{_libdir}/libwebkitgtk-1.0.so
 chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
 
-%find_lang webkitgtk-2.0
+# Remove .la files
+find $RPM_BUILD_ROOT%{_libdir} -name "*.la" -delete
+
+%find_lang WebKitGTK-2.0
 
 ## Finally, copy over and rename the various files for %%doc inclusion.
 %add_to_doc_files Source/WebKit/LICENSE
-%add_to_doc_files Source/WebKit/gtk/po/README
 %add_to_doc_files Source/WebKit/gtk/NEWS
 %add_to_doc_files Source/WebCore/icu/LICENSE
 %add_to_doc_files Source/WebCore/LICENSE-APPLE
@@ -184,9 +155,6 @@ chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
 %add_to_doc_files Source/JavaScriptCore/AUTHORS
 %add_to_doc_files Source/JavaScriptCore/icu/README
 %add_to_doc_files Source/JavaScriptCore/icu/LICENSE
-
-%clean
-rm -rf %{buildroot}
 
 
 %post -p /sbin/ldconfig
@@ -201,20 +169,16 @@ fi
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
-%files -f webkitgtk-2.0.lang
-%defattr(-,root,root,-)
+%files -f WebKitGTK-2.0.lang
 %doc %{_docdir}/%{name}-%{version}/
-%exclude %{_libdir}/*.la
 %{_libdir}/libwebkitgtk-1.0.so.*
 %{_libdir}/libjavascriptcoregtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
 %{_libdir}/girepository-1.0/JSCore-1.0.typelib
-#{_datadir}/glib-2.0/schemas/org.webkitgtk-1.0.gschema.xml
 %{_libexecdir}/%{name}/
 %{_datadir}/webkitgtk-1.0
 
-%files	devel
-%defattr(-,root,root,-)
+%files  devel
 %{_bindir}/jsc-1
 %{_includedir}/webkitgtk-1.0
 %{_libdir}/libwebkitgtk-1.0.so
@@ -224,13 +188,19 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gir-1.0/WebKit-1.0.gir
 %{_datadir}/gir-1.0/JSCore-1.0.gir
 
-%files	doc
-%defattr(-,root,root,-)
+%files doc
 %dir %{_datadir}/gtk-doc
 %dir %{_datadir}/gtk-doc/html
 %{_datadir}/gtk-doc/html/webkitgtk
 
+
 %changelog
+* Tue Apr 2 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-1
+- Update to 2.0.0
+- Update BR versions
+- Drop unused patches
+- Change spec structure to webkitgtk3 spec file
+
 * Tue Mar 12 2013 Tomas Popela <tpopela@redhat.com> 1.10.2-6
 - Add upstream patch for RH bug #908143 - AccessibilityTableRow::parentTable crash
 - Add fix for bug #907432 - Rendering glitches on some sites

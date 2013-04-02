@@ -36,9 +36,12 @@ BuildRequires:	gperf
 BuildRequires:	gstreamer-devel
 BuildRequires:	gstreamer-plugins-base-devel
 BuildRequires:	gtk2-devel >= 2.24.10
+BuildRequires:  harfbuzz-devel
 BuildRequires:	libsoup-devel >= 2.42.0
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
+BuildRequires:	libsecret-devel
+BuildRequires:  libwebp-devel
 BuildRequires:	libxslt-devel
 BuildRequires:	libXt-devel
 BuildRequires:	pcre-devel

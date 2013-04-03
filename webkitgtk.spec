@@ -91,6 +91,7 @@ This package contains developer documentation for %{name}.
 %patch2 -p1 -b .double2ints
 %ifarch ppc
 %patch3 -p1 -b .libatomic
+%endif
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32

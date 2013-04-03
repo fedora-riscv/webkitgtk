@@ -7,7 +7,7 @@
 
 Name:		webkitgtk
 Version:	2.0.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -52,6 +52,7 @@ BuildRequires:  mesa-libGL-devel
 BuildRequires:  gtk-doc
 BuildRequires:  ruby
 BuildRequires:	cairo-devel
+BuildRequires:	cairo-gobject-devel
 BuildRequires:	fontconfig-devel >= 2.5
 BuildRequires:	freetype-devel
 
@@ -90,6 +91,8 @@ This package contains developer documentation for %{name}.
 %patch2 -p1 -b .double2ints
 %ifarch ppc
 %patch3 -p1 -b .libatomic
+# required for 32-bit big-endians
+%ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
 %endif
 
@@ -199,6 +202,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed Apr 3 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-2
+- Add cairo-gobject as BR
+- Apply double2intsPPC32.patch also on s390
+
 * Tue Apr 2 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-1
 - Update to 2.0.0
 - Update BR versions

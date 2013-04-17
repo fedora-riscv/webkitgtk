@@ -6,8 +6,8 @@
 	cp -p %1  %{buildroot}%{_docdir}/%{name}-%{version}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.0.0
-Release:	2%{?dist}
+Version:	2.0.1
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -16,7 +16,7 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
-# add support for nspluginwrapper. 
+# add support for nspluginwrapper.
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 # workarounds for non-JIT arches
 # https://bugs.webkit.org/show_bug.cgi?id=104270
@@ -203,6 +203,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed Apr 17 2013 Tomas Popela <tpopela@redhat.com> - 2.0.1-1
+- Update to 2.0.1
+- Remove unused patches
+
 * Wed Apr 3 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-2
 - Add cairo-gobject as BR
 - Apply double2intsPPC32.patch also on s390

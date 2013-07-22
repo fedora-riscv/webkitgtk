@@ -6,8 +6,8 @@
 	cp -p %1  %{buildroot}%{_docdir}/%{name}-%{version}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.0.2
-Release:	2%{?dist}
+Version:	2.0.4
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,8 +25,6 @@ Patch1:         webkit-1.11.2-yarr.patch
 Patch2:         webkit-1.11.2-Double2Ints.patch
 Patch3:         webkitgtk-1.11.5-libatomic.patch
 Patch4:         webkit-1.11.90-double2intsPPC32.patch
-# https://bugs.webkit.org/show_bug.cgi?id=116978
-Patch5:         webkitgtk-fix-harfbuzz-icu.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -101,7 +99,6 @@ This package contains developer documentation for %{name}.
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
 %endif
-%patch5 -p1 -b .harfbuzz-icu
 
 # Needed for patch5:
 autoreconf --verbose --install -I Source/autotools
@@ -212,6 +209,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Mon Jul 22 2013 Tomas Popela <tpopela@redhat.com> - 2.0.4-1
+- Update to 2.0.4
+
 * Fri Jun 07 2013 Kalev Lember <kalevlember@gmail.com> - 2.0.2-2
 - Link with harfbuzz-icu (split into separate library in harfbuzz 0.9.18)
 

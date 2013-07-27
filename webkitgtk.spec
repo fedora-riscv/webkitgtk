@@ -1,13 +1,16 @@
+# In f20+ use unversioned docdirs, otherwise the old versioned one
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
 ## NOTE: Lots of files in various subdirectories have the same name (such as
 ## "LICENSE") so this short macro allows us to distinguish them by using their
 ## directory names (from the source tree) as prefixes for the files.
 %define 	add_to_doc_files()	\
-	mkdir -p %{buildroot}%{_docdir}/%{name}-%{version} ||: ; \
-	cp -p %1  %{buildroot}%{_docdir}/%{name}-%{version}/$(echo '%1' | sed -e 's!/!.!g')
+	mkdir -p %{buildroot}%{_pkgdocdir} ||: ; \
+	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
 Version:	2.0.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -178,7 +181,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %files -f WebKitGTK-2.0.lang
-%doc %{_docdir}/%{name}-%{version}/
+%doc %{_pkgdocdir}
 %{_libdir}/libwebkitgtk-1.0.so.*
 %{_libdir}/libjavascriptcoregtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
@@ -203,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Sat Jul 27 2013 Kevin Fenzi <kevin@scrye.com> 2.0.4-2
+- Fix for unversioned doc dirs
+
 * Mon Jul 22 2013 Tomas Popela <tpopela@redhat.com> - 2.0.4-1
 - Update to 2.0.4
 

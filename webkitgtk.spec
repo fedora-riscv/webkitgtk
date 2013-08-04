@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.0.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -26,7 +26,7 @@ Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 Patch1:         webkit-1.11.2-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
 Patch2:         webkit-1.11.2-Double2Ints.patch
-Patch3:         webkitgtk-1.11.5-libatomic.patch
+Patch3:         webkitgtk-2.0.4-libatomic.patch
 Patch4:         webkit-1.11.90-double2intsPPC32.patch
 
 BuildRequires:	bison
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Sun Aug 04 2013 Karsten Hopp <karsten@redhat.com> 2.0.4-3
+- update ppc libatomic patch
+
 * Sat Jul 27 2013 Kevin Fenzi <kevin@scrye.com> 2.0.4-2
 - Fix for unversioned doc dirs
 

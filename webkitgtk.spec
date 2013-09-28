@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.0.4
-Release:	3%{?dist}
+Version:	2.2.0
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -23,10 +23,8 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 # workarounds for non-JIT arches
 # https://bugs.webkit.org/show_bug.cgi?id=104270
-Patch1:         webkit-1.11.2-yarr.patch
+Patch1:         webkitgtk-2.1.1-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
-Patch2:         webkit-1.11.2-Double2Ints.patch
-Patch3:         webkitgtk-2.0.4-libatomic.patch
 Patch4:         webkit-1.11.90-double2intsPPC32.patch
 
 BuildRequires:	bison
@@ -91,10 +89,6 @@ This package contains developer documentation for %{name}.
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .yarr
-%patch2 -p1 -b .double2ints
-%ifarch ppc
-%patch3 -p1 -b .libatomic
-%endif
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
@@ -132,9 +126,11 @@ CFLAGS="%{optflags} -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANA
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 mkdir -p DerivedSources/ANGLE
-mkdir -p DerivedSources/webkitdom/
 mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
+mkdir -p DerivedSources/WebKit2
+mkdir -p DerivedSources/webkitdom/
 mkdir -p DerivedSources/InjectedBundle
+mkdir -p DerivedSources/Platform
 
 make %{_smp_mflags} V=1
 
@@ -185,7 +181,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/libwebkitgtk-1.0.so.*
 %{_libdir}/libjavascriptcoregtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
-%{_libdir}/girepository-1.0/JSCore-1.0.typelib
+%{_libdir}/girepository-1.0/JavaScriptCore-1.0.typelib
 %{_libexecdir}/%{name}/
 %{_datadir}/webkitgtk-1.0
 
@@ -197,15 +193,17 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/webkit-1.0.pc
 %{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
-%{_datadir}/gir-1.0/JSCore-1.0.gir
+%{_datadir}/gir-1.0/JavaScriptCore-1.0.gir
 
 %files doc
 %dir %{_datadir}/gtk-doc
 %dir %{_datadir}/gtk-doc/html
 %{_datadir}/gtk-doc/html/webkitgtk
 
-
 %changelog
+* Fri Sep 27 2013 Kevin Fenzi <kevin@scrye.com> 2.2.0-1
+- Update 2.2.0
+
 * Sun Aug 04 2013 Karsten Hopp <karsten@redhat.com> 2.0.4-3
 - update ppc libatomic patch
 

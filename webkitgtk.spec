@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,7 +25,7 @@ Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 # https://bugs.webkit.org/show_bug.cgi?id=104270
 Patch1:         webkitgtk-2.1.1-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
-Patch4:         webkit-1.11.90-double2intsPPC32.patch
+Patch4:         webkit-2.1.90-double2intsPPC32.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -201,6 +201,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Dec 04 2013 Karsten Hopp <karsten@redhat.com> 2.2.2-2
+- apply the correct double2intsPPC32 patch on ppc
+
 * Mon Nov 11 2013 Kevin Fenzi <kevin@scrye.com> 2.2.2-1
 - Update to 2.2.2
 

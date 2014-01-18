@@ -1,12 +1,15 @@
+# In f20+ use unversioned docdirs, otherwise the old versioned one
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
 ## NOTE: Lots of files in various subdirectories have the same name (such as
 ## "LICENSE") so this short macro allows us to distinguish them by using their
 ## directory names (from the source tree) as prefixes for the files.
 %define 	add_to_doc_files()	\
-	mkdir -p %{buildroot}%{_docdir}/%{name}-%{version} ||: ; \
-	cp -p %1  %{buildroot}%{_docdir}/%{name}-%{version}/$(echo '%1' | sed -e 's!/!.!g')
+	mkdir -p %{buildroot}%{_pkgdocdir} ||: ; \
+	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.0.4
+Version:	2.2.3
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -20,11 +23,9 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 # workarounds for non-JIT arches
 # https://bugs.webkit.org/show_bug.cgi?id=104270
-Patch1:         webkit-1.11.2-yarr.patch
+Patch1:         webkitgtk-2.1.1-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
-Patch2:         webkit-1.11.2-Double2Ints.patch
-Patch3:         webkitgtk-1.11.5-libatomic.patch
-Patch4:         webkit-1.11.90-double2intsPPC32.patch
+Patch4:         webkit-2.1.90-double2intsPPC32.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -36,13 +37,13 @@ BuildRequires:	gperf
 BuildRequires:	gstreamer1-devel
 BuildRequires:	gstreamer1-plugins-base-devel
 BuildRequires:	gtk2-devel >= 2.24.10
-BuildRequires:  glib2-devel >= 2.36.0
-BuildRequires:  harfbuzz-devel
+BuildRequires:	glib2-devel >= 2.36.0
+BuildRequires:	harfbuzz-devel
 BuildRequires:	libsoup-devel >= 2.42.0
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libsecret-devel
-BuildRequires:  libwebp-devel
+BuildRequires:	libwebp-devel
 BuildRequires:	libxslt-devel
 BuildRequires:	libXt-devel
 BuildRequires:	pcre-devel
@@ -55,13 +56,6 @@ BuildRequires:	cairo-devel
 BuildRequires:	cairo-gobject-devel
 BuildRequires:	fontconfig-devel >= 2.5
 BuildRequires:	freetype-devel
-
-# Needed for patch5:
-BuildRequires:  autoconf automake libtool
-
-%ifarch ppc
-BuildRequires:  libatomic
-%endif
 
 %description
 WebKitGTK+ is the port of the portable web rendering engine WebKit to the
@@ -91,26 +85,19 @@ This package contains developer documentation for %{name}.
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .yarr
-%patch2 -p1 -b .double2ints
-%ifarch ppc
-%patch3 -p1 -b .libatomic
-%endif
-# required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
 %endif
-
-# Needed for patch5:
-autoreconf --verbose --install -I Source/autotools
 
 %build
 %ifarch s390 %{arm} ppc
 # Use linker flags to reduce memory consumption on low-mem architectures
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
-%ifarch s390 s390x
+
+%ifarch s390 s390x %{arm}
 # Decrease debuginfo verbosity to reduce memory consumption even more
-%global optflags %(echo %{optflags} | sed 's/-g/-g1/')
+%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
 %ifarch ppc
@@ -122,7 +109,7 @@ autoreconf --verbose --install -I Source/autotools
 # https://bugs.webkit.org/show_bug.cgi?id=91154
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 
-CFLAGS="%{optflags} -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure                                                   \
+%configure                                                      \
                         --with-gtk=2.0                          \
                         --disable-webkit2                       \
 %ifarch s390 s390x ppc ppc64
@@ -135,9 +122,11 @@ CFLAGS="%{optflags} -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANA
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 mkdir -p DerivedSources/ANGLE
+mkdir -p DerivedSources/WebKit2
 mkdir -p DerivedSources/webkitdom/
-mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
 mkdir -p DerivedSources/InjectedBundle
+mkdir -p DerivedSources/Platform
+mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
 
 make %{_smp_mflags} V=1
 
@@ -184,11 +173,11 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %files -f WebKitGTK-2.0.lang
-%doc %{_docdir}/%{name}-%{version}/
+%doc %{_pkgdocdir}
 %{_libdir}/libwebkitgtk-1.0.so.*
 %{_libdir}/libjavascriptcoregtk-1.0.so.*
 %{_libdir}/girepository-1.0/WebKit-1.0.typelib
-%{_libdir}/girepository-1.0/JSCore-1.0.typelib
+%{_libdir}/girepository-1.0/JavaScriptCore-1.0.typelib
 %{_libexecdir}/%{name}/
 %{_datadir}/webkitgtk-1.0
 
@@ -200,7 +189,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/webkit-1.0.pc
 %{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
-%{_datadir}/gir-1.0/JSCore-1.0.gir
+%{_datadir}/gir-1.0/JavaScriptCore-1.0.gir
 
 %files doc
 %dir %{_datadir}/gtk-doc
@@ -209,6 +198,21 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed Dec 04 2013 Tomas Popela <tpopela@redhat.com> 2.2.3-1
+- Update to 2.2.3
+
+* Mon Nov 11 2013 Tomas Popela <tpopela@redhat.com> 2.2.2-1
+- Update to 2.2.2
+
+* Mon Oct 21 2013 Tomas Popela <tpopela@redhat.com> 2.2.1-1
+- Update to 2.2.1
+
+* Sun Aug 04 2013 Karsten Hopp <karsten@redhat.com> 2.0.4-3
+- update ppc libatomic patch
+
+* Sat Jul 27 2013 Kevin Fenzi <kevin@scrye.com> 2.0.4-2
+- Fix for unversioned doc dirs
+
 * Mon Jul 22 2013 Tomas Popela <tpopela@redhat.com> - 2.0.4-1
 - Update to 2.0.4
 
@@ -220,7 +224,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 * Wed Apr 17 2013 Tomas Popela <tpopela@redhat.com> - 2.0.1-1
 - Update to 2.0.1
-- Remove unused patches
 
 * Wed Apr 3 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-2
 - Add cairo-gobject as BR

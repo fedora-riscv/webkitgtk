@@ -203,6 +203,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %changelog
 * Wed Feb 12 2014 Nils Philippsen <nils@redhat.com>
 - fix changelog release number
+- rebuild for new libicu
 
 * Tue Jan 21 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-2
 - Update to 2.2.4

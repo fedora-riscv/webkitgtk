@@ -201,7 +201,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
-* Tue Jan 21 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-1
+* Wed Feb 12 2014 Nils Philippsen <nils@redhat.com>
+- fix changelog release number
+
+* Tue Jan 21 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-2
 - Update to 2.2.4
 
 * Thu Jan 02 2014 Orion Poplawski <orion@cora.nwra.com> - 2.2.3-2

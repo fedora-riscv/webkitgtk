@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -201,7 +201,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
-* Wed Feb 12 2014 Nils Philippsen <nils@redhat.com>
+* Wed Feb 12 2014 Nils Philippsen <nils@redhat.com> - 2.2.4-3
 - fix changelog release number
 - rebuild for new libicu
 

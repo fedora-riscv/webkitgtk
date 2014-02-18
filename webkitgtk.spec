@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -99,7 +99,7 @@ This package contains developer documentation for %{name}.
 # Use linker flags to reduce memory consumption on low-mem architectures
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
-%ifarch s390 s390x
+%ifarch s390
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g/-g1/')
 %endif
@@ -201,6 +201,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Feb 18 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-4
+- Enable full debuginfo on s390s
+
 * Wed Feb 12 2014 Nils Philippsen <nils@redhat.com> - 2.2.4-3
 - fix changelog release number
 - rebuild for new libicu

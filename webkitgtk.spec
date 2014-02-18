@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -95,7 +95,7 @@ This package contains developer documentation for %{name}.
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
 
-%ifarch s390 s390x %{arm}
+%ifarch s390 %{arm}
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
@@ -198,6 +198,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Tue Feb 18 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-2
+- Enable full debuginfo on s390x
+
 * Tue Jan 21 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-1
 - Update to 2.2.4
 

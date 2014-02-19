@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.2.4
-Release:	2%{?dist}
+Version:	2.2.5
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -198,6 +198,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed Feb 19 2014 Tomas Popela <tpopela@redhat.com> 2.2.5-1
+- Update to 2.2.5
+
 * Tue Feb 18 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-2
 - Enable full debuginfo on s390x
 

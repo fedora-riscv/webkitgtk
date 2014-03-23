@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -26,6 +26,7 @@ Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 Patch1:         webkitgtk-2.1.1-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
 Patch4:         webkit-2.1.90-double2intsPPC32.patch
+Patch10:        webkitgtk-aarch64.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -93,6 +94,7 @@ This package contains developer documentation for %{name}.
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
 %endif
+%patch10 -p1 -b .aarch64
 
 %build
 %ifarch s390 %{arm} ppc
@@ -116,7 +118,7 @@ This package contains developer documentation for %{name}.
 CFLAGS="%{optflags} -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure                                                   \
                         --with-gtk=2.0                          \
                         --disable-webkit2                       \
-%ifarch s390 s390x ppc ppc64
+%ifarch s390 s390x ppc ppc64 aarch64
                         --disable-jit                           \
 %else
                         --enable-jit                            \
@@ -201,6 +203,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sat Mar 22 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.2.6-2
+- Fix build and disable JIT on aarch64
+
 * Wed Mar 19 2014 Tomas Popela <tpopela@redhat.com> 2.2.6-1
 - Update to 2.2.6
 

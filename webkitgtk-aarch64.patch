@@ -1,6 +1,6 @@
---- webkitgtk-2.2.6/Source/WTF/wtf/Platform.h.orig	2014-03-23 11:18:38.543239536 +0000
-+++ webkitgtk-2.2.6/Source/WTF/wtf/Platform.h	2014-03-23 11:29:55.273118089 +0000
-@@ -327,6 +327,14 @@
+--- webkitgtk-2.3.5/Source/WTF/wtf/Platform.h.orig	2014-02-04 16:38:03.000000000 +0000
++++ webkitgtk-2.3.5/Source/WTF/wtf/Platform.h	2014-02-07 10:50:32.639441614 +0000
+@@ -317,6 +317,14 @@
  #define WTF_CPU_NEEDS_ALIGNED_ACCESS 1
  #endif
  
@@ -15,9 +15,9 @@
  /* ==== OS() - underlying operating system; only to be used for mandated low-level services like 
     virtual memory, not to choose a GUI toolkit ==== */
  
-@@ -689,7 +697,8 @@
+@@ -641,7 +649,8 @@
      || CPU(ALPHA) \
-     || CPU(SPARC64) \
+     || CPU(ARM64) \
      || CPU(S390X) \
 -    || CPU(PPC64)
 +    || CPU(PPC64) \
@@ -25,23 +25,14 @@
  #define WTF_USE_JSVALUE64 1
  #else
  #define WTF_USE_JSVALUE32_64 1
-@@ -855,7 +864,7 @@
- #define ENABLE_REGEXP_TRACING 0
- 
- /* Yet Another Regex Runtime - turned on by default for JIT enabled ports. */
--#if !defined(ENABLE_YARR_JIT) && ENABLE(JIT) && ENABLE(LLINT_C_LOOP) && !(OS(QNX) && PLATFORM(QT))
-+#if !defined(ENABLE_YARR_JIT) && ENABLE(JIT) && ENABLE(LLINT_C_LOOP) && !(OS(QNX) && PLATFORM(QT)) && !CPU(AARCH64) && !CPU(PPC)
- #define ENABLE_YARR_JIT 1
- 
- /* Setting this flag compares JIT results with interpreter results. */
---- webkitgtk-2.2.6/Source/WTF/wtf/dtoa/utils.h.orig	2014-03-23 11:19:58.494529128 +0000
-+++ webkitgtk-2.2.6/Source/WTF/wtf/dtoa/utils.h	2014-03-23 11:31:19.284463063 +0000
+--- webkitgtk-2.3.5/Source/WTF/wtf/dtoa/utils.h.orig	2014-02-07 10:50:15.238174894 +0000
++++ webkitgtk-2.3.5/Source/WTF/wtf/dtoa/utils.h	2014-02-07 10:50:32.640441629 +0000
 @@ -49,7 +49,7 @@
  defined(__ARMEL__) || \
  defined(_MIPS_ARCH_MIPS32R2)
  #define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
--#elif CPU(MIPS) || CPU(PPC) || CPU(PPC64) || OS(WINCE) || CPU(SH4) || CPU(S390) || CPU(S390X) || CPU(IA64) || CPU(SPARC) || CPU(ALPHA) || CPU(HPPA)
-+#elif CPU(MIPS) || CPU(PPC) || CPU(PPC64) || OS(WINCE) || CPU(SH4) || CPU(S390) || CPU(S390X) || CPU(IA64) || CPU(SPARC) || CPU(ALPHA) || CPU(HPPA) || CPU(AARCH64)
+-#elif CPU(MIPS) || CPU(PPC) || CPU(PPC64) || OS(WINCE) || CPU(SH4) || CPU(S390) || CPU(S390X) || CPU(IA64) || CPU(ALPHA) || CPU(ARM64) || CPU(HPPA)
++#elif CPU(MIPS) || CPU(PPC) || CPU(PPC64) || OS(WINCE) || CPU(SH4) || CPU(S390) || CPU(S390X) || CPU(IA64) || CPU(ALPHA) || CPU(AARCH64) || CPU(HPPA)
  #define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
  #elif defined(_M_IX86) || defined(__i386__)
  #if defined(_WIN32)

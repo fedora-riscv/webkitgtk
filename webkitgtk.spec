@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.2.6
-Release:	2%{?dist}
+Version:	2.4.1
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -21,9 +21,6 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper.
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
-# workarounds for non-JIT arches
-# https://bugs.webkit.org/show_bug.cgi?id=104270
-Patch1:         webkitgtk-2.1.1-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
 Patch4:         webkit-2.1.90-double2intsPPC32.patch
 Patch10:        webkitgtk-aarch64.patch
@@ -89,7 +86,6 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
-%patch1 -p1 -b .yarr
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
@@ -196,6 +192,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
 %{_datadir}/gir-1.0/JavaScriptCore-1.0.gir
+%{_datadir}/gtk-doc/html/webkitdomgtk
 
 %files doc
 %dir %{_datadir}/gtk-doc
@@ -203,6 +200,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Apr 15 2014 Kevin Fenzi <kevin@scrye.com> 2.4.1-1
+- Update to 2.4.1
+
 * Sat Mar 22 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.2.6-2
 - Fix build and disable JIT on aarch64
 

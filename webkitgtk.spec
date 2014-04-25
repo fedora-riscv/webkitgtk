@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries

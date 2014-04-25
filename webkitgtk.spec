@@ -29,7 +29,7 @@ BuildRequires:	bison
 BuildRequires:	chrpath
 BuildRequires:	enchant-devel
 BuildRequires:	flex
-BuildRequires:	geoclue-devel
+BuildRequires:  geoclue2-devel
 BuildRequires:	gettext
 BuildRequires:	gperf
 BuildRequires:	gstreamer1-devel
@@ -54,6 +54,7 @@ BuildRequires:	cairo-devel
 BuildRequires:	cairo-gobject-devel
 BuildRequires:	fontconfig-devel >= 2.5
 BuildRequires:	freetype-devel
+Requires:       geoclue2
 
 %ifarch ppc
 BuildRequires:  libatomic
@@ -200,6 +201,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Apr 25 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.1-2
+- Switch over to geoclue2
+
 * Tue Apr 15 2014 Kevin Fenzi <kevin@scrye.com> 2.4.1-1
 - Update to 2.4.1
 

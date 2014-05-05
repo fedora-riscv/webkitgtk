@@ -9,7 +9,7 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.2.6
+Version:	2.2.7
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -198,6 +198,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Mon May 5 2014 Tomas Popela <tpopela@redhat.com> 2.2.7-1
+- Update to 2.2.7
+
 * Wed Mar 19 2014 Tomas Popela <tpopela@redhat.com> 2.2.6-1
 - Update to 2.2.6
 

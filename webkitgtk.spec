@@ -7,7 +7,7 @@
 
 Name:		webkitgtk
 Version:	2.0.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -23,7 +23,7 @@ Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 Patch1:         webkit-1.11.2-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
 Patch2:         webkit-1.11.2-Double2Ints.patch
-Patch3:         webkitgtk-1.11.5-libatomic.patch
+Patch3:         webkitgtk-2.0.4-libatomic.patch
 Patch4:         webkit-1.11.90-double2intsPPC32.patch
 
 BuildRequires:	bison
@@ -209,6 +209,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed May 07 2014 Karsten Hopp <karsten@redhat.com> 2.0.4-2
+- update libatomic patch (PPC)
+
 * Mon Jul 22 2013 Tomas Popela <tpopela@redhat.com> - 2.0.4-1
 - Update to 2.0.4
 

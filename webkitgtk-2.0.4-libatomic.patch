@@ -1,7 +1,7 @@
-diff -up webkitgtk-1.11.90/GNUmakefile.in.libatomic webkitgtk-1.11.90/GNUmakefile.in
---- webkitgtk-1.11.90/GNUmakefile.in.libatomic	2013-02-21 19:07:19.000000000 +0100
-+++ webkitgtk-1.11.90/GNUmakefile.in	2013-02-25 11:31:34.824149062 +0100
-@@ -20933,6 +20933,7 @@ libWTF_la_CXXFLAGS = \
+diff -up webkitgtk-2.0.4/GNUmakefile.in.libatomic webkitgtk-2.0.4/GNUmakefile.in
+--- webkitgtk-2.0.4/GNUmakefile.in.libatomic	2013-07-19 14:12:04.000000000 +0200
++++ webkitgtk-2.0.4/GNUmakefile.in	2014-05-07 10:51:47.093160074 +0200
+@@ -20865,6 +20865,7 @@ libWTF_la_CXXFLAGS = \
  	$(libWTF_la_CFLAGS)
  
  libWTF_la_CFLAGS = \
@@ -9,40 +9,39 @@ diff -up webkitgtk-1.11.90/GNUmakefile.in.libatomic webkitgtk-1.11.90/GNUmakefil
  	-fstrict-aliasing \
  	-O3 \
  	$(global_cflags) \
-@@ -22305,7 +22306,7 @@ Programs_WebKitPluginProcess_SOURCES = \
- 
- #if ENABLE_SVG
- #endif
--Programs_WebKitPluginProcess_LDADD = -lpthread \
-+Programs_WebKitPluginProcess_LDADD = -latomic -lpthread \
- 	libjavascriptcoregtk-@WEBKITGTK_API_MAJOR_VERSION@.@WEBKITGTK_API_MINOR_VERSION@.la \
- 	libWebCore.la libWebCoreSVG.la libWebCorePlatform.la \
- 	libWebCoreGtk2.la $(CAIRO_LIBS) $(COVERAGE_LDFLAGS) \
-diff -up webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am.libatomic webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am
---- webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am.libatomic	2013-02-25 11:28:58.812154709 +0100
-+++ webkitgtk-1.11.90/Source/WebKit2/GNUmakefile.am	2013-02-25 11:29:14.906154126 +0100
-@@ -568,6 +568,7 @@ Programs_WebKitPluginProcess_SOURCES = \
+@@ -22243,6 +22244,7 @@ Programs_WebKitPluginProcess_SOURCES = \
  	$(webkit2_plugin_process_sources)
  
  Programs_WebKitPluginProcess_LDADD = \
-+    -latomic \
++	-latomic \
  	-lpthread \
  	libjavascriptcoregtk-@WEBKITGTK_API_MAJOR_VERSION@.@WEBKITGTK_API_MINOR_VERSION@.la \
- 	libWebCore.la
-diff -up webkitgtk-1.11.90/Source/WTF/GNUmakefile.am.libatomic webkitgtk-1.11.90/Source/WTF/GNUmakefile.am
---- webkitgtk-1.11.90/Source/WTF/GNUmakefile.am.libatomic	2012-07-19 12:02:14.000000000 +0200
-+++ webkitgtk-1.11.90/Source/WTF/GNUmakefile.am	2013-02-25 09:21:31.552243859 +0100
+ 	WebCoreLayerGtk2.a \
+diff -up webkitgtk-2.0.4/Source/WebKit2/GNUmakefile.am.libatomic webkitgtk-2.0.4/Source/WebKit2/GNUmakefile.am
+--- webkitgtk-2.0.4/Source/WebKit2/GNUmakefile.am.libatomic	2014-05-07 10:48:56.310086458 +0200
++++ webkitgtk-2.0.4/Source/WebKit2/GNUmakefile.am	2014-05-07 10:55:04.591306002 +0200
+@@ -604,6 +604,7 @@ Programs_WebKitPluginProcess_SOURCES = \
+ 	$(webkit2_plugin_process_sources)
+ 
+ Programs_WebKitPluginProcess_LDADD = \
++	-latomic \
+ 	-lpthread \
+ 	libjavascriptcoregtk-@WEBKITGTK_API_MAJOR_VERSION@.@WEBKITGTK_API_MINOR_VERSION@.la \
+ 	WebCoreLayerGtk2.a \
+diff -up webkitgtk-2.0.4/Source/WTF/GNUmakefile.am.libatomic webkitgtk-2.0.4/Source/WTF/GNUmakefile.am
+--- webkitgtk-2.0.4/Source/WTF/GNUmakefile.am.libatomic	2012-07-19 12:02:14.000000000 +0200
++++ webkitgtk-2.0.4/Source/WTF/GNUmakefile.am	2014-05-07 10:56:03.174272781 +0200
 @@ -25,6 +25,7 @@ libWTF_la_CXXFLAGS = \
  	$(libWTF_la_CFLAGS)
  
  libWTF_la_CFLAGS = \
-+   -latomic \
++	-latomic \
  	-fstrict-aliasing \
  	-O3 \
  	$(global_cflags) \
-diff -up webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h.libatomic webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h
---- webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h.libatomic	2013-01-29 11:00:42.000000000 +0100
-+++ webkitgtk-1.11.90/Source/WTF/wtf/Atomics.h	2013-02-25 09:21:31.553243859 +0100
+diff -up webkitgtk-2.0.4/Source/WTF/wtf/Atomics.h.libatomic webkitgtk-2.0.4/Source/WTF/wtf/Atomics.h
+--- webkitgtk-2.0.4/Source/WTF/wtf/Atomics.h.libatomic	2013-07-19 09:03:53.000000000 +0200
++++ webkitgtk-2.0.4/Source/WTF/wtf/Atomics.h	2014-05-07 10:59:32.066022384 +0200
 @@ -107,6 +107,17 @@ inline int atomicDecrement(int volatile*
  inline int atomicIncrement(int volatile* addend) { return __atomic_inc(addend) + 1; }
  inline int atomicDecrement(int volatile* addend) { return __atomic_dec(addend) - 1; }

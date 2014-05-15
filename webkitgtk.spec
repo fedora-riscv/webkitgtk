@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.1
-Release:	2%{?dist}
+Version:	2.4.2
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -23,7 +23,10 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
 Patch4:         webkit-2.1.90-double2intsPPC32.patch
-Patch10:        webkitgtk-aarch64.patch
+Patch5:         webkitgtk-aarch64.patch
+Patch6:         webkitgtk-2.4.1-cloop_fix.patch
+Patch7:         webkitgtk-2.4.1-ppc64_align.patch
+Patch8:         webkitgtk-2.4.2-ppc64le.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -91,31 +94,41 @@ This package contains developer documentation for %{name}.
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
 %endif
-%patch10 -p1 -b .aarch64
+%ifarch aarch64
+%patch5 -p1 -b .aarch64
+%endif
+%ifarch %{power64} s390x
+%patch6 -p1 -b .cloop_fix
+%endif
+%ifarch %{power64}
+%patch7 -p1 -b .ppc64_align
+%endif
+%patch8 -p1 -b .ppc64le
 
 %build
 %ifarch s390 %{arm} ppc
 # Use linker flags to reduce memory consumption on low-mem architectures
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 %endif
-%ifarch s390
+
+%ifarch s390 %{arm}
 # Decrease debuginfo verbosity to reduce memory consumption even more
-%global optflags %(echo %{optflags} | sed 's/-g/-g1/')
+%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
 %ifarch ppc
-# Use linker flag -relax to get WebKit2 build under ppc(32) with JIT disabled
-%global optflags %{optflags} -Wl,-relax
+# Use linker flag -relax to get WebKit build under ppc(32) with JIT disabled
+%global optflags %{optflags} -Wl,-relax -latomic
 %endif
 
-# Build with -g1 on all platforms to avoid running into 4 GB ar format limit
-# https://bugs.webkit.org/show_bug.cgi?id=91154
-%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+%ifarch s390 s390x ppc %{power64} aarch64
+%global optflags %{optflags} -DENABLE_YARR_JIT=0
+%endif
 
-CFLAGS="%{optflags} -DLIBSOUP_I_HAVE_READ_BUG_594377_AND_KNOW_SOUP_PASSWORD_MANAGER_MIGHT_GO_AWAY" %configure                                                   \
+%configure                                                      \
                         --with-gtk=2.0                          \
                         --disable-webkit2                       \
-%ifarch s390 s390x ppc ppc64 aarch64
+%ifarch s390 s390x ppc %{power64} aarch64
                         --disable-jit                           \
 %else
                         --enable-jit                            \
@@ -201,6 +214,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Thu May 15 2014 Tomas Popela <tpopela@redhat.com> 2.4.2-1
+- Update to 2.4.2
+- Fix for CLoop on ppc64, ppc64le and s390x
+
 * Fri Apr 25 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.1-2
 - Switch over to geoclue2
 

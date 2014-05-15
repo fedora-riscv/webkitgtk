@@ -106,10 +106,8 @@ This package contains developer documentation for %{name}.
 %patch8 -p1 -b .ppc64le
 
 %build
-%ifarch s390 %{arm} ppc
-# Use linker flags to reduce memory consumption on low-mem architectures
+# Use linker flags to reduce memory consumption
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
-%endif
 
 %ifarch s390 %{arm}
 # Decrease debuginfo verbosity to reduce memory consumption even more

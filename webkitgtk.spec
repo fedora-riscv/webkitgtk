@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -102,8 +102,8 @@ This package contains developer documentation for %{name}.
 %endif
 %ifarch %{power64}
 %patch7 -p1 -b .ppc64_align
-%endif
 %patch8 -p1 -b .ppc64le
+%endif
 
 %build
 # Use linker flags to reduce memory consumption
@@ -212,6 +212,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sun May 18 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.2-2
+- Fix aarch64 build
+
 * Thu May 15 2014 Tomas Popela <tpopela@redhat.com> 2.4.2-1
 - Update to 2.4.2
 - Fix for CLoop on ppc64, ppc64le and s390x

@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -21,11 +21,10 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper.
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
-# workarounds for non-JIT arches
-# https://bugs.webkit.org/show_bug.cgi?id=104270
-Patch1:         webkitgtk-2.1.1-yarr.patch
 # https://bugs.webkit.org/show_bug.cgi?id=103128
-Patch4:         webkit-2.1.90-double2intsPPC32.patch
+Patch1:         webkit-2.1.90-double2intsPPC32.patch
+Patch2:         webkitgtk-2.2.7-cloop_fix.patch
+Patch3:         webkitgtk-2.2.7-ppc64_align.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -84,9 +83,12 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
-%patch1 -p1 -b .yarr
+%patch2 -p1 -b .cloop_fix
 %ifarch ppc s390
-%patch4 -p1 -b .double2intsPPC32
+%patch1 -p1 -b .double2intsPPC32
+%endif
+%ifarch ppc64
+%patch3 -p1 -b .ppc64_align
 %endif
 
 %build
@@ -98,6 +100,10 @@ This package contains developer documentation for %{name}.
 %ifarch s390 %{arm}
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+%endif
+
+%ifarch s390 s390x ppc ppc64 aarch64
+%global optflags %{optflags} -DENABLE_YARR_JIT=0
 %endif
 
 %ifarch ppc
@@ -198,6 +204,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Mon May 26 2014 Tomas Popela <tpopela@redhat.com> - 2.2.7-2
+- Fix CLoop on s390x and ppc64
+- Disable yarr jit through flag and don't use patch for it
+
 * Mon May 5 2014 Tomas Popela <tpopela@redhat.com> 2.2.7-1
 - Update to 2.2.7
 

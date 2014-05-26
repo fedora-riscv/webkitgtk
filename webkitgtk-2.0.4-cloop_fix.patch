@@ -1,0 +1,90 @@
+diff -up webkitgtk-2.0.4/Source/JavaScriptCore/llint/LowLevelInterpreter.asm.cloop_fix webkitgtk-2.0.4/Source/JavaScriptCore/llint/LowLevelInterpreter.asm
+--- webkitgtk-2.0.4/Source/JavaScriptCore/llint/LowLevelInterpreter.asm.cloop_fix	2014-05-12 15:38:39.748538807 +0200
++++ webkitgtk-2.0.4/Source/JavaScriptCore/llint/LowLevelInterpreter.asm	2014-05-12 15:36:46.908580462 +0200
+@@ -541,7 +541,7 @@ end
+ 
+ macro putToBaseVariableBody(variableOffset, scratch1, scratch2, scratch3)
+     loadisFromInstruction(1, scratch1)
+-    loadp PayloadOffset[cfr, scratch1, 8], scratch1
++    loadp [cfr, scratch1, 8], scratch1
+     loadp JSVariableObject::m_registers[scratch1], scratch1
+     loadisFromInstruction(3, scratch2)
+     if JSVALUE64
+@@ -667,7 +667,7 @@ _llint_op_resolve_global_var:
+ macro resolveScopedVarBody(resolveOperations)
+     # First ResolveOperation is to skip scope chain nodes
+     getScope(macro(dest)
+-                 loadp ScopeChain + PayloadOffset[cfr], dest
++                 loadp ScopeChain[cfr], dest
+              end,
+              ResolveOperation::m_scopesToSkip[resolveOperations], t1, t2)
+     loadp JSVariableObject::m_registers[t1], t1 # t1 now contains the activation registers
+@@ -692,7 +692,7 @@ _llint_op_resolve_scoped_var_on_top_scop
+     loadisFromInstruction(1, t3)
+ 
+     # We know we want the top scope chain entry
+-    loadp ScopeChain + PayloadOffset[cfr], t1
++    loadp ScopeChain[cfr], t1
+     loadp JSVariableObject::m_registers[t1], t1 # t1 now contains the activation registers
+     
+     # Second ResolveOperation tells us what offset to use
+@@ -707,14 +707,14 @@ _llint_op_resolve_scoped_var_with_top_sc
+     # First ResolveOperation tells us what register to check
+     loadis ResolveOperation::m_activationRegister[t0], t1
+ 
+-    loadp PayloadOffset[cfr, t1, 8], t1
++    loadp [cfr, t1, 8], t1
+ 
+     getScope(macro(dest)
+                  btpz t1, .scopeChainNotCreated
+                      loadp JSScope::m_next[t1], dest
+                  jmp .done
+                  .scopeChainNotCreated:
+-                     loadp ScopeChain + PayloadOffset[cfr], dest
++                     loadp ScopeChain[cfr], dest
+                  .done:
+              end, 
+              # Second ResolveOperation tells us how many more nodes to skip
+@@ -769,7 +769,7 @@ _llint_op_resolve_base_to_scope:
+     getResolveOperation(4, t0)
+     # First ResolveOperation is to skip scope chain nodes
+     getScope(macro(dest)
+-                 loadp ScopeChain + PayloadOffset[cfr], dest
++                 loadp ScopeChain[cfr], dest
+              end,
+              ResolveOperation::m_scopesToSkip[t0], t1, t2)
+     loadisFromInstruction(1, t3)
+@@ -787,14 +787,14 @@ _llint_op_resolve_base_to_scope_with_top
+     # First ResolveOperation tells us what register to check
+     loadis ResolveOperation::m_activationRegister[t0], t1
+ 
+-    loadp PayloadOffset[cfr, t1, 8], t1
++    loadp [cfr, t1, 8], t1
+ 
+     getScope(macro(dest)
+                  btpz t1, .scopeChainNotCreated
+                      loadp JSScope::m_next[t1], dest
+                  jmp .done
+                  .scopeChainNotCreated:
+-                     loadp ScopeChain + PayloadOffset[cfr], dest
++                     loadp ScopeChain[cfr], dest
+                  .done:
+              end, 
+              # Second ResolveOperation tells us how many more nodes to skip
+@@ -839,14 +839,14 @@ macro interpretResolveWithBase(opcodeLen
+ 
+     bineq t2, ResolveOperationSkipTopScopeNode, .notSkipTopScopeNode
+         loadis ResolveOperation::m_activationRegister[t0], t1
+-        loadp PayloadOffset[cfr, t1, 8], t1
++        loadp [cfr, t1, 8], t1
+ 
+         getScope(macro(dest)
+                      btpz t1, .scopeChainNotCreated
+                          loadp JSScope::m_next[t1], dest
+                      jmp .done
+                      .scopeChainNotCreated:
+-                         loadp ScopeChain + PayloadOffset[cfr], dest
++                          loadp ScopeChain[cfr], dest
+                      .done:
+                  end,
+                  sizeof ResolveOperation + ResolveOperation::m_scopesToSkip[t0], t1, t2)

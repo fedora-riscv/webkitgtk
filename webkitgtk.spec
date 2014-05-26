@@ -7,7 +7,7 @@
 
 Name:		webkitgtk
 Version:	2.0.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,6 +25,8 @@ Patch1:         webkit-1.11.2-yarr.patch
 Patch2:         webkit-1.11.2-Double2Ints.patch
 Patch3:         webkitgtk-2.0.4-libatomic.patch
 Patch4:         webkit-1.11.90-double2intsPPC32.patch
+Patch5:         webkitgtk-2.0.4-cloop_fix.patch
+Patch6:         webkitgtk-2.0.4-ppc64_align.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -98,6 +100,12 @@ This package contains developer documentation for %{name}.
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
+%endif
+%ifarch ppc64 s390x
+%patch5 -p1 -b .cloop_fix
+%endif
+%ifarch ppc64
+%patch6 -p1 -b .ppc64_align
 %endif
 
 # Needed for patch5:
@@ -209,6 +217,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Mon May 26 2014 Tomas Popela <tpopela@redhat.com> - 2.0.4-3
+- Fix CLoop on s390x and ppc64
+
 * Wed May 07 2014 Karsten Hopp <karsten@redhat.com> 2.0.4-2
 - update libatomic patch (PPC)
 

@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.2
-Release:	2%{?dist}
+Version:	2.4.3
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -212,6 +212,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue May 27 2014 Tomas Popela <tpopela@redhat.com> 2.4.3-1
+- Update to 2.4.3
+
 * Sun May 18 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.2-2
 - Fix aarch64 build
 

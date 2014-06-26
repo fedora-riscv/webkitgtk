@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -100,8 +100,10 @@ This package contains developer documentation for %{name}.
 %ifarch %{power64} s390x
 %patch6 -p1 -b .cloop_fix
 %endif
-%ifarch %{power64}
+%ifarch %{power64} aarch64
 %patch7 -p1 -b .ppc64_align
+%endif
+%ifarch %{power64}
 %patch8 -p1 -b .ppc64le
 %endif
 
@@ -212,6 +214,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Jun 25 2014 Yaakov Selkowitz <yselkowi@redhat.com> - 2.4.3-3
+- Fix for 64k pages on aarch64 (#1074093, #1113347)
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 

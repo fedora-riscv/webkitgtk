@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.3
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -27,6 +27,9 @@ Patch5:         webkitgtk-aarch64.patch
 Patch6:         webkitgtk-2.4.1-cloop_fix.patch
 Patch7:         webkitgtk-2.4.1-ppc64_align.patch
 Patch8:         webkitgtk-2.4.2-ppc64le.patch
+# https://bugs.webkit.org/show_bug.cgi?id=134593
+# Remove when 2.4.4 will be out
+Patch9:         webkitgtk-2.4.3-angle_symbol_table.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -90,6 +93,7 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
+%patch9 -p1 -b .angle_symbol_table
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
@@ -214,6 +218,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Jul 04 2014 Tomas Popela <tpopela@redhat.com> 2.4.3-4
+- rhbz#1088480 - [abrt] libwebkit2gtk: TSymbolTableLevel::~TSymbolTableLevel(): WebKitWebProcess killed by SIGSEGV
+
 * Wed Jun 25 2014 Yaakov Selkowitz <yselkowi@redhat.com> - 2.4.3-3
 - Fix for 64k pages on aarch64 (#1074093, #1113347)
 

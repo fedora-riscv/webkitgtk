@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -33,7 +33,6 @@ BuildRequires:	chrpath
 BuildRequires:	enchant-devel
 BuildRequires:	flex
 BuildRequires:	geoclue2-devel
-BuildRequires:	geoclue-devel
 BuildRequires:	gettext
 BuildRequires:	gperf
 BuildRequires:	gstreamer1-devel
@@ -213,6 +212,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-3
+* Remove geoclue-devel from BR
+
 * Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-2
 - Fix CLoop on ppc32 and s390
 - Add geoclue-devel as BR as WK1 needs it

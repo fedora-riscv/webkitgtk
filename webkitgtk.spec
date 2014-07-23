@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.2.7
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -87,7 +87,7 @@ This package contains developer documentation for %{name}.
 %ifarch ppc s390
 %patch1 -p1 -b .double2intsPPC32
 %endif
-%ifarch ppc64
+%ifarch ppc64 ppc
 %patch3 -p1 -b .ppc64_align
 %endif
 
@@ -204,6 +204,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.2.7-3
+- Fix CLoop on s390 and ppc
+
 * Mon May 26 2014 Tomas Popela <tpopela@redhat.com> - 2.2.7-2
 - Fix CLoop on s390x and ppc64
 - Disable yarr jit through flag and don't use patch for it

@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -33,6 +33,7 @@ BuildRequires:	chrpath
 BuildRequires:	enchant-devel
 BuildRequires:	flex
 BuildRequires:	geoclue2-devel
+BuildRequires:	geoclue-devel
 BuildRequires:	gettext
 BuildRequires:	gperf
 BuildRequires:	gstreamer1-devel
@@ -90,6 +91,7 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
+%patch6 -p1 -b .cloop_fix
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch4 -p1 -b .double2intsPPC32
@@ -97,10 +99,7 @@ This package contains developer documentation for %{name}.
 %ifarch aarch64
 %patch5 -p1 -b .aarch64
 %endif
-%ifarch %{power64} s390x
-%patch6 -p1 -b .cloop_fix
-%endif
-%ifarch %{power64} aarch64
+%ifarch %{power64} aarch64 ppc
 %patch7 -p1 -b .ppc64_align
 %endif
 %ifarch %{power64}
@@ -214,6 +213,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-2
+- Fix CLoop on ppc32 and s390
+- Add geoclue-devel as BR as WK1 needs it
+
 * Thu Jul 10 2014 Tomas Popela <tpopela@redhat.com> 2.4.4-1
 - Update to 2.4.4
 

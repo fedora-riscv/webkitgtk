@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -212,6 +212,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-3
 * Remove geoclue-devel from BR
 

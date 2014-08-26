@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.4
-Release:	4%{?dist}
+Version:	2.4.5
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -21,12 +21,10 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper.
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
-# https://bugs.webkit.org/show_bug.cgi?id=103128
-Patch4:         webkit-2.1.90-double2intsPPC32.patch
-Patch5:         webkitgtk-aarch64.patch
-Patch6:         webkitgtk-2.4.1-cloop_fix.patch
-Patch7:         webkitgtk-2.4.1-ppc64_align.patch
-Patch8:         webkitgtk-2.4.2-ppc64le.patch
+Patch1:         webkitgtk-aarch64.patch
+Patch2:         webkitgtk-2.4.1-cloop_fix.patch
+Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
+Patch4:         webkitgtk-2.4.1-ppc64_align.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -90,19 +88,16 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
-%patch6 -p1 -b .cloop_fix
+%patch2 -p1 -b .cloop_fix
 # required for 32-bit big-endians
 %ifarch ppc s390
-%patch4 -p1 -b .double2intsPPC32
+%patch3 -p1 -b .cloop_fix_32
 %endif
 %ifarch aarch64
-%patch5 -p1 -b .aarch64
+%patch1 -p1 -b .aarch64
 %endif
 %ifarch %{power64} aarch64 ppc
-%patch7 -p1 -b .ppc64_align
-%endif
-%ifarch %{power64}
-%patch8 -p1 -b .ppc64le
+%patch4 -p1 -b .ppc64_align
 %endif
 
 %build
@@ -212,11 +207,14 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Aug 26 2014 Tomas Popela <tpopela@redhat.com> - 2.4.5-1
+- Update to 2.4.5
+
 * Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
 * Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-3
-* Remove geoclue-devel from BR
+- Remove geoclue-devel from BR
 
 * Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-2
 - Fix CLoop on ppc32 and s390

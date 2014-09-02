@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.5
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -88,13 +88,11 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
+%patch1 -p1 -b .aarch64
 %patch2 -p1 -b .cloop_fix
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch3 -p1 -b .cloop_fix_32
-%endif
-%ifarch aarch64
-%patch1 -p1 -b .aarch64
 %endif
 %ifarch %{power64} aarch64 ppc
 %patch4 -p1 -b .ppc64_align
@@ -207,6 +205,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Sep 02 2014 Tomas Popela <tpopela@redhat.com> - 2.4.5-2
+- Rebase the aarch64 patch
+
 * Tue Aug 26 2014 Tomas Popela <tpopela@redhat.com> - 2.4.5-1
 - Update to 2.4.5
 

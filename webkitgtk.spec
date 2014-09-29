@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.5
-Release:	3%{?dist}
+Version:	2.4.6
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -205,6 +205,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Sep 29 2014 Tomas Popela <tpopela@redhat.com> - 2.4.6-1
+- Update to 2.4.6
+
 * Tue Sep 02 2014 Tomas Popela <tpopela@redhat.com> - 2.4.5-3
 - Rebase the aarch64 patch
 

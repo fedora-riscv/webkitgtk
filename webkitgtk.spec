@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.2.7
-Release:	3%{?dist}
+Version:	2.2.8
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -204,6 +204,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Wed Oct 01 2014 Tomas Popela <tpopela@redhat.com> - 2.2.8-1
+- Update to 2.2.8
+
 * Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.2.7-3
 - Fix CLoop on s390 and ppc
 

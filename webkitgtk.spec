@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.8
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,6 +25,10 @@ Patch1:         webkitgtk-aarch64.patch
 Patch2:         webkitgtk-2.4.1-cloop_fix.patch
 Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
 Patch4:         webkitgtk-2.4.1-ppc64_align.patch
+# https://bugs.webkit.org/show_bug.cgi?id=126324
+Patch5:         webkitgtk-2.4.8-gcc5.patch
+# https://bugs.webkit.org/show_bug.cgi?id=141381
+Patch6:         webkitgtk-2.4.8-gmutexlocker.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -90,6 +94,8 @@ This package contains developer documentation for %{name}.
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .aarch64
 %patch2 -p1 -b .cloop_fix
+%patch5 -p1 -b .gcc5
+%patch6 -p1 -b .gmutex_locker
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch3 -p1 -b .cloop_fix_32
@@ -115,6 +121,9 @@ This package contains developer documentation for %{name}.
 %ifarch s390 s390x ppc %{power64} aarch64
 %global optflags %{optflags} -DENABLE_YARR_JIT=0
 %endif
+
+# Regenerate configure to pick up the gcc 5.0 changes
+autoreconf -v
 
 %configure                                                      \
                         --with-gtk=2.0                          \
@@ -205,6 +214,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Feb 18 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-3
+- Add support for gcc 5.0
+- Let the package compile with latest glib
+
 * Mon Jan 26 2015 David Tardon <dtardon@redhat.com> - 2.4.8-2
 - rebuild for ICU 54.1
 

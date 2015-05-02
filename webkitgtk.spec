@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.8
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -214,6 +214,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 2.4.8-4
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Wed Feb 18 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-3
 - Add support for gcc 5.0
 - Let the package compile with latest glib

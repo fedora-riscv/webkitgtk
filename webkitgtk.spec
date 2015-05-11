@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.8
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -29,6 +29,8 @@ Patch4:         webkitgtk-2.4.1-ppc64_align.patch
 Patch5:         webkitgtk-2.4.8-gcc5.patch
 # https://bugs.webkit.org/show_bug.cgi?id=141381
 Patch6:         webkitgtk-2.4.8-gmutexlocker.patch
+# https://bugs.webkit.org/show_bug.cgi?id=142074
+Patch7:         webkitgtk-2.4.8-user-agent.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -96,6 +98,7 @@ This package contains developer documentation for %{name}.
 %patch2 -p1 -b .cloop_fix
 %patch5 -p1 -b .gcc5
 %patch6 -p1 -b .gmutex_locker
+%patch7 -p1 -b .user_agent
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch3 -p1 -b .cloop_fix_32
@@ -124,6 +127,10 @@ This package contains developer documentation for %{name}.
 
 # Regenerate configure to pick up the gcc 5.0 changes
 autoreconf -v
+
+%if 0%{?fedora}
+%global optflags %{optflags} -DUSER_AGENT_GTK_DISTRIBUTOR_NAME=\'\\"Fedora\\"\'
+%endif
 
 %configure                                                      \
                         --with-gtk=2.0                          \
@@ -214,6 +221,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon May 11 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-4
+- Add Fedora branding to the user agent
+
 * Wed Feb 18 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-3
 - Add support for gcc 5.0
 - Let the package compile with latest glib

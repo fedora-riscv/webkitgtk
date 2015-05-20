@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.8
-Release:	4%{?dist}
+Version:	2.4.9
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,12 +25,8 @@ Patch1:         webkitgtk-aarch64.patch
 Patch2:         webkitgtk-2.4.1-cloop_fix.patch
 Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
 Patch4:         webkitgtk-2.4.1-ppc64_align.patch
-# https://bugs.webkit.org/show_bug.cgi?id=126324
-Patch5:         webkitgtk-2.4.8-gcc5.patch
-# https://bugs.webkit.org/show_bug.cgi?id=141381
-Patch6:         webkitgtk-2.4.8-gmutexlocker.patch
 # https://bugs.webkit.org/show_bug.cgi?id=142074
-Patch7:         webkitgtk-2.4.8-user-agent.patch
+Patch5:         webkitgtk-2.4.8-user-agent.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -96,9 +92,7 @@ This package contains developer documentation for %{name}.
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .aarch64
 %patch2 -p1 -b .cloop_fix
-%patch5 -p1 -b .gcc5
-%patch6 -p1 -b .gmutex_locker
-%patch7 -p1 -b .user_agent
+%patch5 -p1 -b .user_agent
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch3 -p1 -b .cloop_fix_32
@@ -221,6 +215,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed May 20 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-1
+- Update to 2.4.9
+
 * Mon May 11 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-4
 - Add Fedora branding to the user agent
 

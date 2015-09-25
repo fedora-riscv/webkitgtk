@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,6 +25,8 @@ Patch1:         webkitgtk-aarch64.patch
 Patch2:         webkitgtk-2.4.1-cloop_fix.patch
 Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
 Patch4:         webkitgtk-2.4.1-ppc64_align.patch
+# http://trac.webkit.org/changeset/169665
+Patch5:         webkitgtk-2.4.9-sql_initialize_string.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -90,6 +92,7 @@ This package contains developer documentation for %{name}.
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .aarch64
 %patch2 -p1 -b .cloop_fix
+%patch5 -p1 -b .sql_initialize_string
 # required for 32-bit big-endians
 %ifarch ppc s390
 %patch3 -p1 -b .cloop_fix_32
@@ -205,6 +208,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Sep 25 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-2
+- rhbz#1189303 - [abrt] midori: WebCore::SQLiteStatement::prepare(): midori killed by SIGSEGV
+  Initialize string in SQLiteStatement before using it
+
 * Thu May 21 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-1
 - Update to 2.4.9
 

@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -218,6 +218,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 2.4.9-4
+- rebuild for ICU 56.1
+
 * Fri Sep 25 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-3
 - rhbz#1189303 - [abrt] midori: WebCore::SQLiteStatement::prepare(): midori killed by SIGSEGV
   Initialize string in SQLiteStatement before using it

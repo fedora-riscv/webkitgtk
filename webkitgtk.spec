@@ -9,7 +9,7 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.2.4
+Version:	2.4.9
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
@@ -21,17 +21,19 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper.
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
-# workarounds for non-JIT arches
-# https://bugs.webkit.org/show_bug.cgi?id=104270
-Patch1:         webkitgtk-2.1.1-yarr.patch
-# https://bugs.webkit.org/show_bug.cgi?id=103128
-Patch4:         webkit-2.1.90-double2intsPPC32.patch
+Patch1:         webkitgtk-aarch64.patch
+Patch2:         webkitgtk-2.4.1-cloop_fix.patch
+Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
+Patch4:         webkitgtk-2.4.1-ppc64_align.patch
+Patch5:         webkitgtk-2.4.9-disable_deprecated_get_set_id.patch
+# http://trac.webkit.org/changeset/169665
+Patch6:         webkitgtk-2.4.9-sql_initialize_string.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
 BuildRequires:	enchant-devel
 BuildRequires:	flex
-BuildRequires:	geoclue-devel
+BuildRequires:	geoclue2-devel
 BuildRequires:	gettext
 BuildRequires:	gperf
 BuildRequires:	gstreamer1-devel
@@ -56,6 +58,11 @@ BuildRequires:	cairo-devel
 BuildRequires:	cairo-gobject-devel
 BuildRequires:	fontconfig-devel >= 2.5
 BuildRequires:	freetype-devel
+Requires:	geoclue2
+
+%ifarch ppc
+BuildRequires:  libatomic
+%endif
 
 %description
 WebKitGTK+ is the port of the portable web rendering engine WebKit to the
@@ -84,35 +91,40 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
-%patch1 -p1 -b .yarr
+%patch1 -p1 -b .aarch64
+%patch2 -p1 -b .cloop_fix
+%patch5 -p1 -b .disable_deprecated_get_id
+%patch6 -p1 -b .sql_initialize_string
+# required for 32-bit big-endians
 %ifarch ppc s390
-%patch4 -p1 -b .double2intsPPC32
+%patch3 -p1 -b .cloop_fix_32
+%endif
+%ifarch %{power64} aarch64 ppc
+%patch4 -p1 -b .ppc64_align
 %endif
 
 %build
-%ifarch s390 %{arm} ppc
-# Use linker flags to reduce memory consumption on low-mem architectures
+# Use linker flags to reduce memory consumption
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
-%endif
 
-%ifarch s390 s390x %{arm}
+%ifarch s390 %{arm}
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
 %ifarch ppc
-# Use linker flag -relax to get WebKit2 build under ppc(32) with JIT disabled
-%global optflags %{optflags} -Wl,-relax
+# Use linker flag -relax to get WebKit build under ppc(32) with JIT disabled
+%global optflags %{optflags} -Wl,-relax -latomic
 %endif
 
-# Build with -g1 on all platforms to avoid running into 4 GB ar format limit
-# https://bugs.webkit.org/show_bug.cgi?id=91154
-%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+%ifarch s390 s390x ppc %{power64} aarch64
+%global optflags %{optflags} -DENABLE_YARR_JIT=0
+%endif
 
 %configure                                                      \
                         --with-gtk=2.0                          \
                         --disable-webkit2                       \
-%ifarch s390 s390x ppc ppc64
+%ifarch s390 s390x ppc %{power64} aarch64
                         --disable-jit                           \
 %else
                         --enable-jit                            \
@@ -122,11 +134,11 @@ This package contains developer documentation for %{name}.
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/WebCore
 mkdir -p DerivedSources/ANGLE
+mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
 mkdir -p DerivedSources/WebKit2
 mkdir -p DerivedSources/webkitdom/
 mkdir -p DerivedSources/InjectedBundle
 mkdir -p DerivedSources/Platform
-mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
 
 make %{_smp_mflags} V=1
 
@@ -190,6 +202,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
 %{_datadir}/gir-1.0/WebKit-1.0.gir
 %{_datadir}/gir-1.0/JavaScriptCore-1.0.gir
+%{_datadir}/gtk-doc/html/webkitdomgtk
 
 %files doc
 %dir %{_datadir}/gtk-doc
@@ -198,6 +211,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 
 %changelog
+* Mon Nov 30 2015 Tomas Popela <tpopela@redhat.com> 2.4.9-1
+- Update to 2.4.9
+- Resolves: rhbz#1198713
+
 * Tue Jan 21 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-1
 - Update to 2.2.4
 

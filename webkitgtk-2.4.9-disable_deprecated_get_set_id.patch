@@ -1,0 +1,38 @@
+diff -up webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.cpp.disable_deprecated_get_set_id webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.cpp
+--- webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.cpp.disable_deprecated_get_set_id	2015-06-22 14:33:06.800967146 +0200
++++ webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.cpp	2015-06-22 14:35:19.296072294 +0200
+@@ -39,13 +39,11 @@ WebKitDOMBlob* webkit_dom_blob_webkit_sl
+ 
+ gchar* webkit_dom_html_element_get_id(WebKitDOMHTMLElement* element)
+ {
+-    g_warning("The get_id method on WebKitDOMHTMLElement is deprecated. Use the one in WebKitDOMElement instead.");
+     return webkit_dom_element_get_id(WEBKIT_DOM_ELEMENT(element));
+ }
+ 
+ void webkit_dom_html_element_set_id(WebKitDOMHTMLElement* element, const gchar* value)
+ {
+-    g_warning("The set_id method on WebKitDOMHTMLElement is deprecated. Use the one in WebKitDOMElement instead.");
+     webkit_dom_element_set_id(WEBKIT_DOM_ELEMENT(element), value);
+ }
+ 
+diff -up webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.h.disable_deprecated_get_set_id webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.h
+--- webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.h.disable_deprecated_get_set_id	2015-06-22 14:33:12.813062669 +0200
++++ webkitgtk-2.4.9/Source/WebCore/bindings/gobject/WebKitDOMDeprecated.h	2015-06-22 14:34:00.548821118 +0200
+@@ -49,7 +49,7 @@ webkit_dom_blob_webkit_slice(WebKitDOMBl
+  *
+  * Deprecated: 2.2: Use webkit_dom_element_get_id() instead.
+  */
+-WEBKIT_DEPRECATED_FOR(webkit_dom_element_get_id) gchar*
++WEBKIT_API gchar*
+ webkit_dom_html_element_get_id(WebKitDOMHTMLElement* self);
+ 
+ /**
+@@ -59,7 +59,7 @@ webkit_dom_html_element_get_id(WebKitDOM
+  *
+  * Deprecated: 2.2: Use webkit_dom_element_set_id() instead.
+  */
+-WEBKIT_DEPRECATED_FOR(webkit_dom_element_set_id) void
++WEBKIT_API void
+ webkit_dom_html_element_set_id(WebKitDOMHTMLElement* self, const gchar* value);
+ 
+ /**

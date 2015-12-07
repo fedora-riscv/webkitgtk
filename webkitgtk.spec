@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -215,6 +215,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Dec 07 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-5
+- rhbz#1289053 - Retire nspluginwrapper and remove from Fedora 24
+
 * Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 2.4.9-4
 - rebuild for ICU 56.1
 

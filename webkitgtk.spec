@@ -19,16 +19,14 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
-# add support for nspluginwrapper.
-Patch0: 	webkit-1.3.10-nspluginwrapper.patch
-Patch1:         webkitgtk-aarch64.patch
-Patch2:         webkitgtk-2.4.1-cloop_fix.patch
-Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
-Patch4:         webkitgtk-2.4.1-ppc64_align.patch
+Patch0:         webkitgtk-aarch64.patch
+Patch1:         webkitgtk-2.4.1-cloop_fix.patch
+Patch2:         webkitgtk-2.4.5-cloop_fix_32.patch
+Patch3:         webkitgtk-2.4.1-ppc64_align.patch
 # https://bugs.webkit.org/show_bug.cgi?id=142074
-Patch5:         webkitgtk-2.4.8-user-agent.patch
+Patch4:         webkitgtk-2.4.8-user-agent.patch
 # http://trac.webkit.org/changeset/169665
-Patch6:         webkitgtk-2.4.9-sql_initialize_string.patch
+Patch5:         webkitgtk-2.4.9-sql_initialize_string.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -91,17 +89,16 @@ This package contains developer documentation for %{name}.
 
 %prep
 %setup -qn "webkitgtk-%{version}"
-%patch0 -p1 -b .nspluginwrapper
-%patch1 -p1 -b .aarch64
-%patch2 -p1 -b .cloop_fix
-%patch5 -p1 -b .user_agent
-%patch6 -p1 -b .sql_initialize_string
+%patch0 -p1 -b .aarch64
+%patch1 -p1 -b .cloop_fix
+%patch4 -p1 -b .user_agent
+%patch5 -p1 -b .sql_initialize_string
 # required for 32-bit big-endians
 %ifarch ppc s390
-%patch3 -p1 -b .cloop_fix_32
+%patch2 -p1 -b .cloop_fix_32
 %endif
 %ifarch %{power64} aarch64 ppc
-%patch4 -p1 -b .ppc64_align
+%patch3 -p1 -b .ppc64_align
 %endif
 
 %build

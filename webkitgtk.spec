@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -94,7 +94,7 @@ This package contains developer documentation for %{name}.
 %patch4 -p1 -b .user_agent
 %patch5 -p1 -b .sql_initialize_string
 # required for 32-bit big-endians
-%ifarch ppc s390
+%ifarch ppc s390 mips
 %patch2 -p1 -b .cloop_fix_32
 %endif
 %ifarch %{power64} aarch64 ppc
@@ -105,7 +105,7 @@ This package contains developer documentation for %{name}.
 # Use linker flags to reduce memory consumption
 %global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 
-%ifarch s390 %{arm}
+%ifarch s390 %{arm} mips mipsel
 # Decrease debuginfo verbosity to reduce memory consumption even more
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
@@ -115,7 +115,7 @@ This package contains developer documentation for %{name}.
 %global optflags %{optflags} -Wl,-relax -latomic
 %endif
 
-%ifarch s390 s390x ppc %{power64} aarch64
+%ifarch s390 s390x ppc %{power64} aarch64 %{mips}
 %global optflags %{optflags} -DENABLE_YARR_JIT=0
 %endif
 
@@ -129,7 +129,7 @@ autoreconf -v
 %configure                                                      \
                         --with-gtk=2.0                          \
                         --disable-webkit2                       \
-%ifarch s390 s390x ppc %{power64} aarch64
+%ifarch s390 s390x ppc %{power64} aarch64 %{mips}
                         --disable-jit                           \
 %else
                         --enable-jit                            \
@@ -215,6 +215,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Dec 30 2015 Michal Toman <mtoman@fedoraproject.org> - 2.4.9-7
+- Add support for MIPS
+
 * Mon Dec 28 2015 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 2.4.9-6
 - Rebuilt for libwebp soname bump
 

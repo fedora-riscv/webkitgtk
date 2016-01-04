@@ -4,7 +4,7 @@
 ## NOTE: Lots of files in various subdirectories have the same name (such as
 ## "LICENSE") so this short macro allows us to distinguish them by using their
 ## directory names (from the source tree) as prefixes for the files.
-%define 	add_to_doc_files()	\
+%global 	add_to_doc_files()	\
 	mkdir -p %{buildroot}%{_pkgdocdir} ||: ; \
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 

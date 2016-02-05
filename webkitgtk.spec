@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -215,6 +215,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.9-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Wed Dec 30 2015 Michal Toman <mtoman@fedoraproject.org> - 2.4.9-7
 - Add support for MIPS
 

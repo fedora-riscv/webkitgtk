@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -27,6 +27,7 @@ Patch3:         webkitgtk-2.4.1-ppc64_align.patch
 Patch4:         webkitgtk-2.4.8-user-agent.patch
 # http://trac.webkit.org/changeset/169665
 Patch5:         webkitgtk-2.4.9-sql_initialize_string.patch
+Patch6:         webkitgtk-2.4.9-abs.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -93,6 +94,7 @@ This package contains developer documentation for %{name}.
 %patch1 -p1 -b .cloop_fix
 %patch4 -p1 -b .user_agent
 %patch5 -p1 -b .sql_initialize_string
+%patch6 -p1
 # required for 32-bit big-endians
 %ifarch ppc s390 mips
 %patch2 -p1 -b .cloop_fix_32
@@ -215,6 +217,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sun Feb 07 2016 Kevin Fenzi <kevin@scrye.com> - 2.4.9-9
+- Add patch to fix FTBFS
+
 * Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.9-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 

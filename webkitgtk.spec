@@ -53,7 +53,7 @@ BuildRequires:	sqlite-devel
 BuildRequires:	gobject-introspection-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  gtk-doc
-BuildRequires:  ruby
+BuildRequires:  ruby rubypick rubygems
 BuildRequires:	cairo-devel
 BuildRequires:	cairo-gobject-devel
 BuildRequires:	fontconfig-devel >= 2.5
@@ -217,6 +217,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Feb  9 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.9-10
+- Add ruby deps for build
+
 * Sun Feb 07 2016 Kevin Fenzi <kevin@scrye.com> - 2.4.9-9
 - Add patch to fix FTBFS
 

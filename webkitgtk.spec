@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.9
-Release:	10%{?dist}
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -19,15 +19,9 @@ URL:		http://www.webkitgtk.org/
 
 Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
-Patch0:         webkitgtk-aarch64.patch
-Patch1:         webkitgtk-2.4.1-cloop_fix.patch
-Patch2:         webkitgtk-2.4.5-cloop_fix_32.patch
-Patch3:         webkitgtk-2.4.1-ppc64_align.patch
 # https://bugs.webkit.org/show_bug.cgi?id=142074
-Patch4:         webkitgtk-2.4.8-user-agent.patch
-# http://trac.webkit.org/changeset/169665
-Patch5:         webkitgtk-2.4.9-sql_initialize_string.patch
-Patch6:         webkitgtk-2.4.9-abs.patch
+Patch0:         webkitgtk-2.4.8-user-agent.patch
+Patch1:         webkitgtk-2.4.9-abs.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -90,18 +84,8 @@ This package contains developer documentation for %{name}.
 
 %prep
 %setup -qn "webkitgtk-%{version}"
-%patch0 -p1 -b .aarch64
-%patch1 -p1 -b .cloop_fix
-%patch4 -p1 -b .user_agent
-%patch5 -p1 -b .sql_initialize_string
-%patch6 -p1
-# required for 32-bit big-endians
-%ifarch ppc s390 mips
-%patch2 -p1 -b .cloop_fix_32
-%endif
-%ifarch %{power64} aarch64 ppc
-%patch3 -p1 -b .ppc64_align
-%endif
+%patch0 -p1 -b .user_agent
+%patch1 -p1 -b .abs
 
 %build
 # Use linker flags to reduce memory consumption
@@ -217,6 +201,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Mar 14 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-1
+- Update to 2.4.10
+
 * Tue Feb  9 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.9-10
 - Add ruby deps for build
 

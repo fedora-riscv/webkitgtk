@@ -21,14 +21,8 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 
 # add support for nspluginwrapper.
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
-Patch1:         webkitgtk-aarch64.patch
-Patch2:         webkitgtk-2.4.1-cloop_fix.patch
-Patch3:         webkitgtk-2.4.5-cloop_fix_32.patch
-Patch4:         webkitgtk-2.4.1-ppc64_align.patch
 # https://bugs.webkit.org/show_bug.cgi?id=142074
-Patch5:         webkitgtk-2.4.8-user-agent.patch
-# http://trac.webkit.org/changeset/169665
-Patch6:         webkitgtk-2.4.9-sql_initialize_string.patch
+Patch1:         webkitgtk-2.4.8-user-agent.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -92,17 +86,7 @@ This package contains developer documentation for %{name}.
 %prep
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
-%patch1 -p1 -b .aarch64
-%patch2 -p1 -b .cloop_fix
-%patch5 -p1 -b .user_agent
-%patch6 -p1 -b .sql_initialize_string
-# required for 32-bit big-endians
-%ifarch ppc s390
-%patch3 -p1 -b .cloop_fix_32
-%endif
-%ifarch %{power64} aarch64 ppc
-%patch4 -p1 -b .ppc64_align
-%endif
+%patch1 -p1 -b .user_agent
 
 %build
 # Use linker flags to reduce memory consumption
@@ -218,6 +202,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Mar 14 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-1
+- Update to 2.4.10
+
 * Fri Sep 25 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-3
 - rhbz#1189303 - [abrt] midori: WebCore::SQLiteStatement::prepare(): midori killed by SIGSEGV
   Initialize string in SQLiteStatement before using it

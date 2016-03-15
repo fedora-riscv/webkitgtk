@@ -9,7 +9,7 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.9
+Version:	2.4.10
 Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 

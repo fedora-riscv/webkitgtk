@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.10
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -108,6 +108,11 @@ This package contains developer documentation for %{name}.
 # Regenerate configure to pick up the gcc 5.0 changes
 autoreconf -v
 
+# Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1320240
+%ifarch s390 s390x ppc %{power64} aarch64 %{mips}
+%global optflags %{optflags} -fno-delete-null-pointer-checks
+%endif
+
 %if 0%{?fedora}
 %global optflags %{optflags} -DUSER_AGENT_GTK_DISTRIBUTOR_NAME=\'\\"Fedora\\"\'
 %endif
@@ -201,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Thu Mar 24 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-2
+- Add a workaround for rhbz#1320240
+
 * Mon Mar 14 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-1
 - Update to 2.4.10
 

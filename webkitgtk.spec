@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.10
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -22,6 +22,8 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 # https://bugs.webkit.org/show_bug.cgi?id=142074
 Patch0:         webkitgtk-2.4.8-user-agent.patch
 Patch1:         webkitgtk-2.4.9-abs.patch
+# http://trac.webkit.org/changeset/165044
+Patch2:         webkitgtk-2.4.10-qualified-name.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -86,6 +88,7 @@ This package contains developer documentation for %{name}.
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .user_agent
 %patch1 -p1 -b .abs
+%patch2 -p1 -b .qualified-name
 
 %build
 # Use linker flags to reduce memory consumption
@@ -206,6 +209,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Apr 05 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-3
+- rhbz#1321722 - [abrt] evolution: WTF::StringImpl::startsWith(): SIGSEGV with webkitgtk3-2.4.10
+
 * Thu Mar 24 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-2
 - Add a workaround for rhbz#1320240
 

@@ -1,0 +1,12 @@
+diff -up webkitgtk-2.4.10/Source/WebCore/dom/Element.cpp.qualified-name webkitgtk-2.4.10/Source/WebCore/dom/Element.cpp
+--- webkitgtk-2.4.10/Source/WebCore/dom/Element.cpp.qualified-name	2016-04-05 09:58:17.928258276 +0200
++++ webkitgtk-2.4.10/Source/WebCore/dom/Element.cpp	2016-04-05 09:58:23.240229758 +0200
+@@ -1056,7 +1056,7 @@ inline void Element::setAttributeInterna
+     const Attribute& attribute = attributeAt(index);
+     AtomicString oldValue = attribute.value();
+     bool valueChanged = newValue != oldValue;
+-    const QualifiedName& attributeName = (!inSynchronizationOfLazyAttribute || valueChanged) ? attribute.name() : name;
++    QualifiedName attributeName = (!inSynchronizationOfLazyAttribute || valueChanged) ? attribute.name() : name;
+ 
+     if (!inSynchronizationOfLazyAttribute)
+         willModifyAttribute(attributeName, oldValue, newValue);

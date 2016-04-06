@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.10
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -25,6 +25,10 @@ Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 Patch1:         webkitgtk-2.4.8-user-agent.patch
 # http://trac.webkit.org/changeset/165044
 Patch2:         webkitgtk-2.4.10-qualified-name.patch
+# http://trac.webkit.org/changeset/166234
+Patch3:         webkitgtk-2.4.10-arm64-gcc.patch
+# http://trac.webkit.org/changeset/166233
+Patch4:         webkitgtk-2.4.10-arm64-asm.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -90,6 +94,8 @@ This package contains developer documentation for %{name}.
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .user_agent
 %patch2 -p1 -b .qualified-name
+%patch3 -p1 -b .arm64-gcc.patch
+%patch4 -p1 -b .arm64-asm.patch
 
 %build
 # Use linker flags to reduce memory consumption
@@ -205,6 +211,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Tue Apr 05 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-3
+- Fix the compilation on aarch64
+
 * Tue Apr 05 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-2
 - rhbz#1321722 - [abrt] evolution: WTF::StringImpl::startsWith(): SIGSEGV with webkitgtk3-2.4.10
 

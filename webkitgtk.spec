@@ -9,8 +9,8 @@
 	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:		webkitgtk
-Version:	2.4.10
-Release:	3%{?dist}
+Version:	2.4.11
+Release:	1%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -23,12 +23,6 @@ Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
 Patch0: 	webkit-1.3.10-nspluginwrapper.patch
 # https://bugs.webkit.org/show_bug.cgi?id=142074
 Patch1:         webkitgtk-2.4.8-user-agent.patch
-# http://trac.webkit.org/changeset/165044
-Patch2:         webkitgtk-2.4.10-qualified-name.patch
-# http://trac.webkit.org/changeset/166234
-Patch3:         webkitgtk-2.4.10-arm64-gcc.patch
-# http://trac.webkit.org/changeset/166233
-Patch4:         webkitgtk-2.4.10-arm64-asm.patch
 
 BuildRequires:	bison
 BuildRequires:	chrpath
@@ -93,9 +87,6 @@ This package contains developer documentation for %{name}.
 %setup -qn "webkitgtk-%{version}"
 %patch0 -p1 -b .nspluginwrapper
 %patch1 -p1 -b .user_agent
-%patch2 -p1 -b .qualified-name
-%patch3 -p1 -b .arm64-gcc.patch
-%patch4 -p1 -b .arm64-asm.patch
 
 %build
 # Use linker flags to reduce memory consumption
@@ -108,7 +99,7 @@ This package contains developer documentation for %{name}.
 
 %ifarch ppc
 # Use linker flag -relax to get WebKit build under ppc(32) with JIT disabled
-%global optflags %{optflags} -Wl,-relax -latomic
+%global optflags %{optflags} -Wl,-relax
 %endif
 
 %ifarch s390 s390x ppc %{power64} aarch64
@@ -211,6 +202,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Mon Apr 11 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-1
+- Update to 2.4.11
+
 * Tue Apr 05 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-3
 - Fix the compilation on aarch64
 

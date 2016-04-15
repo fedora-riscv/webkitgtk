@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.11
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Apr 15 2016 David Tardon <dtardon@redhat.com> - 2.4.11-2
+- rebuild for ICU 57.1
+
 * Mon Apr 11 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-1
 - Update to 2.4.11
 

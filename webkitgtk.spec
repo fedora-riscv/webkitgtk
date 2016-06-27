@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.11
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -108,10 +108,8 @@ This package contains developer documentation for %{name}.
 # Regenerate configure to pick up the gcc 5.0 changes
 autoreconf -v
 
-# Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1320240
-%ifarch s390 s390x ppc %{power64} aarch64 %{mips}
+# Workaround crashes with gcc 6.1
 %global optflags %{optflags} -fno-delete-null-pointer-checks
-%endif
 
 %if 0%{?fedora}
 %global optflags %{optflags} -DUSER_AGENT_GTK_DISTRIBUTOR_NAME=\'\\"Fedora\\"\'
@@ -206,6 +204,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Fri Jun 24 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-2
+- Workaround crashes with gcc 6.1
+- rhbz#1349318 - segfault in libjavascriptcoregtk-1.0.so.0.16.19 when launching Citrix Receiver
+
 * Mon Apr 11 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-1
 - Update to 2.4.11
 

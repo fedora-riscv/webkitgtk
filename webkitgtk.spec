@@ -63,6 +63,8 @@ BuildRequires:  libatomic
 WebKitGTK+ is the port of the portable web rendering engine WebKit to the
 GTK+ platform.
 
+This package contains an insecure and deprecated version of WebKitGTK+ for GTK+ 2.
+
 %package	devel
 Summary:	Development files for %{name}
 Group:		Development/Libraries

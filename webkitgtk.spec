@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.11
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Wed Feb 01 2017 Sandro Mani <manisandro@gmail.com> - 2.4.11-4
+- Rebuild (libwebp)
+
 * Fri Jun 24 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-3
 - Workaround crashes with gcc 6.1
 - rhbz#1349318 - segfault in libjavascriptcoregtk-1.0.so.0.16.19 when launching Citrix Receiver

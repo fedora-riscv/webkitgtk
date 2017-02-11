@@ -10,7 +10,7 @@
 
 Name:		webkitgtk
 Version:	2.4.11
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	GTK+ Web content engine library
 
 Group:		Development/Libraries
@@ -206,6 +206,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_datadir}/gtk-doc/html/webkitgtk
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.11-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Wed Feb 01 2017 Sandro Mani <manisandro@gmail.com> - 2.4.11-4
 - Rebuild (libwebp)
 

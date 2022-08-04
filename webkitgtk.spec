@@ -1,815 +1,609 @@
-# In f20+ use unversioned docdirs, otherwise the old versioned one
-%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
-
 ## NOTE: Lots of files in various subdirectories have the same name (such as
 ## "LICENSE") so this short macro allows us to distinguish them by using their
 ## directory names (from the source tree) as prefixes for the files.
-%global 	add_to_doc_files()	\
-	mkdir -p %{buildroot}%{_pkgdocdir} ||: ; \
-	cp -p %1  %{buildroot}%{_pkgdocdir}/$(echo '%1' | sed -e 's!/!.!g')
+%global add_to_license_files() \
+        mkdir -p _license_files ; \
+        cp -p %1 _license_files/$(echo '%1' | sed -e 's!/!.!g')
 
-Name:		webkitgtk
-Version:	2.4.11
-Release:	5%{?dist}
-Summary:	GTK+ Web content engine library
-
-Group:		Development/Libraries
-License:	LGPLv2+ and BSD
-URL:		http://www.webkitgtk.org/
-
-Source0:	http://www.webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
-
-# https://bugs.webkit.org/show_bug.cgi?id=142074
-Patch0:         webkitgtk-2.4.8-user-agent.patch
-Patch1:         webkitgtk-2.4.9-abs.patch
-
-BuildRequires:	bison
-BuildRequires:	chrpath
-BuildRequires:	enchant-devel
-BuildRequires:	flex
-BuildRequires:	geoclue2-devel
-BuildRequires:	gettext
-BuildRequires:	gperf
-BuildRequires:	gstreamer1-devel
-BuildRequires:	gstreamer1-plugins-base-devel
-BuildRequires:	gtk2-devel >= 2.24.10
-BuildRequires:	glib2-devel >= 2.36.0
-BuildRequires:	harfbuzz-devel
-BuildRequires:	libsoup-devel >= 2.42.0
-BuildRequires:	libicu-devel
-BuildRequires:	libjpeg-devel
-BuildRequires:	libsecret-devel
-BuildRequires:	libwebp-devel
-BuildRequires:	libxslt-devel
-BuildRequires:	libXt-devel
-BuildRequires:	pcre-devel
-BuildRequires:	sqlite-devel
-BuildRequires:	gobject-introspection-devel
-BuildRequires:  mesa-libGL-devel
-BuildRequires:  gtk-doc
-BuildRequires:  ruby rubypick rubygems
-BuildRequires:	cairo-devel
-BuildRequires:	cairo-gobject-devel
-BuildRequires:	fontconfig-devel >= 2.5
-BuildRequires:	freetype-devel
-Requires:	geoclue2
-
-%ifarch ppc
-BuildRequires:  libatomic
+# No libmanette in RHEL
+%if !0%{?rhel}
+%global with_gamepad 1
 %endif
+
+# GTK 4 is not stable yet. The package name and API version might change, and
+# many other API changes are planned. We are looking to enable the GTK 4
+# package very soon, long before the API is stable, but not before the
+# package name is finalized.
+%bcond_with gtk4
+
+# Build documentation by default (use `rpmbuild --without docs` to override it).
+# This is used by Coverity. Coverity injects custom compiler warnings, but
+# any warning during WebKit docs build is fatal!
+%bcond_without docs
+
+Name:           webkitgtk
+Version:        2.37.1
+Release:        %autorelease
+Summary:        GTK web content engine library
+
+License:        LGPLv2
+URL:            https://www.webkitgtk.org/
+Source0:        https://webkitgtk.org/releases/webkitgtk-%{version}.tar.xz
+Source1:        https://webkitgtk.org/releases/webkitgtk-%{version}.tar.xz.asc
+# Use the keys from https://webkitgtk.org/verifying.html
+# $ gpg --import aperez.key carlosgc.key
+# $ gpg --export --export-options export-minimal D7FCF61CF9A2DEAB31D81BD3F3D322D0EC4582C3 5AA3BC334FD7E3369E7C77B291C559DBE4C9123B > webkitgtk-keys.gpg
+Source2:        webkitgtk-keys.gpg
+
+%if 0%{?rhel}
+# https://bugs.webkit.org/show_bug.cgi?id=217989
+# https://bugs.webkit.org/show_bug.cgi?id=227905
+Patch0:         aarch64-page-size.patch
+%endif
+
+# https://bugs.webkit.org/show_bug.cgi?id=242579#c4
+Patch1:         fix-cloop-build.patch
+
+BuildRequires:  bison
+BuildRequires:  bubblewrap
+BuildRequires:  cmake
+BuildRequires:  flex
+BuildRequires:  gcc-c++
+BuildRequires:  gettext
+BuildRequires:  gi-docgen
+BuildRequires:  git
+BuildRequires:  gnupg2
+BuildRequires:  gperf
+BuildRequires:  hyphen-devel
+BuildRequires:  libatomic
+BuildRequires:  ninja-build
+BuildRequires:  perl(English)
+BuildRequires:  perl(FindBin)
+BuildRequires:  perl(JSON::PP)
+BuildRequires:  python3
+BuildRequires:  ruby
+BuildRequires:  rubygems
+BuildRequires:  rubygem-json
+BuildRequires:  xdg-dbus-proxy
+
+BuildRequires:  pkgconfig(atspi-2)
+BuildRequires:  pkgconfig(cairo)
+BuildRequires:  pkgconfig(egl)
+BuildRequires:  pkgconfig(enchant-2)
+BuildRequires:  pkgconfig(fontconfig)
+BuildRequires:  pkgconfig(freetype2)
+BuildRequires:  pkgconfig(gl)
+BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(glesv2)
+BuildRequires:  pkgconfig(gobject-introspection-1.0)
+BuildRequires:  pkgconfig(gstreamer-1.0)
+BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
+BuildRequires:  pkgconfig(gtk+-3.0)
+BuildRequires:  pkgconfig(gtk4)
+BuildRequires:  pkgconfig(harfbuzz)
+BuildRequires:  pkgconfig(icu-uc)
+BuildRequires:  pkgconfig(lcms2)
+BuildRequires:  pkgconfig(libgcrypt)
+BuildRequires:  pkgconfig(libjpeg)
+BuildRequires:  pkgconfig(libnotify)
+BuildRequires:  pkgconfig(libopenjp2)
+BuildRequires:  pkgconfig(libpcre)
+BuildRequires:  pkgconfig(libpng)
+BuildRequires:  pkgconfig(libseccomp)
+BuildRequires:  pkgconfig(libsecret-1)
+BuildRequires:  pkgconfig(libsoup-2.4)
+BuildRequires:  pkgconfig(libsoup-3.0)
+BuildRequires:  pkgconfig(libsystemd)
+BuildRequires:  pkgconfig(libtasn1)
+BuildRequires:  pkgconfig(libwebp)
+BuildRequires:  pkgconfig(libwoff2dec)
+BuildRequires:  pkgconfig(libxslt)
+%if 0%{?with_gamepad}	
+BuildRequires:  pkgconfig(manette-0.2)
+%endif
+BuildRequires:  pkgconfig(sqlite3)
+BuildRequires:  pkgconfig(upower-glib)
+BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-egl)
+BuildRequires:  pkgconfig(wayland-protocols)
+BuildRequires:  pkgconfig(wayland-server)
+BuildRequires:  pkgconfig(wpe-1.0)
+BuildRequires:  pkgconfig(wpebackend-fdo-1.0)
+BuildRequires:  pkgconfig(xt)
+
+# Filter out provides for private libraries
+%global __provides_exclude_from ^(%{_libdir}/webkit2gtk-4\\.0/.*\\.so|%{_libdir}/webkit2gtk-4\\.1/.*\\.so|%{_libdir}/webkit2gtk-5\\.0/.*\\.so)$
 
 %description
-WebKitGTK+ is the port of the portable web rendering engine WebKit to the
-GTK+ platform.
+WebKitGTK is the port of the WebKit web rendering engine to the
+GTK platform.
 
-This package contains an insecure and deprecated version of WebKitGTK+ for GTK+ 2.
+%if %{with gtk4}
+%package -n     webkit2gtk5.0
+Summary:        WebKitGTK for GTK 4
+Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
+Requires:       bubblewrap
+Requires:       xdg-dbus-proxy
+Recommends:     geoclue2
+Recommends:     gstreamer1-plugins-bad-free
+Recommends:     gstreamer1-plugins-good
+Recommends:     xdg-desktop-portal-gtk
+Provides:       bundled(angle)
+Provides:       bundled(pdfjs)
+Provides:       bundled(xdgmime)
 
-%package	devel
-Summary:	Development files for %{name}
-Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	pkgconfig
-Requires:	gtk2-devel
+%description -n webkit2gtk5.0
+WebKitGTK is the port of the WebKit web rendering engine to the
+GTK platform. This package contains WebKitGTK for GTK 4.
+%endif
 
-%description	devel
-The %{name}-devel package contains libraries, build data, and header
-files for developing applications that use %{name}.
+%package -n     webkit2gtk4.1
+Summary:        WebKitGTK for GTK 3 and libsoup 3
+Requires:       javascriptcoregtk4.1%{?_isa} = %{version}-%{release}
+Requires:       bubblewrap
+Requires:       xdg-dbus-proxy
+Recommends:     geoclue2
+Recommends:     gstreamer1-plugins-bad-free
+Recommends:     gstreamer1-plugins-good
+Recommends:     xdg-desktop-portal-gtk
+Provides:       bundled(angle)
+Provides:       bundled(pdfjs)
+Provides:       bundled(xdgmime)
 
-%package	doc
-Summary:	Documentation for %{name}
-Group:		Documentation
-BuildArch:	noarch
-Requires:	%{name} = %{version}-%{release}
+%description -n webkit2gtk4.1
+WebKitGTK is the port of the WebKit web rendering engine to the
+GTK platform. This package contains WebKitGTK for GTK 3 and libsoup 3.
 
-%description	doc
-This package contains developer documentation for %{name}.
+%package -n     webkit2gtk4.0
+Summary:        WebKitGTK for GTK 3 and libsoup 2
+Requires:       javascriptcoregtk4.0%{?_isa} = %{version}-%{release}
+Requires:       bubblewrap
+Requires:       xdg-dbus-proxy
+Recommends:     geoclue2
+Recommends:     gstreamer1-plugins-bad-free
+Recommends:     gstreamer1-plugins-good
+Recommends:     xdg-desktop-portal-gtk
+Provides:       bundled(angle)
+Provides:       bundled(pdfjs)
+Provides:       bundled(xdgmime)
+Obsoletes:      webkitgtk4 < %{version}-%{release}
+Provides:       webkitgtk4 = %{version}-%{release}
+Obsoletes:      webkit2gtk3 < %{version}-%{release}
+Provides:       webkit2gtk3 = %{version}-%{release}
+
+%description -n webkit2gtk4.0
+WebKitGTK is the port of the WebKit web rendering engine to the
+GTK platform. This package contains WebKitGTK for GTK 3 and libsoup 2.
+
+%if %{with gtk4}
+%package -n     webkit2gtk5.0-devel
+Summary:        Development files for webkit2gtk5.0
+Requires:       webkit2gtk5.0%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk5.0-devel%{?_isa} = %{version}-%{release}
+
+%description -n webkit2gtk5.0-devel
+The webkit2gtk5.0-devel package contains libraries, build data, and header
+files for developing applications that use webkit2gtk5.0.
+%endif
+
+%package -n     webkit2gtk4.1-devel
+Summary:        Development files for webkit2gtk4.1
+Requires:       webkit2gtk4.1%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk4.1%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk4.1-devel%{?_isa} = %{version}-%{release}
+
+%description -n webkit2gtk4.1-devel
+The webkit2gtk4.1-devel package contains libraries, build data, and header
+files for developing applications that use webkit2gtk4.1.
+
+%package -n     webkit2gtk4.0-devel
+Summary:        Development files for webkit2gtk4.0
+Requires:       webkit2gtk4.0%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk4.0%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk4.0-devel%{?_isa} = %{version}-%{release}
+Obsoletes:      webkitgtk4-devel < %{version}-%{release}
+Provides:       webkitgtk4-devel = %{version}-%{release}
+Obsoletes:      webkit2gtk3-devel < %{version}-%{release}
+Provides:       webkit2gtk3-devel = %{version}-%{release}
+
+%description -n webkit2gtk4.0-devel
+The webkit2gtk4.0-devel package contains libraries, build data, and header
+files for developing applications that use webkit2gtk4.0.
+
+%if %{with docs}
+%if %{with gtk4}
+%package -n     webkit2gtk5.0-doc
+Summary:        Documentation files for webkit2gtk5.0
+BuildArch:      noarch
+Requires:       webkit2gtk5.0 = %{version}-%{release}
+
+%description -n webkit2gtk5.0-doc
+This package contains developer documentation for webkit2gtk5.0.
+%endif
+
+%package -n     webkit2gtk4.1-doc
+Summary:        Documentation files for webkit2gtk4.1
+BuildArch:      noarch
+Requires:       webkit2gtk4.1 = %{version}-%{release}
+
+%description -n webkit2gtk4.1-doc
+This package contains developer documentation for webkit2gtk4.1.
+
+%package -n     webkit2gtk4.0-doc
+Summary:        Documentation files for webkit2gtk4.0
+BuildArch:      noarch
+Requires:       webkit2gtk4.0 = %{version}-%{release}
+Obsoletes:      webkitgtk4-doc < %{version}-%{release}
+Provides:       webkitgtk4-doc = %{version}-%{release}
+Obsoletes:      webkit2gtk3-doc < %{version}-%{release}
+Provides:       webkit2gtk3-doc = %{version}-%{release}
+
+%description -n webkit2gtk4.0-doc
+This package contains developer documentation for webkit2gtk4.0.
+%endif
+
+%if %{with gtk4}
+%package -n     javascriptcoregtk5.0
+Summary:        JavaScript engine from webkit2gtk5.0
+
+%description -n javascriptcoregtk5.0
+This package contains JavaScript engine from webkit2gtk5.0.
+%endif
+
+%package -n     javascriptcoregtk4.1
+Summary:        JavaScript engine from webkit2gtk4.1
+
+%description -n javascriptcoregtk4.1
+This package contains JavaScript engine from webkit2gtk4.1.
+
+%package -n     javascriptcoregtk4.0
+Summary:        JavaScript engine from webkit2gtk4.0
+Obsoletes:      webkitgtk4-jsc < %{version}-%{release}
+Provides:       webkitgtk4-jsc = %{version}-%{release}
+Obsoletes:      webkit2gtk3-jsc < %{version}-%{release}
+Provides:       webkit2gtk3-jsc = %{version}-%{release}
+
+%description -n javascriptcoregtk4.0
+This package contains JavaScript engine from webkit2gtk4.0.
+
+%if %{with gtk4}
+%package -n     javascriptcoregtk5.0-devel
+Summary:        Development files for JavaScript engine from webkit2gtk5.0
+Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
+
+%description -n javascriptcoregtk5.0-devel
+The javascriptcoregtk5.0-devel package contains libraries, build data, and header
+files for developing applications that use JavaScript engine from webkit2gtk-5.0.
+%endif
+
+%package -n     javascriptcoregtk4.1-devel
+Summary:        Development files for JavaScript engine from webkit2gtk4.1
+Requires:       javascriptcoregtk4.1%{?_isa} = %{version}-%{release}
+
+%description -n javascriptcoregtk4.1-devel
+The javascriptcoregtk4.1-devel package contains libraries, build data, and header
+files for developing applications that use JavaScript engine from webkit2gtk-4.1.
+
+%package -n     javascriptcoregtk4.0-devel
+Summary:        Development files for JavaScript engine from webkit2gtk4.0
+Requires:       javascriptcoregtk4.0%{?_isa} = %{version}-%{release}
+Obsoletes:      webkitgtk4-jsc-devel < %{version}-%{release}
+Provides:       webkitgtk4-jsc-devel = %{version}-%{release}
+Obsoletes:      webkit2gtk3-jsc-devel < %{version}-%{release}
+Provides:       webkit2gtk3-jsc-devel = %{version}-%{release}
+
+%description -n javascriptcoregtk4.0-devel
+The javascriptcoregtk4.0-devel package contains libraries, build data, and header
+files for developing applications that use JavaScript engine from webkit2gtk-4.0.
 
 %prep
-%setup -qn "webkitgtk-%{version}"
-%patch0 -p1 -b .user_agent
-%patch1 -p1 -b .abs
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
+%autosetup -p1 -n webkitgtk-%{version}
 
 %build
-# Use linker flags to reduce memory consumption
-%global optflags %{optflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
+# Increase the DIE limit so our debuginfo packages can be size-optimized.
+# Decreases the size for x86_64 from ~5G to ~1.1G.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1456261
+%global _dwz_max_die_limit 250000000
 
-%ifarch s390 %{arm} mips mipsel
-# Decrease debuginfo verbosity to reduce memory consumption even more
-%global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+# On x86_64, the _dwz_max_die_limit is overridden by the arch-specific limit
+# from redhat-rpm-config.
+%global _dwz_max_die_limit_x86_64 250000000
+
+# Remove debuginfo from 32-bit builds to reduce memory consumption:
+# https://bugs.webkit.org/show_bug.cgi?id=140176
+# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/I6IVNA52TXTBRQLKW45CJ5K4RA4WNGMI/
+%ifarch %{ix86}
+%global debug_package %{nil}
+%global optflags %(echo %{optflags} | sed 's/-g /-g0 /')
 %endif
 
-%ifarch ppc
-# Use linker flag -relax to get WebKit build under ppc(32) with JIT disabled
-%global optflags %{optflags} -Wl,-relax
+# Warning: although RHEL 9 aarch64 now uses 4 KB page sizes, we still have to
+# support 64 KB page sizes until the *builders* use RHEL 9. This means we still
+# have to disable JIT and bmalloc, even though this disables important heap
+# security features. We can't simply disable them only during this build,
+# because gobject-introspection will crash when building anything that depends
+# on WebKitGTK, because it calls each object's get_type() function, which will
+# initialize bmalloc and JIT.
+
+%if %{with gtk4}
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
+%cmake \
+  -GNinja \
+  -DPORT=GTK \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DUSE_GTK4=ON \
+%if %{without docs}
+  -DENABLE_DOCUMENTATION=OFF \
+%endif
+%if !0%{?with_gamepad}
+  -DENABLE_GAMEPAD=OFF \
+%endif
+%if 0%{?rhel}
+%ifarch aarch64
+  -DENABLE_JIT=OFF \
+  -DUSE_SYSTEM_MALLOC=ON \
+%endif
+%endif
+  %{nil}
 %endif
 
-%ifarch s390 s390x ppc %{power64} aarch64 %{mips}
-%global optflags %{optflags} -DENABLE_YARR_JIT=0
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
+%cmake \
+  -GNinja \
+  -DPORT=GTK \
+  -DCMAKE_BUILD_TYPE=Release \
+%if %{without docs}
+  -DENABLE_DOCUMENTATION=OFF \
+%endif
+%if !0%{?with_gamepad}
+  -DENABLE_GAMEPAD=OFF \
+%endif
+%if 0%{?rhel}
+%ifarch aarch64
+  -DENABLE_JIT=OFF \
+  -DUSE_SYSTEM_MALLOC=ON \
+%endif
+%endif
+  %{nil}
+
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.0
+%cmake \
+  -GNinja \
+  -DPORT=GTK \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DUSE_SOUP2=ON \
+  -DENABLE_WEBDRIVER=OFF \
+%if %{without docs}
+  -DENABLE_DOCUMENTATION=OFF \
+%endif
+%if !0%{?with_gamepad}
+  -DENABLE_GAMEPAD=OFF \
+%endif
+%if 0%{?rhel}
+%ifarch aarch64
+  -DENABLE_JIT=OFF \
+  -DUSE_SYSTEM_MALLOC=ON \
+%endif
+%endif
+  %{nil}
+
+%if %{with gtk4}
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
+export NINJA_STATUS="[1/3][%f/%t %es] "
+%cmake_build %limit_build -m 2048
 %endif
 
-# Regenerate configure to pick up the gcc 5.0 changes
-autoreconf -v
-
-# Workaround crashes with gcc 6.1
-%global optflags %{optflags} -fno-delete-null-pointer-checks
-
-%if 0%{?fedora}
-%global optflags %{optflags} -DUSER_AGENT_GTK_DISTRIBUTOR_NAME=\'\\"Fedora\\"\'
-%endif
-
-%configure                                                      \
-                        --with-gtk=2.0                          \
-                        --disable-webkit2                       \
-%ifarch s390 s390x ppc %{power64} aarch64 %{mips}
-                        --disable-jit                           \
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
+%if %{with gtk4}
+export NINJA_STATUS="[2/3][%f/%t %es] "
 %else
-                        --enable-jit                            \
+export NINJA_STATUS="[1/2][%f/%t %es] "
 %endif
-                        --enable-introspection
+%cmake_build %limit_build -m 2048
 
-mkdir -p DerivedSources/webkit
-mkdir -p DerivedSources/WebCore
-mkdir -p DerivedSources/ANGLE
-mkdir -p DerivedSources/WebKit2/webkit2gtk/webkit2
-mkdir -p DerivedSources/WebKit2
-mkdir -p DerivedSources/webkitdom/
-mkdir -p DerivedSources/InjectedBundle
-mkdir -p DerivedSources/Platform
-
-make %{_smp_mflags} V=1
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.0
+%if %{with gtk4}
+export NINJA_STATUS="[3/3][%f/%t %es] "
+%else
+export NINJA_STATUS="[2/2][%f/%t %es] "
+%endif
+%cmake_build %limit_build -m 2048
 
 %install
-make install DESTDIR=%{buildroot}
+%if %{with gtk4}
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
+%cmake_install
+%endif
 
-install -d -m 755 %{buildroot}%{_libexecdir}/%{name}
-install -m 755 Programs/GtkLauncher %{buildroot}%{_libexecdir}/%{name}
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
+%cmake_install
 
-# Remove lib64 rpaths
-chrpath --delete %{buildroot}%{_bindir}/jsc-1
-chrpath --delete %{buildroot}%{_libdir}/libwebkitgtk-1.0.so
-chrpath --delete %{buildroot}%{_libexecdir}/%{name}/GtkLauncher
+%define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.0
+%cmake_install
 
-# Remove .la files
-find $RPM_BUILD_ROOT%{_libdir} -name "*.la" -delete
+%if %{with gtk4}
+%find_lang WebKit2GTK-5.0
+%endif
+%find_lang WebKit2GTK-4.1
+%find_lang WebKit2GTK-4.0
 
-%find_lang WebKitGTK-2.0
+# Finally, copy over and rename various files for %%license inclusion
+%add_to_license_files Source/JavaScriptCore/COPYING.LIB
+%add_to_license_files Source/ThirdParty/ANGLE/LICENSE
+%add_to_license_files Source/ThirdParty/ANGLE/src/common/third_party/smhasher/LICENSE
+%add_to_license_files Source/ThirdParty/ANGLE/src/third_party/libXNVCtrl/LICENSE
+%add_to_license_files Source/WebCore/LICENSE-APPLE
+%add_to_license_files Source/WebCore/LICENSE-LGPL-2
+%add_to_license_files Source/WebCore/LICENSE-LGPL-2.1
+%add_to_license_files Source/WebInspectorUI/UserInterface/External/CodeMirror/LICENSE
+%add_to_license_files Source/WebInspectorUI/UserInterface/External/Esprima/LICENSE
+%add_to_license_files Source/WebInspectorUI/UserInterface/External/three.js/LICENSE
+%add_to_license_files Source/WTF/icu/LICENSE
+%add_to_license_files Source/WTF/wtf/dtoa/COPYING
+%add_to_license_files Source/WTF/wtf/dtoa/LICENSE
 
-## Finally, copy over and rename the various files for %%doc inclusion.
-%add_to_doc_files Source/WebKit/LICENSE
-%add_to_doc_files Source/WebKit/gtk/NEWS
-%add_to_doc_files Source/WebCore/icu/LICENSE
-%add_to_doc_files Source/WebCore/LICENSE-APPLE
-%add_to_doc_files Source/WebCore/LICENSE-LGPL-2
-%add_to_doc_files Source/WebCore/LICENSE-LGPL-2.1
-%add_to_doc_files Source/JavaScriptCore/COPYING.LIB
-%add_to_doc_files Source/JavaScriptCore/THANKS
-%add_to_doc_files Source/JavaScriptCore/AUTHORS
-%add_to_doc_files Source/JavaScriptCore/icu/README
-%add_to_doc_files Source/JavaScriptCore/icu/LICENSE
+%if %{with gtk4}
+%files -n webkit2gtk5.0 -f WebKit2GTK-5.0.lang
+%license _license_files/*ThirdParty*
+%license _license_files/*WebCore*
+%license _license_files/*WebInspectorUI*
+%license _license_files/*WTF*
+%{_libdir}/libwebkit2gtk-5.0.so.0*
+%dir %{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0/WebKit2-5.0.typelib
+%{_libdir}/girepository-1.0/WebKit2WebExtension-5.0.typelib
+%{_libdir}/webkit2gtk-5.0/
+%{_libexecdir}/webkit2gtk-5.0/
+%exclude %{_libexecdir}/webkit2gtk-5.0/MiniBrowser
+%exclude %{_libexecdir}/webkit2gtk-5.0/jsc
+%{_bindir}/WebKitWebDriver
+%endif
 
+%files -n webkit2gtk4.1 -f WebKit2GTK-4.1.lang
+%license _license_files/*ThirdParty*
+%license _license_files/*WebCore*
+%license _license_files/*WebInspectorUI*
+%license _license_files/*WTF*
+%{_libdir}/libwebkit2gtk-4.1.so.0*
+%dir %{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0/WebKit2-4.1.typelib
+%{_libdir}/girepository-1.0/WebKit2WebExtension-4.1.typelib
+%{_libdir}/webkit2gtk-4.1/
+%{_libexecdir}/webkit2gtk-4.1/
+%exclude %{_libexecdir}/webkit2gtk-4.1/MiniBrowser
+%exclude %{_libexecdir}/webkit2gtk-4.1/jsc
+%{_bindir}/WebKitWebDriver
 
-%post -p /sbin/ldconfig
+%files -n webkit2gtk4.0 -f WebKit2GTK-4.0.lang
+%license _license_files/*ThirdParty*
+%license _license_files/*WebCore*
+%license _license_files/*WebInspectorUI*
+%license _license_files/*WTF*
+%{_libdir}/libwebkit2gtk-4.0.so.37*
+%dir %{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0/WebKit2-4.0.typelib
+%{_libdir}/girepository-1.0/WebKit2WebExtension-4.0.typelib
+%{_libdir}/webkit2gtk-4.0/
+%{_libexecdir}/webkit2gtk-4.0/
+%exclude %{_libexecdir}/webkit2gtk-4.0/MiniBrowser
+%exclude %{_libexecdir}/webkit2gtk-4.0/jsc
 
-%postun
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-    glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
-fi
+%if %{with gtk4}
+%files -n webkit2gtk5.0-devel
+%{_libexecdir}/webkit2gtk-5.0/MiniBrowser
+%{_includedir}/webkitgtk-5.0/
+%exclude %{_includedir}/webkitgtk-5.0/JavaScriptCore
+%exclude %{_includedir}/webkitgtk-5.0/jsc
+%{_libdir}/libwebkit2gtk-5.0.so
+%{_libdir}/pkgconfig/webkit2gtk-5.0.pc
+%{_libdir}/pkgconfig/webkit2gtk-web-extension-5.0.pc
+%dir %{_datadir}/gir-1.0
+%{_datadir}/gir-1.0/WebKit2-5.0.gir
+%{_datadir}/gir-1.0/WebKit2WebExtension-5.0.gir
+%endif
 
-%posttrans
-glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
+%files -n webkit2gtk4.1-devel
+%{_libexecdir}/webkit2gtk-4.1/MiniBrowser
+%{_includedir}/webkitgtk-4.1/
+%exclude %{_includedir}/webkitgtk-4.1/JavaScriptCore
+%exclude %{_includedir}/webkitgtk-4.1/jsc
+%{_libdir}/libwebkit2gtk-4.1.so
+%{_libdir}/pkgconfig/webkit2gtk-4.1.pc
+%{_libdir}/pkgconfig/webkit2gtk-web-extension-4.1.pc
+%dir %{_datadir}/gir-1.0
+%{_datadir}/gir-1.0/WebKit2-4.1.gir
+%{_datadir}/gir-1.0/WebKit2WebExtension-4.1.gir
 
+%files -n webkit2gtk4.0-devel
+%{_libexecdir}/webkit2gtk-4.0/MiniBrowser
+%{_includedir}/webkitgtk-4.0/
+%exclude %{_includedir}/webkitgtk-4.0/JavaScriptCore
+%exclude %{_includedir}/webkitgtk-4.0/jsc
+%{_libdir}/libwebkit2gtk-4.0.so
+%{_libdir}/pkgconfig/webkit2gtk-4.0.pc
+%{_libdir}/pkgconfig/webkit2gtk-web-extension-4.0.pc
+%dir %{_datadir}/gir-1.0
+%{_datadir}/gir-1.0/WebKit2-4.0.gir
+%{_datadir}/gir-1.0/WebKit2WebExtension-4.0.gir
 
-%files -f WebKitGTK-2.0.lang
-%doc %{_pkgdocdir}
-%{_libdir}/libwebkitgtk-1.0.so.*
-%{_libdir}/libjavascriptcoregtk-1.0.so.*
-%{_libdir}/girepository-1.0/WebKit-1.0.typelib
-%{_libdir}/girepository-1.0/JavaScriptCore-1.0.typelib
-%{_libexecdir}/%{name}/
-%{_datadir}/webkitgtk-1.0
+%if %{with gtk4}
+%files -n javascriptcoregtk5.0
+%license _license_files/*JavaScriptCore*
+%{_libdir}/libjavascriptcoregtk-5.0.so.0*
+%dir %{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0/JavaScriptCore-5.0.typelib
+%endif
 
-%files  devel
-%{_bindir}/jsc-1
-%{_includedir}/webkitgtk-1.0
-%{_libdir}/libwebkitgtk-1.0.so
-%{_libdir}/libjavascriptcoregtk-1.0.so
-%{_libdir}/pkgconfig/webkit-1.0.pc
-%{_libdir}/pkgconfig/javascriptcoregtk-1.0.pc
-%{_datadir}/gir-1.0/WebKit-1.0.gir
-%{_datadir}/gir-1.0/JavaScriptCore-1.0.gir
-%{_datadir}/gtk-doc/html/webkitdomgtk
+%files -n javascriptcoregtk4.1
+%license _license_files/*JavaScriptCore*
+%{_libdir}/libjavascriptcoregtk-4.1.so.0*
+%dir %{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0/JavaScriptCore-4.1.typelib
 
-%files doc
+%files -n javascriptcoregtk4.0
+%license _license_files/*JavaScriptCore*
+%{_libdir}/libjavascriptcoregtk-4.0.so.18*
+%dir %{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0/JavaScriptCore-4.0.typelib
+
+%if %{with gtk4}
+%files -n javascriptcoregtk5.0-devel
+%{_libexecdir}/webkit2gtk-5.0/jsc
+%dir %{_includedir}/webkitgtk-5.0
+%{_includedir}/webkitgtk-5.0/JavaScriptCore/
+%{_includedir}/webkitgtk-5.0/jsc/
+%{_libdir}/libjavascriptcoregtk-5.0.so
+%{_libdir}/pkgconfig/javascriptcoregtk-5.0.pc
+%dir %{_datadir}/gir-1.0
+%{_datadir}/gir-1.0/JavaScriptCore-5.0.gir
+%endif
+
+%files -n javascriptcoregtk4.1-devel
+%{_libexecdir}/webkit2gtk-4.1/jsc
+%dir %{_includedir}/webkitgtk-4.1
+%{_includedir}/webkitgtk-4.1/JavaScriptCore/
+%{_includedir}/webkitgtk-4.1/jsc/
+%{_libdir}/libjavascriptcoregtk-4.1.so
+%{_libdir}/pkgconfig/javascriptcoregtk-4.1.pc
+%dir %{_datadir}/gir-1.0
+%{_datadir}/gir-1.0/JavaScriptCore-4.1.gir
+
+%files -n javascriptcoregtk4.0-devel
+%{_libexecdir}/webkit2gtk-4.0/jsc
+%dir %{_includedir}/webkitgtk-4.0
+%{_includedir}/webkitgtk-4.0/JavaScriptCore/
+%{_includedir}/webkitgtk-4.0/jsc/
+%{_libdir}/libjavascriptcoregtk-4.0.so
+%{_libdir}/pkgconfig/javascriptcoregtk-4.0.pc
+%dir %{_datadir}/gir-1.0
+%{_datadir}/gir-1.0/JavaScriptCore-4.0.gir
+
+%if %{with docs}
+%if %{with gtk4}
+%files -n webkit2gtk5.0-doc
 %dir %{_datadir}/gtk-doc
 %dir %{_datadir}/gtk-doc/html
-%{_datadir}/gtk-doc/html/webkitgtk
+%{_datadir}/gtk-doc/html/javascriptcoregtk-5.0/
+%{_datadir}/gtk-doc/html/webkit2gtk-5.0/
+%{_datadir}/gtk-doc/html/webkit2gtk-web-extension-5.0/
+%endif
+
+%files -n webkit2gtk4.1-doc
+%dir %{_datadir}/gtk-doc
+%dir %{_datadir}/gtk-doc/html
+%{_datadir}/gtk-doc/html/javascriptcoregtk-4.1/
+%{_datadir}/gtk-doc/html/webkit2gtk-4.1/
+%{_datadir}/gtk-doc/html/webkit2gtk-web-extension-4.1/
+
+%files -n webkit2gtk4.0-doc
+%dir %{_datadir}/gtk-doc
+%dir %{_datadir}/gtk-doc/html
+%{_datadir}/gtk-doc/html/javascriptcoregtk-4.0/
+%{_datadir}/gtk-doc/html/webkit2gtk-4.0/
+%{_datadir}/gtk-doc/html/webkit2gtk-web-extension-4.0/
+%endif
 
 %changelog
-* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.11-5
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
-
-* Wed Feb 01 2017 Sandro Mani <manisandro@gmail.com> - 2.4.11-4
-- Rebuild (libwebp)
-
-* Fri Jun 24 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-3
-- Workaround crashes with gcc 6.1
-- rhbz#1349318 - segfault in libjavascriptcoregtk-1.0.so.0.16.19 when launching Citrix Receiver
-
-* Fri Apr 15 2016 David Tardon <dtardon@redhat.com> - 2.4.11-2
-- rebuild for ICU 57.1
-
-* Mon Apr 11 2016 Tomas Popela <tpopela@redhat.com> - 2.4.11-1
-- Update to 2.4.11
-
-* Tue Apr 05 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-4
-- Fix the compilation on aarch64
-
-* Tue Apr 05 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-3
-- rhbz#1321722 - [abrt] evolution: WTF::StringImpl::startsWith(): SIGSEGV with webkitgtk3-2.4.10
-
-* Thu Mar 24 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-2
-- Add a workaround for rhbz#1320240
-
-* Mon Mar 14 2016 Tomas Popela <tpopela@redhat.com> - 2.4.10-1
-- Update to 2.4.10
-
-* Tue Feb  9 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.9-10
-- Add ruby deps for build
-
-* Sun Feb 07 2016 Kevin Fenzi <kevin@scrye.com> - 2.4.9-9
-- Add patch to fix FTBFS
-
-* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.9-8
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
-
-* Wed Dec 30 2015 Michal Toman <mtoman@fedoraproject.org> - 2.4.9-7
-- Add support for MIPS
-
-* Mon Dec 28 2015 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 2.4.9-6
-- Rebuilt for libwebp soname bump
-
-* Mon Dec 07 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-5
-- rhbz#1289053 - Retire nspluginwrapper and remove from Fedora 24
-
-* Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 2.4.9-4
-- rebuild for ICU 56.1
-
-* Fri Sep 25 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-3
-- rhbz#1189303 - [abrt] midori: WebCore::SQLiteStatement::prepare(): midori killed by SIGSEGV
-  Initialize string in SQLiteStatement before using it
-
-* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.9-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
-
-* Wed May 20 2015 Tomas Popela <tpopela@redhat.com> - 2.4.9-1
-- Update to 2.4.9
-
-* Mon May 11 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-4
-- Add Fedora branding to the user agent
-
-* Wed Feb 18 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-3
-- Add support for gcc 5.0
-- Let the package compile with latest glib
-
-* Mon Jan 26 2015 David Tardon <dtardon@redhat.com> - 2.4.8-2
-- rebuild for ICU 54.1
-
-* Wed Jan 07 2015 Tomas Popela <tpopela@redhat.com> - 2.4.8-1
-- Update to 2.4.8
-
-* Wed Oct 22 2014 Tomas Popela <tpopela@redhat.com> - 2.4.7-1
-- Update to 2.4.7
-
-* Mon Sep 29 2014 Tomas Popela <tpopela@redhat.com> - 2.4.6-1
-- Update to 2.4.6
-
-* Tue Sep 02 2014 Tomas Popela <tpopela@redhat.com> - 2.4.5-3
-- Rebase the aarch64 patch
-
-* Tue Aug 26 2014 David Tardon <dtardon@redhat.com> - 2.4.5-2
-- rebuild for ICU 53.1
-
-* Tue Aug 26 2014 Tomas Popela <tpopela@redhat.com> - 2.4.5-1
-- Update to 2.4.5
-
-* Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.4-4
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
-
-* Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-3
-- Remove geoclue-devel from BR
-
-* Wed Jul 23 2014 Tomas Popela <tpopela@redhat.com> - 2.4.4-2
-- Fix CLoop on ppc32 and s390
-- Add geoclue-devel as BR as WK1 needs it
-
-* Thu Jul 10 2014 Tomas Popela <tpopela@redhat.com> 2.4.4-1
-- Update to 2.4.4
-
-* Fri Jul 04 2014 Tomas Popela <tpopela@redhat.com> 2.4.3-4
-- rhbz#1088480 - [abrt] libwebkit2gtk: TSymbolTableLevel::~TSymbolTableLevel(): WebKitWebProcess killed by SIGSEGV
-
-* Wed Jun 25 2014 Yaakov Selkowitz <yselkowi@redhat.com> - 2.4.3-3
-- Fix for 64k pages on aarch64 (#1074093, #1113347)
-
-* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.3-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
-
-* Tue May 27 2014 Tomas Popela <tpopela@redhat.com> 2.4.3-1
-- Update to 2.4.3
-
-* Sun May 18 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.2-2
-- Fix aarch64 build
-
-* Thu May 15 2014 Tomas Popela <tpopela@redhat.com> 2.4.2-1
-- Update to 2.4.2
-- Fix for CLoop on ppc64, ppc64le and s390x
-
-* Fri Apr 25 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.4.1-2
-- Switch over to geoclue2
-
-* Tue Apr 15 2014 Kevin Fenzi <kevin@scrye.com> 2.4.1-1
-- Update to 2.4.1
-
-* Sat Mar 22 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.2.6-2
-- Fix build and disable JIT on aarch64
-
-* Wed Mar 19 2014 Tomas Popela <tpopela@redhat.com> 2.2.6-1
-- Update to 2.2.6
-
-* Wed Feb 19 2014 Tomas Popela <tpopela@redhat.com> 2.2.5-1
-- Update to 2.2.5
-
-* Tue Feb 18 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-4
-- Enable full debuginfo on s390s
-
-* Wed Feb 12 2014 Nils Philippsen <nils@redhat.com> - 2.2.4-3
-- fix changelog release number
-- rebuild for new libicu
-
-* Tue Jan 21 2014 Tomas Popela <tpopela@redhat.com> 2.2.4-2
-- Update to 2.2.4
-
-* Thu Jan 02 2014 Orion Poplawski <orion@cora.nwra.com> - 2.2.3-2
-- Rebuild for libwebp soname bump
-
-* Wed Dec 04 2013 Tomas Popela <tpopela@redhat.com> - 2.2.3-1
-- Update to 2.2.3
-
-* Wed Dec 04 2013 Karsten Hopp <karsten@redhat.com> 2.2.2-2
-- apply the correct double2intsPPC32 patch on ppc
-
-* Mon Nov 11 2013 Kevin Fenzi <kevin@scrye.com> 2.2.2-1
-- Update to 2.2.2
-
-* Thu Oct 17 2013 Kevin Fenzi <kevin@scrye.com> 2.2.1-1
-- Update to 2.2.1
-
-* Fri Sep 27 2013 Kevin Fenzi <kevin@scrye.com> 2.2.0-1
-- Update 2.2.0
-
-* Sun Aug 04 2013 Karsten Hopp <karsten@redhat.com> 2.0.4-3
-- update ppc libatomic patch
-
-* Sat Jul 27 2013 Kevin Fenzi <kevin@scrye.com> 2.0.4-2
-- Fix for unversioned doc dirs
-
-* Mon Jul 22 2013 Tomas Popela <tpopela@redhat.com> - 2.0.4-1
-- Update to 2.0.4
-
-* Fri Jun 07 2013 Kalev Lember <kalevlember@gmail.com> - 2.0.2-2
-- Link with harfbuzz-icu (split into separate library in harfbuzz 0.9.18)
-
-* Mon May 13 2013 Tomas Popela <tpopela@redhat.com> - 2.0.2-1
-- Update to 2.0.2
-
-* Wed Apr 17 2013 Tomas Popela <tpopela@redhat.com> - 2.0.1-1
-- Update to 2.0.1
-
-* Wed Apr 3 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-2
-- Add cairo-gobject as BR
-- Apply double2intsPPC32.patch also on s390
-
-* Tue Apr 2 2013 Tomas Popela <tpopela@redhat.com> - 2.0.0-1
-- Update to 2.0.0
-- Update BR versions
-- Drop unused patches
-- Change spec structure to webkitgtk3 spec file
-
-* Tue Mar 12 2013 Tomas Popela <tpopela@redhat.com> 1.10.2-6
-- Add upstream patch for RH bug #908143 - AccessibilityTableRow::parentTable crash
-- Add fix for bug #907432 - Rendering glitches on some sites
-
-* Sat Feb 02 2013 Kevin Fenzi <kevin@scrye.com> 1.10.2-5
-- Drop building with -g1 now. Fixes bug #861452 
-
-* Wed Jan 30 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 1.10.2-4
-- Rebuild against new icu again
-
-* Sat Jan 26 2013 Kevin Fenzi <kevin@scrye.com> 1.10.2-3
-- Rebuild for new icu
-
-* Mon Jan 21 2013 Adam Tkac <atkac redhat com> - 1.10.2-2
-- rebuild due to "jpeg8-ABI" feature drop
-
-* Mon Dec 10 2012 Kalev Lember <kalevlember@gmail.com> 1.10.2-1
-- Update to 1.10.2
-- Add a patch to explicitly link with librt
-
-* Sun Oct 21 2012 Kevin Fenzi <kevin@scrye.com> 1.10.1-1
-- Update to 1.10.1
-
-* Wed Sep 26 2012 Kevin Fenzi <kevin@scrye.com> 1.10.0-1
-- Update to 1.10.0
-
-* Thu Aug 23 2012 Kevin Fenzi <kevin@scrye.com> 1.8.3-1
-- Update to 1.8.3
-
-* Mon Aug 06 2012 Kevin Fenzi <kevin@scrye.com> - 1.8.2-1
-- Update to 1.8.2
-
-* Mon Aug 06 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.1-5
-- Backport a build fix with bison 2.6
-
-* Sun Jul 22 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.1-4
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
-
-* Wed Jul 11 2012 Ville Skyttä <ville.skytta@iki.fi> - 1.8.1-3
-- Fix %%post scriptlet dependencies.
-
-* Mon May 14 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.1-2
-- Explicitly disable JIT on ARM as it's not currently stable with JS heavy pages
-
-* Wed Apr 25 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.1-1
-- Update to 1.8.1
-- Dropped the backported patches
-- Remove lib64 rpaths with chrpath
-- Update gsettings rpm scriptlets
-
-* Fri Apr 20 2012 Orion Poplwski <orion@cora.nwra.com> - 1.8.0-5
-- Rebuild for icu 49
-
-* Wed Apr 18 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.0-4
-- Add upstream patch to fix crash when SSE2 isn't present
-- Add upstream patch to flickering when some widgets are drawn
-
-* Fri Apr 13 2012 Dan Horák <dan[at]danny.cz> - 1.8.0-3
-- updated s390/ppc build options to match webkitgtk3
-
-* Mon Apr 09 2012 Kalev Lember <kalevlember@gmail.com> - 1.8.0-2
-- Install developer docs in -doc and mark it as noarch (#808917)
-- Move the license files to the main package
-
-* Tue Mar 27 2012 Kevin Fenzi <kevin@scrye.com> - 1.8.0-1
-- Update to 1.8.0
-
-* Tue Feb 28 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.6.3-2
-- Add ARM to and optimise compile flags for low mem arches
-
-* Wed Feb 01 2012 Kevin Fenzi <kevin@scrye.com> 1.6.3-1
-- Update to 1.6.3. 
-- enable webgl
-
-* Fri Jan 20 2012 Kevin Fenzi <kevin@scrye.com> - 1.6.1-5
-- Fix string issue causing failure to build. Already upstreamed. 
-
-* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.1-4
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
-
-* Mon Dec 05 2011 Adam Jackson <ajax@redhat.com> 1.6.1-3
-- Rebuild for new libpng
-- webkit-1.6.1-new-glib.patch: Fix for new glib headers
-
-* Wed Oct 12 2011 Dan Horák <dan[at]danny.cz> - 1.6.1-2
-- fix build on s390(x)
-
-* Tue Sep 27 2011 Kevin Fenzi <kevin@scrye.com> - 1.6.1-1
-- Update to 1.6.1
-
-* Mon Sep 26 2011 Kevin Fenzi <kevin@scrye.com> - 1.6.0-1
-- Update to new 1.6.0 stable. 
-
-* Thu Sep 08 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.3-2
-- Rebuild for new libicu
-
-* Mon Aug 29 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.3-1
-- Update to 1.4.3
-
-* Fri Jul 01 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.2-1
-- Update to 1.4.2
-
-* Sat Jun 11 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.1-1
-- Update to 1.4.1
-
-* Tue Apr 26 2011 Kevin Fenzi <kevin@scrye.com> - 1.4.0-1
-- Update to 1.4.0 stable release. 
-
-* Fri Apr 15 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.13-2
-- Fix build issue with gcc 4.6
-
-* Thu Mar 24 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.13-1
-- Update to 1.3.13
-
-* Mon Mar 07 2011 Caolán McNamara <caolanm@redhat.com> - 1.3.12-2
-- rebuild for icu 4.6
-
-* Wed Feb 23 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.12-1
-- Update to 1.3.12
-
-* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.11-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
-
-* Wed Feb 02 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.11-1
-- Update to 1.3.11
-
-* Mon Jan 10 2011 Kevin Fenzi <kevin@tummy.com> - 1.3.10-1
-- Update to 1.3.10
-
-* Tue Jan 04 2011 Huzaifa Sidhpurwala <huzaifas@redhat.com> 1.3.9-4
-- Upgrade to 1.3.9
-- Remove s390 patch, it was absorbed upstream
-- No translations available
-
-* Mon Dec 13 2010 Dan Horák <dan[at]danny.cz> - 1.3.6-2
-- Add back updated s390(x) patch
-- Do not generate debug information to prevent linker memory exhaustion on s390
-  with its 2 GB address space
-
-* Mon Nov 08 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.6-1
-- Update to 1.3.6
-
-* Thu Oct 28 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.5-1
-- Update to 1.3.5
-
-* Wed Sep 29 2010 jkeating - 1.3.4-3
-- Rebuilt for gcc bug 634757
-
-* Thu Sep 23 2010 Kevin Fenzi <kevin@tummy.com> - 1.3.4-2
-- Enable JIT/patch for execmem. 
-- Move inspector into the main package. 
-
-* Thu Sep 23 2010 Matthias Clasen <mclasen@redhat.com> - 1.3.4-1
-- Update to 1.3.4
-- Rebuild against newer gobject-introspection
-
-* Tue Jul 20 2010 Dan Horák <dan[at]danny.cz> - 1.3.2-4
-- Fix build on s390(x)
-
-* Thu Jul 15 2010 Colin Walters <walters@verbum.org> - 1.3.2-3
-- Rebuild with new gobject-introspection
-
-* Fri Jul  2 2010 Matthias Clasen <mclasen@redhat.com> 1.3.2-2
-- Enable introspection (needed for epiphany)
-
-* Thu Jul  1 2010 Matthias Clasen <mclasen@redhat.com> 1.3.2-1
-- Update to 1.3.2
-
-* Fri May 28 2010 Matthias Clasen <mclasen@redhat.com> 1.3.1-1
-- Update to 1.3.1 (required for epiphany)
-
-* Sun Apr 11 2010 Matthias Clasen <mclasen@redhat.com> 1.2.0-1
-- Update to 1.2.0
-
-* Fri Apr 02 2010 Caolán McNamara <caolanm@redhat.com> 1.1.22-3
-- rebuild for icu 4.4
-
-* Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> 1.1.22-2
-- apply upstream fix for sparc
-
-* Mon Feb 22 2010 Matthias Clasen <mclasen@redhat.com> 1.1.22-1
-- Update to 1.1.22
-
-* Wed Feb 10 2010 Bastien Nocera <bnocera@redhat.com> 1.1.21-1
-- Update to 1.1.21
-
-* Tue Jan 26 2010 Matthias Clasen <mclasen@redhat.com> 1.1.19-1
-- Update to 1.1.19
-
-* Sun Jan 17 2010 Matthias Clasen <mclasen@redhat.com> 1.1.18-1
-- Update to 1.1.18
-
-* Tue Dec 01 2009 Bastien Nocera <bnocera@redhat.com> 1.1.17-1
-- Update to 1.1.17
-
-* Sat Oct 31 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.3-1
-- Update to 1.1.15.3, more crash fixes and important media player fixes
-- See https://lists.webkit.org/pipermail/webkit-gtk/2009-October/000047.html
-
-* Thu Oct 15 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.2-1
-- Update to 1.1.15.2, which has multiple crash and other fixes
-- See https://lists.webkit.org/pipermail/webkit-gtk/2009-October/000040.html
-
-* Thu Sep 24 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.15.1-3
-- Forcibly disable JIT until we can properly resolve the execmem-caused
-  segfaulting. (Temporary workaround until bug #516057 can be properly fixed.)
-- Remove the gnome-keyring build option (no longer used by the build scripts).
-- Correct release value of previous %%changelog entry.
-
-* Wed Sep 23 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.15.1-2
-- Update to 1.1.15.1
-
-* Mon Sep 14 2009 Bastien Nocera <bnocera@redhat.com> 1.1.14-3
-- Add support for nspluginwrapper plugins
-
-* Tue Sep 08 2009 Karsten Hopp <karsten@redhat.com> 1.1.14-2
-- bump release and rebuild as the package was linked with an old libicu
-  during the mass rebuild on s390x
-
-* Mon Sep  7 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.14-1
-- Update to 1.1.14
-
-* Tue Aug 25 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.13-1
-- Update to 1.1.13
-
-* Sat Aug 22 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.12-2
-- Add patch to forcibly disable RWX memory in the x86/x86-64 assembler.
-  + no-execmem.patch
-- Use %%add_to_doc_files to add the gtk/NEWS file instead of %%doc, which
-  clobbered the doc files before they could be properly installed to the -doc
-  subpackage.
-- Resolves: #516057 (gets whacked by selinux execmem check) and #518693
-  (webkitgtk-doc package effectively empty).
-- Update minimum required libsoup version.
-
-* Tue Jul 28 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.12-1
-- Update to 1.1.12
-
-* Mon Jul 27 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.11-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
-
-* Mon Jul 13 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.11-1
-- Update to 1.1.11
-
-* Wed Jul 08 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.10-3
-- Move jsc to the -devel subpackage (#510355).
-
-* Sat Jul 04 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.10-2
-- Invoke chrpath to remove the hardcoded RPATH in GtkLauncher.
-- Remove unnecessary libtool build dependency.
-
-* Tue Jun 16 2009 Matthias Clasen <mclasen@redhat.com> - 1.1.10-1
-- Update to 1.1.10
-
-* Sat Jun 13 2009 Dennis Gilmore <dennis@ausil.us> - 1.1.8-2
-- _atomic_word is not always an int
-
-* Fri May 29 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.8-1
-- Update to new upstream release (1.1.8)
-
-* Thu May 28 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.7-1
-- Update to new upstream release (1.1.7)
-- Remove jit build conditional. (JIT is now enabled by default on platforms
-  which support it: currently 32- and 64-bit x86.)
-- Fix installation of the GtkLauncher demo program so that it
-  is a binary and not a script. (Fixes bug #443048.)
-
-* Sat May 09 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.6-1
-- Update to new upstream release (1.1.6).
-- Drop workaround for bug 488112 (fixed upstream).
-- Fixes bug 484335 (Copy link locations to the primary selection; patched
-  upstream).
-- Include upstream changelog (NEWS) as part of the installed documentation.
-- Fix capitalization in previous %%changelog entry.
-- Add build-time conditional support for 3-D transforms (default off).
-
-* Sat May 09 2009 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> - 1.1.4-2
-- Rebuild against new icu
-
-* Tue Apr 07 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.4-1
-- Update to new upstream release (1.1.4)
-- Enable building with geolocation support.
-- Add build-time conditional for enabling code coverage checking (coverage).
-- Remove html5video conditional and update dependencies accordingly. (HTML5
-  video embedding support is now enabled by default by upstream.)
-
-* Sun Mar 15 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.3-1
-- Rename from WebKit-gtk and friends to WebKitGTK and subpackages.
-- Update to new upstream release (1.1.3)
-- Clean up the add_to_doc_files macro usage.
-
-* Sat Mar 07 2009 Peter Gordon <peter@thecodergeek.com> - 1.1.1-1
-- Update to new upstream release (1.1.1), includes a soname bump.
-- Enable gnome-keyring support.
-
-* Wed Mar  4 2009 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> - 1.1.0-0.21.svn41071
-- Compile libJavaScriptCore.a with -fno-strict-aliasing to
-  do workaround for #488112
-
-* Mon Feb 23 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.0-0.20.svn41071
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
-
-* Fri Feb 20 2009 Peter Gordon <peter@thecodergeek.com> 1.1.0-0.19.svn41071
-- Update to new upstream snapshot (SVN 41071).
-- Drop libsoup build conditional. Use libsoup as default HTTP backend instead
-  of cURL, following upstream's default.
-
-* Fri Jan 30 2009 Peter Gordon <peter@thecodergeek.com> 1.1.0-0.18.svn40351
-- Fix ownership of doc directory...this time without the oops (#473619).
-- Bump package version number to match that used in the configure/build
-  scripts. (Thanks to Martin Sourada for the bug report via email.)
-
-* Thu Jan 29 2009 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.17.svn40351
-- Update to new upstream snapshot (SVN 40351): adds the WebPolicyDelegate
-  implementaton and related API (#482739).
-- Drop Bison 2.4 patch (fixed upstream):
-  - bison24.patch
-- Fixes CVE-2008-6059: Sensitive information disclosure from cookies via
-  XMLHttpRequest calls (#484197).
-
-* Sat Nov 29 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.16.svn39370
-- Update to new upstream snapshot (SVN 39370)
-- Fix ownership of %%_docdir in the doc subpackage. 
-- Resolves: bug 473619 (WebKit : Unowned directories).
-- Adds webinspector data to the gtk-devel subpackage.
-- Add patch from upstream bug 22205 to fix compilation errors with Bison 2.4:
-  + bison24.patch
-- Add build-time conditional for WML support.
-
-* Thu Oct 23 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.15.svn37790
-- Update to new upstream snapshot (SVN 37790).
-- Default to freetype font backend for improved CJK/Unicode support. (#448693)
-- Add some notes to the build options comments block.
-- Add a build-time conditional for jit
-
-* Sun Aug 24 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.14.svn35904
-- Update to new upstream snapshot (SVN 35904)
-
-* Fri Jul 04 2008 Peter Gordon <peter@thecodergeek.com>
-- Remove outdated and unnecessary GCC 4.3 patch:
-  - gcc43.patch
-- Fix the curl-devel BuildRequire conditional. (It is only needed when building
-  against curl instead of libsoup.)
-
-* Thu Jun 12 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.13.svn34655
-- Update to new upstream snapshot (SVN 34655)
-- Add some build-time conditionals for non-default features: debug, 
-  html5video, libsoup, pango, svg. 
-
-* Tue Jun  3 2008 Caolán McNamara <caolanm@redhat.com> - 1.0.0-0.12.svn34279
-- rebuild for new icu
-
-* Tue Jun  3 2008 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> - 1.0.0-0.11.svn34279
-- Update to new upstream snapshot (SVN 34279) anyway
-- Add BR: libXt-devel
-
-* Tue Apr 29 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.10.svn32531
-- Remove the -Qt subpackage stuff. QtWebKit is now included in Qt proper, as
-  of qt-4.4.0-0.6.rc1. (We no longer need separate build-qt and build-gtk
-  subdirectories either.)
-- Reference: bug 442200 (RFE: WebKit Migration)
-- Add libjpeg dependency (was previously pulled in by the qt4-devel dependency
-  tree).
-
-* Mon Apr 28 2008 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> - 1.0.0-0.9.svn32531
-- Update to new upstream snapshot (SVN 32531).
-- Fix bug 443048 and hopefully fix bug 444445
-- Modify the process of building GTK+ port a bit
-- on qt port WebKit/qt/Plugins is not built for qt >= 4.4.0
-
-* Sat Apr 12 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.8.svn31787
-- Update to new upstream snapshot (SVN 31787).
-- Resolves: CVE-2008-1010 (bug 438532: Arbitrary code execution) and
-  CVE-2008-1011 (bug 438531: Cross-Site Scripting).
-- Switch to using autotools for building the GTK+ port.
-
-* Wed Mar 05 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.7.svn30667
-- Fix the WebKitGtk pkgconfig data (should depend on gtk+-2.0). Resolves
-  bug 436073 (Requires: gtk+-2.0 missing from WebKitGtk.pc).
-- Thanks to Mamoru Tasaka for helping find and squash these many bugs. 
-  
-* Sat Mar 01 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.6.svn30667
-- Fix include directory naming. Resolves: bug 435561 (Header file <> header
-  file location mismatch)
-- Remove qt4-devel runtime dependency and .prl file from WebKit-gtk-devel.
-  Resolves: bug 433138 (WebKit-gtk-devel has a requirement on qt4-devel) 
-
-* Fri Feb 29 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.5.svn30667
-- Update to new upstream snapshot (SVN 30667)
-- Add some build fixes for GCC 4.3:
-  + gcc43.patch
-
-* Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 1.0.0-0.5.svn29336
-- Autorebuild for GCC 4.3
-
-* Wed Jan 09 2008 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.4.svn29336
-- Update to new upstream snapshot (SVN 29336).
-- Drop TCSpinLock pthread workaround (fixed upstream):
-  - TCSpinLock-use-pthread-stubs.patch
-
-* Thu Dec 06 2007 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.3.svn28482
-- Add proper %%defattr line to qt, qt-devel, and doc subpackages.
-- Add patch to forcibly build the TCSpinLock code using the pthread
-  implementation:
-  + TCSpinLock-use-pthread-stubs.patch
-
-* Thu Dec 06 2007 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.2.svn28482
-- Package renamed from WebKitGtk.
-- Update to SVN 28482.
-- Build both the GTK and Qt ports, putting each into their own respective
-  subpackages.
-- Invoke qmake-qt4 and make directly (with SMP build flags) instead of using
-  the build-webkit script from upstream.
-- Add various AUTHORS, README, and LICENSE files (via the doc subpackage). 
-
-* Tue Dec 04 2007 Peter Gordon <peter@thecodergeek.com> 1.0.0-0.1.svn28383
-- Initial packaging for Fedora.
+%autochangelog

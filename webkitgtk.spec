@@ -10,12 +10,6 @@
 %global with_gamepad 1
 %endif
 
-# GTK 4 is not stable yet. The package name and API version might change, and
-# many other API changes are planned. We are looking to enable the GTK 4
-# package very soon, long before the API is stable, but not before the
-# package name is finalized.
-%bcond_with gtk4
-
 # Build documentation by default (use `rpmbuild --without docs` to override it).
 # This is used by Coverity. Coverity injects custom compiler warnings, but
 # any warning during WebKit docs build is fatal!
@@ -118,7 +112,6 @@ BuildRequires:  pkgconfig(xt)
 WebKitGTK is the port of the WebKit web rendering engine to the
 GTK platform.
 
-%if %{with gtk4}
 %package -n     webkit2gtk5.0
 Summary:        WebKitGTK for GTK 4
 Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
@@ -135,7 +128,6 @@ Provides:       bundled(xdgmime)
 %description -n webkit2gtk5.0
 WebKitGTK is the port of the WebKit web rendering engine to the
 GTK platform. This package contains WebKitGTK for GTK 4.
-%endif
 
 %package -n     webkit2gtk4.1
 Summary:        WebKitGTK for GTK 3 and libsoup 3
@@ -175,7 +167,6 @@ Provides:       webkit2gtk3 = %{version}-%{release}
 WebKitGTK is the port of the WebKit web rendering engine to the
 GTK platform. This package contains WebKitGTK for GTK 3 and libsoup 2.
 
-%if %{with gtk4}
 %package -n     webkit2gtk5.0-devel
 Summary:        Development files for webkit2gtk5.0
 Requires:       webkit2gtk5.0%{?_isa} = %{version}-%{release}
@@ -185,7 +176,6 @@ Requires:       javascriptcoregtk5.0-devel%{?_isa} = %{version}-%{release}
 %description -n webkit2gtk5.0-devel
 The webkit2gtk5.0-devel package contains libraries, build data, and header
 files for developing applications that use webkit2gtk5.0.
-%endif
 
 %package -n     webkit2gtk4.1-devel
 Summary:        Development files for webkit2gtk4.1
@@ -212,7 +202,6 @@ The webkit2gtk4.0-devel package contains libraries, build data, and header
 files for developing applications that use webkit2gtk4.0.
 
 %if %{with docs}
-%if %{with gtk4}
 %package -n     webkit2gtk5.0-doc
 Summary:        Documentation files for webkit2gtk5.0
 BuildArch:      noarch
@@ -220,7 +209,6 @@ Requires:       webkit2gtk5.0 = %{version}-%{release}
 
 %description -n webkit2gtk5.0-doc
 This package contains developer documentation for webkit2gtk5.0.
-%endif
 
 %package -n     webkit2gtk4.1-doc
 Summary:        Documentation files for webkit2gtk4.1
@@ -243,13 +231,11 @@ Provides:       webkit2gtk3-doc = %{version}-%{release}
 This package contains developer documentation for webkit2gtk4.0.
 %endif
 
-%if %{with gtk4}
 %package -n     javascriptcoregtk5.0
 Summary:        JavaScript engine from webkit2gtk5.0
 
 %description -n javascriptcoregtk5.0
 This package contains JavaScript engine from webkit2gtk5.0.
-%endif
 
 %package -n     javascriptcoregtk4.1
 Summary:        JavaScript engine from webkit2gtk4.1
@@ -267,7 +253,6 @@ Provides:       webkit2gtk3-jsc = %{version}-%{release}
 %description -n javascriptcoregtk4.0
 This package contains JavaScript engine from webkit2gtk4.0.
 
-%if %{with gtk4}
 %package -n     javascriptcoregtk5.0-devel
 Summary:        Development files for JavaScript engine from webkit2gtk5.0
 Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
@@ -275,7 +260,6 @@ Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
 %description -n javascriptcoregtk5.0-devel
 The javascriptcoregtk5.0-devel package contains libraries, build data, and header
 files for developing applications that use JavaScript engine from webkit2gtk-5.0.
-%endif
 
 %package -n     javascriptcoregtk4.1-devel
 Summary:        Development files for JavaScript engine from webkit2gtk4.1
@@ -327,7 +311,6 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 # on WebKitGTK, because it calls each object's get_type() function, which will
 # initialize bmalloc and JIT.
 
-%if %{with gtk4}
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
 %cmake \
   -GNinja \
@@ -347,7 +330,6 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 %endif
 %endif
   %{nil}
-%endif
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
 %cmake \
@@ -389,33 +371,21 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 %endif
   %{nil}
 
-%if %{with gtk4}
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
 export NINJA_STATUS="[1/3][%f/%t %es] "
 %cmake_build %limit_build -m 2048
-%endif
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
-%if %{with gtk4}
 export NINJA_STATUS="[2/3][%f/%t %es] "
-%else
-export NINJA_STATUS="[1/2][%f/%t %es] "
-%endif
 %cmake_build %limit_build -m 2048
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.0
-%if %{with gtk4}
 export NINJA_STATUS="[3/3][%f/%t %es] "
-%else
-export NINJA_STATUS="[2/2][%f/%t %es] "
-%endif
 %cmake_build %limit_build -m 2048
 
 %install
-%if %{with gtk4}
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
 %cmake_install
-%endif
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
 %cmake_install
@@ -423,9 +393,7 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.0
 %cmake_install
 
-%if %{with gtk4}
 %find_lang WebKit2GTK-5.0
-%endif
 %find_lang WebKit2GTK-4.1
 %find_lang WebKit2GTK-4.0
 
@@ -444,7 +412,6 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %add_to_license_files Source/WTF/wtf/dtoa/COPYING
 %add_to_license_files Source/WTF/wtf/dtoa/LICENSE
 
-%if %{with gtk4}
 %files -n webkit2gtk5.0 -f WebKit2GTK-5.0.lang
 %license _license_files/*ThirdParty*
 %license _license_files/*WebCore*
@@ -459,7 +426,6 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %exclude %{_libexecdir}/webkit2gtk-5.0/MiniBrowser
 %exclude %{_libexecdir}/webkit2gtk-5.0/jsc
 %{_bindir}/WebKitWebDriver
-%endif
 
 %files -n webkit2gtk4.1 -f WebKit2GTK-4.1.lang
 %license _license_files/*ThirdParty*
@@ -490,7 +456,6 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %exclude %{_libexecdir}/webkit2gtk-4.0/MiniBrowser
 %exclude %{_libexecdir}/webkit2gtk-4.0/jsc
 
-%if %{with gtk4}
 %files -n webkit2gtk5.0-devel
 %{_libexecdir}/webkit2gtk-5.0/MiniBrowser
 %{_includedir}/webkitgtk-5.0/
@@ -502,7 +467,6 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %dir %{_datadir}/gir-1.0
 %{_datadir}/gir-1.0/WebKit2-5.0.gir
 %{_datadir}/gir-1.0/WebKit2WebExtension-5.0.gir
-%endif
 
 %files -n webkit2gtk4.1-devel
 %{_libexecdir}/webkit2gtk-4.1/MiniBrowser
@@ -528,13 +492,11 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %{_datadir}/gir-1.0/WebKit2-4.0.gir
 %{_datadir}/gir-1.0/WebKit2WebExtension-4.0.gir
 
-%if %{with gtk4}
 %files -n javascriptcoregtk5.0
 %license _license_files/*JavaScriptCore*
 %{_libdir}/libjavascriptcoregtk-5.0.so.0*
 %dir %{_libdir}/girepository-1.0
 %{_libdir}/girepository-1.0/JavaScriptCore-5.0.typelib
-%endif
 
 %files -n javascriptcoregtk4.1
 %license _license_files/*JavaScriptCore*
@@ -548,7 +510,6 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %dir %{_libdir}/girepository-1.0
 %{_libdir}/girepository-1.0/JavaScriptCore-4.0.typelib
 
-%if %{with gtk4}
 %files -n javascriptcoregtk5.0-devel
 %{_libexecdir}/webkit2gtk-5.0/jsc
 %dir %{_includedir}/webkitgtk-5.0
@@ -558,7 +519,6 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %{_libdir}/pkgconfig/javascriptcoregtk-5.0.pc
 %dir %{_datadir}/gir-1.0
 %{_datadir}/gir-1.0/JavaScriptCore-5.0.gir
-%endif
 
 %files -n javascriptcoregtk4.1-devel
 %{_libexecdir}/webkit2gtk-4.1/jsc
@@ -581,14 +541,12 @@ export NINJA_STATUS="[2/2][%f/%t %es] "
 %{_datadir}/gir-1.0/JavaScriptCore-4.0.gir
 
 %if %{with docs}
-%if %{with gtk4}
 %files -n webkit2gtk5.0-doc
 %dir %{_datadir}/gtk-doc
 %dir %{_datadir}/gtk-doc/html
 %{_datadir}/gtk-doc/html/javascriptcoregtk-5.0/
 %{_datadir}/gtk-doc/html/webkit2gtk-5.0/
 %{_datadir}/gtk-doc/html/webkit2gtk-web-extension-5.0/
-%endif
 
 %files -n webkit2gtk4.1-doc
 %dir %{_datadir}/gtk-doc

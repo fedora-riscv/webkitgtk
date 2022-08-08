@@ -239,6 +239,7 @@ This package contains JavaScript engine from webkit2gtk5.0.
 
 %package -n     javascriptcoregtk4.1
 Summary:        JavaScript engine from webkit2gtk4.1
+Obsoletes:      webkit2gtk4.1-jsc < %{version}-%{release}
 
 %description -n javascriptcoregtk4.1
 This package contains JavaScript engine from webkit2gtk4.1.
@@ -264,6 +265,7 @@ files for developing applications that use JavaScript engine from webkit2gtk-5.0
 %package -n     javascriptcoregtk4.1-devel
 Summary:        Development files for JavaScript engine from webkit2gtk4.1
 Requires:       javascriptcoregtk4.1%{?_isa} = %{version}-%{release}
+Obsoletes:      webkit2gtk4.1-jsc-devel < %{version}-%{release}
 
 %description -n javascriptcoregtk4.1-devel
 The javascriptcoregtk4.1-devel package contains libraries, build data, and header

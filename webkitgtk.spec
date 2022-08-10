@@ -300,7 +300,9 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 # Remove debuginfo from 32-bit builds to reduce memory consumption:
 # https://bugs.webkit.org/show_bug.cgi?id=140176
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/I6IVNA52TXTBRQLKW45CJ5K4RA4WNGMI/
-%ifarch %{ix86}
+# Additionally, disable debuginfo for ppc64le and s390x builds as well as we
+# have trouble with the koji builders, https://pagure.io/releng/issue/10909
+%ifarch %{ix86} ppc64le s390x
 %global debug_package %{nil}
 %global optflags %(echo %{optflags} | sed 's/-g /-g0 /')
 %endif

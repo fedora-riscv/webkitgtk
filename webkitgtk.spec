@@ -16,7 +16,7 @@
 %bcond_without docs
 
 Name:           webkitgtk
-Version:        2.37.1
+Version:        2.37.90
 Release:        %autorelease
 Summary:        GTK web content engine library
 
@@ -28,15 +28,6 @@ Source1:        https://webkitgtk.org/releases/webkitgtk-%{version}.tar.xz.asc
 # $ gpg --import aperez.key carlosgc.key
 # $ gpg --export --export-options export-minimal D7FCF61CF9A2DEAB31D81BD3F3D322D0EC4582C3 5AA3BC334FD7E3369E7C77B291C559DBE4C9123B > webkitgtk-keys.gpg
 Source2:        webkitgtk-keys.gpg
-
-%if 0%{?rhel}
-# https://bugs.webkit.org/show_bug.cgi?id=217989
-# https://bugs.webkit.org/show_bug.cgi?id=227905
-Patch0:         aarch64-page-size.patch
-%endif
-
-# https://bugs.webkit.org/show_bug.cgi?id=242579#c4
-Patch1:         fix-cloop-build.patch
 
 BuildRequires:  bison
 BuildRequires:  bubblewrap
@@ -297,6 +288,9 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 # from redhat-rpm-config.
 %global _dwz_max_die_limit_x86_64 250000000
 
+# Require 8 GB of RAM per vCPU for debuginfo processing
+%global _find_debuginfo_opts %limit_build -m 8192
+
 # Remove debuginfo from 32-bit builds to reduce memory consumption:
 # https://bugs.webkit.org/show_bug.cgi?id=140176
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/I6IVNA52TXTBRQLKW45CJ5K4RA4WNGMI/
@@ -304,17 +298,6 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 %global debug_package %{nil}
 %global optflags %(echo %{optflags} | sed 's/-g /-g0 /')
 %endif
-
-# Require 8 GB of RAM per vCPU for debuginfo processing
-%global _find_debuginfo_opts %limit_build -m 8192
-
-# Warning: although RHEL 9 aarch64 now uses 4 KB page sizes, we still have to
-# support 64 KB page sizes until the *builders* use RHEL 9. This means we still
-# have to disable JIT and bmalloc, even though this disables important heap
-# security features. We can't simply disable them only during this build,
-# because gobject-introspection will crash when building anything that depends
-# on WebKitGTK, because it calls each object's get_type() function, which will
-# initialize bmalloc and JIT.
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
 %cmake \
@@ -349,8 +332,7 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 %endif
 %if 0%{?rhel}
 %ifarch aarch64
-  -DENABLE_JIT=OFF \
-  -DUSE_SYSTEM_MALLOC=ON \
+  -DUSE_64KB_PAGE_BLOCK=ON \
 %endif
 %endif
   %{nil}

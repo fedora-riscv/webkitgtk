@@ -305,6 +305,7 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
   -DPORT=GTK \
   -DCMAKE_BUILD_TYPE=Release \
   -DUSE_GTK4=ON \
+  -DENABLE_WEBDRIVER=OFF \
 %if %{without docs}
   -DENABLE_DOCUMENTATION=OFF \
 %endif

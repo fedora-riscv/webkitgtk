@@ -360,15 +360,15 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0
 export NINJA_STATUS="[1/3][%f/%t %es] "
-%cmake_build %limit_build -m 4096
+%cmake_build %limit_build -m 3072
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
 export NINJA_STATUS="[2/3][%f/%t %es] "
-%cmake_build %limit_build -m 4096
+%cmake_build %limit_build -m 3072
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.0
 export NINJA_STATUS="[3/3][%f/%t %es] "
-%cmake_build %limit_build -m 4096
+%cmake_build %limit_build -m 3072
 
 %install
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-5.0

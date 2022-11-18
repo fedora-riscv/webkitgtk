@@ -1,0 +1,12 @@
+diff --git a/Source/ThirdParty/ANGLE/src/libANGLE/Constants.h b/Source/ThirdParty/ANGLE/src/libANGLE/Constants.h
+index 36152825e438..9b6d940bf31a 100644
+--- a/Source/ThirdParty/ANGLE/src/libANGLE/Constants.h
++++ b/Source/ThirdParty/ANGLE/src/libANGLE/Constants.h
+@@ -12,6 +12,7 @@
+ #include "common/platform.h"
+ 
+ #include <stdint.h>
++#include <stdlib.h>
+ 
+ namespace gl
+ {

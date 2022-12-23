@@ -105,7 +105,7 @@ GTK platform.
 
 %package -n     webkit2gtk5.0
 Summary:        WebKitGTK for GTK 4
-Requires:       javascriptcoregtk6.0%{?_isa} = %{version}-%{release}
+Requires:       javascriptcoregtk5.0%{?_isa} = %{version}-%{release}
 Requires:       bubblewrap
 Requires:       xdg-dbus-proxy
 Recommends:     geoclue2

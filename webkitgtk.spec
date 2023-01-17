@@ -35,6 +35,9 @@ Source2:        webkitgtk-keys.gpg
 # https://bugs.webkit.org/show_bug.cgi?id=250689
 Patch0:         angle-build.patch
 
+# https://bugs.webkit.org/show_bug.cgi?id=250701
+Patch1:         unbreak-headers.patch
+
 BuildRequires:  bison
 BuildRequires:  bubblewrap
 BuildRequires:  cmake

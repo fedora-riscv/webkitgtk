@@ -304,10 +304,11 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 # Increase the DIE limit so our debuginfo packages can be size-optimized.
 # This previously decreased the size for x86_64 from ~5G to ~1.1G, but as of
 # 2022 it's more like 850 MB -> 675 MB. This requires lots of RAM on the
-# builders, so only do this for x86_64 to avoid overwhelming non-x86_64
-# builders.
+# builders, so only do this for x86_64 and aarch64 to avoid overwhelming
+# builders with less RAM.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1456261
 %global _dwz_max_die_limit_x86_64 250000000
+%global _dwz_max_die_limit_aarch64 250000000
 
 # Require 32 GB of RAM per vCPU for debuginfo processing. 16 GB is not enough.
 %global _find_debuginfo_opts %limit_build -m 32768

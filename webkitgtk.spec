@@ -19,7 +19,7 @@
 %bcond_without docs
 
 Name:           webkitgtk
-Version:        2.39.4
+Version:        2.39.5
 Release:        %autorelease
 Summary:        GTK web content engine library
 
@@ -31,12 +31,6 @@ Source1:        https://webkitgtk.org/releases/webkitgtk-%{version}.tar.xz.asc
 # $ gpg --import aperez.key carlosgc.key
 # $ gpg --export --export-options export-minimal D7FCF61CF9A2DEAB31D81BD3F3D322D0EC4582C3 5AA3BC334FD7E3369E7C77B291C559DBE4C9123B > webkitgtk-keys.gpg
 Source2:        webkitgtk-keys.gpg
-
-# https://bugs.webkit.org/show_bug.cgi?id=250689
-Patch0:         angle-build.patch
-
-# https://bugs.webkit.org/show_bug.cgi?id=250701
-Patch1:         unbreak-headers.patch
 
 BuildRequires:  bison
 BuildRequires:  bubblewrap
@@ -467,7 +461,7 @@ export NINJA_STATUS="[3/3][%f/%t %es] "
 %license _license_files/*WebCore*
 %license _license_files/*WebInspectorUI*
 %license _license_files/*WTF*
-%{_libdir}/libwebkitgtk-6.0.so.0*
+%{_libdir}/libwebkitgtk-6.0.so.1*
 %dir %{_libdir}/girepository-1.0
 %{_libdir}/girepository-1.0/WebKit-6.0.typelib
 %{_libdir}/girepository-1.0/WebKitWebExtension-6.0.typelib

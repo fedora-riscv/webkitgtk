@@ -35,6 +35,10 @@ Patch0:         build.patch
 # https://github.com/WebKit/WebKit/pull/12806
 Patch1:         text-extents.patch
 
+# https://github.com/WebKit/WebKit/pull/12736
+# https://github.com/WebKit/WebKit/pull/12791
+Patch2:         fix-multi-gpus.patch
+
 BuildRequires:  bison
 BuildRequires:  bubblewrap
 BuildRequires:  cmake

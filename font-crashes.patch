@@ -1,0 +1,51 @@
+From 3b166862b8341d3361e3d804c31aacacb27a85dd Mon Sep 17 00:00:00 2001
+From: Vitaly Dyachkov <vitaly@igalia.com>
+Date: Fri, 21 Apr 2023 15:54:04 +0200
+Subject: [PATCH] [WPE][GTK] Do not deref CreationData's buffer when Cairo font
+ is destroyed. https://bugs.webkit.org/show_bug.cgi?id=255785
+
+Reviewed by NOBODY (OOPS!).
+
+Since 263084@main `FontCustomPlatformData` takes
+`FontPlatformData::CreationData` instead of `FragmentedSharedBuffer`.
+The buffer is now a reference counted field of
+`FontPlatformData::CreationData` struct and will be automatically
+dereferenced when `FontCustomPlatformData` is destroyed.
+It is an error to manually dereference it using Cairo font destroy
+function.
+
+* Source/WebCore/platform/graphics/freetype/FontCustomPlatformDataFreeType.cpp:
+(WebCore::FontCustomPlatformData::FontCustomPlatformData):
+(WebCore::releaseCustomFontData): Deleted.
+---
+ .../freetype/FontCustomPlatformDataFreeType.cpp        | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/Source/WebCore/platform/graphics/freetype/FontCustomPlatformDataFreeType.cpp b/Source/WebCore/platform/graphics/freetype/FontCustomPlatformDataFreeType.cpp
+index e7857fe1818f..38daa2b7ff24 100644
+--- a/Source/WebCore/platform/graphics/freetype/FontCustomPlatformDataFreeType.cpp
++++ b/Source/WebCore/platform/graphics/freetype/FontCustomPlatformDataFreeType.cpp
+@@ -38,11 +38,6 @@
+ 
+ namespace WebCore {
+ 
+-static void releaseCustomFontData(void* data)
+-{
+-    static_cast<FragmentedSharedBuffer*>(data)->deref();
+-}
+-
+ static cairo_user_data_key_t freeTypeFaceKey;
+ 
+ FontCustomPlatformData::FontCustomPlatformData(FT_Face freeTypeFace, FontPlatformData::CreationData&& data)
+@@ -50,11 +45,6 @@ FontCustomPlatformData::FontCustomPlatformData(FT_Face freeTypeFace, FontPlatfor
+     , creationData(WTFMove(data))
+     , m_renderingResourceIdentifier(RenderingResourceIdentifier::generate())
+ {
+-    static cairo_user_data_key_t bufferKey;
+-    auto buffer = creationData.fontFaceData;
+-    cairo_font_face_set_user_data(m_fontFace.get(), &bufferKey, &buffer,
+-         static_cast<cairo_destroy_func_t>(releaseCustomFontData));
+-
+     // Cairo doesn't do FreeType reference counting, so we need to ensure that when
+     // this cairo_font_face_t is destroyed, it cleans up the FreeType face as well.
+     cairo_font_face_set_user_data(m_fontFace.get(), &freeTypeFaceKey, freeTypeFace,

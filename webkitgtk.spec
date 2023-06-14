@@ -6,7 +6,7 @@
         cp -p %1 _license_files/$(echo '%1' | sed -e 's!/!.!g')
 
 Name:           webkitgtk
-Version:        2.41.4
+Version:        2.41.5
 Release:        %autorelease
 Summary:        GTK web content engine library
 
@@ -67,6 +67,7 @@ BuildRequires:  pkgconfig(libavif)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libgcrypt)
 BuildRequires:  pkgconfig(libjpeg)
+BuildRequires:  pkgconfig(libjxl)
 BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libopenjp2)
 BuildRequires:  pkgconfig(libpcre)

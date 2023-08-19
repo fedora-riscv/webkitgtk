@@ -10,6 +10,8 @@
 %global with_gamepad 1
 %endif
 
+%global _lto_cflags %{nil}
+
 # Build documentation by default (use `rpmbuild --without docs` to override it).
 # This is used by Coverity. Coverity injects custom compiler warnings, but
 # any warning during WebKit docs build is fatal!

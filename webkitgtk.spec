@@ -10,13 +10,15 @@
 %global with_gamepad 1
 %endif
 
+%global _lto_cflags %{nil}
+
 # Build documentation by default (use `rpmbuild --without docs` to override it).
 # This is used by Coverity. Coverity injects custom compiler warnings, but
 # any warning during WebKit docs build is fatal!
 %bcond_without docs
 
 Name:           webkitgtk
-Version:        2.40.5
+Version:        2.42.0
 Release:        %autorelease
 Summary:        GTK web content engine library
 
@@ -60,6 +62,7 @@ BuildRequires:  pkgconfig(enchant-2)
 BuildRequires:  pkgconfig(epoxy)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(freetype2)
+BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(gl)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(glesv2)
@@ -73,8 +76,10 @@ BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(icu-uc)
 BuildRequires:  pkgconfig(lcms2)
 BuildRequires:  pkgconfig(libavif)
+BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libgcrypt)
 BuildRequires:  pkgconfig(libjpeg)
+BuildRequires:  pkgconfig(libjxl)
 BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libopenjp2)
 BuildRequires:  pkgconfig(libpcre)

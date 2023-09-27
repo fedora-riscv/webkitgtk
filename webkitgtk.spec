@@ -18,7 +18,7 @@
 %bcond_without docs
 
 Name:           webkitgtk
-Version:        2.42.0
+Version:        2.42.1
 Release:        %autorelease
 Summary:        GTK web content engine library
 
@@ -63,9 +63,7 @@ BuildRequires:  pkgconfig(epoxy)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(freetype2)
 BuildRequires:  pkgconfig(gbm)
-BuildRequires:  pkgconfig(gl)
 BuildRequires:  pkgconfig(glib-2.0)
-BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(gobject-introspection-1.0)
 BuildRequires:  pkgconfig(gstreamer-1.0)
 BuildRequires:  pkgconfig(gstreamer-plugins-bad-1.0)
@@ -117,6 +115,7 @@ GTK platform.
 Summary:        WebKitGTK for GTK 4
 Requires:       javascriptcoregtk6.0%{?_isa} = %{version}-%{release}
 Requires:       bubblewrap
+Requires:       libGLES
 Requires:       xdg-dbus-proxy
 Recommends:     geoclue2
 Recommends:     gstreamer1-plugins-bad-free
@@ -135,6 +134,7 @@ GTK platform. This package contains WebKitGTK for GTK 4.
 Summary:        WebKitGTK for GTK 3 and libsoup 3
 Requires:       javascriptcoregtk4.1%{?_isa} = %{version}-%{release}
 Requires:       bubblewrap
+Requires:       libGLES
 Requires:       xdg-dbus-proxy
 Recommends:     geoclue2
 Recommends:     gstreamer1-plugins-bad-free

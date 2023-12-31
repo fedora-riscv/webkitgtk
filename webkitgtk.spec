@@ -17,6 +17,11 @@
 # any warning during WebKit docs build is fatal!
 %bcond_without docs
 
+%ifarch riscv64
+%global _lto_cflags %{nil}
+%global debug_package %{nil}
+%endif
+
 # https://fedoraproject.org/wiki/Changes/Remove_webkit2gtk-4.0_API_Version
 # ELN (RHEL 10) no longer needs 4.0
 %if %{undefined rhel} || 0%{?rhel} < 10
@@ -25,7 +30,7 @@
 
 Name:           webkitgtk
 Version:        2.42.4
-Release:        %autorelease
+Release:        %autorelease -e rv64
 Summary:        GTK web content engine library
 
 License:        LGPLv2
@@ -322,6 +327,7 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 # https://bugzilla.redhat.com/show_bug.cgi?id=1456261
 %global _dwz_max_die_limit_x86_64 250000000
 %global _dwz_max_die_limit_aarch64 250000000
+%global _dwz_max_die_limit_riscv64 250000000
 
 # Require 32 GB of RAM per vCPU for debuginfo processing. 16 GB is not enough.
 %global _find_debuginfo_opts %limit_build -m 32768
@@ -329,7 +335,7 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 # Reduce debuginfo verbosity 32-bit builds to reduce memory consumption even more.
 # https://bugs.webkit.org/show_bug.cgi?id=140176
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/I6IVNA52TXTBRQLKW45CJ5K4RA4WNGMI/
-%ifarch %{ix86}
+%ifarch %{ix86} riscv64
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
@@ -358,6 +364,11 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
   -DUSE_64KB_PAGE_BLOCK=ON \
 %endif
 %endif
+%ifarch riscv64
+  -DENABLE_JIT=OFF \
+  -DENABLE_C_LOOP=ON \
+  -DENABLE_SAMPLING_PROFILER=OFF \
+%endif
   %{nil}
 
 %define _vpath_builddir %{_vendor}-%{_target_os}-build/webkit2gtk-4.1
@@ -376,6 +387,11 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 %ifarch aarch64
   -DUSE_64KB_PAGE_BLOCK=ON \
 %endif
+%endif
+%ifarch riscv64
+  -DENABLE_JIT=OFF \
+  -DENABLE_C_LOOP=ON \
+  -DENABLE_SAMPLING_PROFILER=OFF \
 %endif
   %{nil}
 
@@ -397,6 +413,11 @@ files for developing applications that use JavaScript engine from webkit2gtk-4.0
 %ifarch aarch64
   -DUSE_64KB_PAGE_BLOCK=ON \
 %endif
+%endif
+%ifarch riscv64
+  -DENABLE_JIT=OFF \
+  -DENABLE_C_LOOP=ON \
+  -DENABLE_SAMPLING_PROFILER=OFF \
 %endif
   %{nil}
 %endif
